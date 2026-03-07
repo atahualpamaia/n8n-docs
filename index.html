@@ -69,7 +69,7 @@ tr:last-child td{border-bottom:none}tr:hover td{background:var(--purple-dim)}
 <header class="topbar">
   <div class="topbar-brand"><div class="brand-logo">S</div><span class="brand-name">Snov.io</span><span class="brand-sep">|</span><span class="brand-sub">Sales Playbook</span></div>
   <div class="topbar-right">
-    <span class="topbar-meta">1 workflows · Mar 7, 2026, 08:01 PM</span>
+    <span class="topbar-meta">1 workflows · Mar 7, 2026, 09:01 PM</span>
     <div class="theme-toggle">
       <button class="theme-btn active" id="btn-light" onclick="setTheme('light')">Light</button>
       <button class="theme-btn" id="btn-dark" onclick="setTheme('dark')">Dark</button>
@@ -85,7 +85,7 @@ tr:last-child td{border-bottom:none}tr:hover td{background:var(--purple-dim)}
     </div>
     <div class="nav-children"><a href="#inbound-leads-qualification" class="nav-item">Inbound Leads Qualification</a></div>
   </div>
-  <div class="sidebar-footer">Mar 7, 2026, 08:01 PM</div>
+  <div class="sidebar-footer">Mar 7, 2026, 09:01 PM</div>
 </nav>
 <main class="main">
   <div class="hero">
@@ -100,22 +100,22 @@ tr:last-child td{border-bottom:none}tr:hover td{background:var(--purple-dim)}
   </div>
   <section class="workflow" id="inbound-leads-qualification">
 <div class="wf-header">
-  <div class="wf-meta"><span class="wf-badge">Active</span><span class="wf-trigger">Webhook receives inbound lead data</span></div>
+  <div class="wf-meta"><span class="wf-badge">Active</span><span class="wf-trigger">Webhook that listens for incoming leads</span></div>
   <h2>Inbound Leads Qualification</h2>
-  <p class="wf-overview">This workflow qualifies inbound leads by verifying their contact information and checking their attributes against defined criteria. It ensures only high-quality leads are processed into the sales pipeline.</p>
+  <p class="wf-overview">This workflow automates the qualification process for inbound leads, ensuring data accuracy and readiness for the sales pipeline. It includes data verification and integration with Pipedrive and Airtable for effective lead management.</p>
 </div>
 <div class="wf-body"><div class="wf-cols">
   <div class="wf-left">
     <div class="section-label">Execution Flow</div>
-    <div class="phases"><div class="phase"><span class="phase-num">1</span><div><strong>Lead Verification</strong><span class="phase-sep"> — </span>Initial phase where incoming lead data is verified and checked for validity.</div></div><div class="phase"><span class="phase-num">2</span><div><strong>Lead Qualification</strong><span class="phase-sep"> — </span>Final phase that decides if the lead should be pushed to Pipedrive based on specific criteria.</div></div></div>
+    <div class="phases"><div class="phase"><span class="phase-num">1</span><div><strong>Data Reception</strong><span class="phase-sep"> — </span>Leads are received via a webhook for processing.</div></div><div class="phase"><span class="phase-num">2</span><div><strong>Data Verification</strong><span class="phase-sep"> — </span>The workflow performs multiple checks to validate lead information.</div></div><div class="phase"><span class="phase-num">3</span><div><strong>Lead Creation</strong><span class="phase-sep"> — </span>Qualified leads are created and updated in Pipedrive and Airtable.</div></div><div class="phase"><span class="phase-num">4</span><div><strong>Finalization</strong><span class="phase-sep"> — </span>Rejected leads are marked, and verification results are handled.</div></div></div>
     <div class="section-label" style="margin-top:20px">Technical Notes</div>
-    <p class="notes">Ensure that API key settings and domain whitelisting are configured correctly for successful data verification.</p>
+    <p class="notes">Ensure webhook URLs and API keys are updated before deploying the workflow.</p>
   </div>
   <div class="wf-right">
     <div class="section-label">Node Reference</div>
     <div class="table-wrap"><table>
       <thead><tr><th>Node</th><th>Type</th><th>Description</th></tr></thead>
-      <tbody><tr><td class="node-name">Webhook1</td><td><span class="nt nt-webhook">webhook</span></td><td class="node-desc">Receives incoming lead data to trigger the workflow.</td></tr><tr><td class="node-name">Snov: Get Token</td><td><span class="nt nt-httpRequest">httpRequest</span></td><td class="node-desc">Obtains an authorization token for the Snov API to perform email verification.</td></tr><tr><td class="node-name">Email: Wait 15s</td><td><span class="nt nt-wait">wait</span></td><td class="node-desc">Pauses execution for 15 seconds before checking email verification results.</td></tr><tr><td class="node-name">Pipedrive: Create Organization</td><td><span class="nt nt-httpRequest">httpRequest</span></td><td class="node-desc">Creates a new organization entry in Pipedrive for qualified leads.</td></tr><tr><td class="node-name">Airtable: Create Registration</td><td><span class="nt nt-airtable">airtable</span></td><td class="node-desc">Records the details of the lead in Airtable as part of the registration process.</td></tr></tbody>
+      <tbody><tr><td class="node-name">Webhook1</td><td><span class="nt nt-webhook">webhook</span></td><td class="node-desc">Initiates the workflow by receiving inbound lead data.</td></tr><tr><td class="node-name">Snov: Get Token</td><td><span class="nt nt-httpRequest">httpRequest</span></td><td class="node-desc">Retrieves an authentication token for Snov API.</td></tr><tr><td class="node-name">Snov: Start Verification</td><td><span class="nt nt-httpRequest">httpRequest</span></td><td class="node-desc">Starts the email verification process using Snov.</td></tr><tr><td class="node-name">Snov: Get Verification Result</td><td><span class="nt nt-httpRequest">httpRequest</span></td><td class="node-desc">Fetches the result of the email verification.</td></tr><tr><td class="node-name">Email Qualified?</td><td><span class="nt nt-if">if</span></td><td class="node-desc">Checks whether the email passes qualification criteria.</td></tr><tr><td class="node-name">Airtable: Create Registration</td><td><span class="nt nt-airtable">airtable</span></td><td class="node-desc">Creates a new lead registration entry in Airtable.</td></tr><tr><td class="node-name">Pipedrive: Create Organization</td><td><span class="nt nt-httpRequest">httpRequest</span></td><td class="node-desc">Creates an organization entry in Pipedrive.</td></tr><tr><td class="node-name">Pipedrive: Create Person</td><td><span class="nt nt-pipedrive">pipedrive</span></td><td class="node-desc">Adds a new person to Pipedrive based on qualified lead data.</td></tr><tr><td class="node-name">Pipedrive: Create Deal</td><td><span class="nt nt-pipedrive">pipedrive</span></td><td class="node-desc">Creates a deal in Pipedrive for the qualified lead.</td></tr><tr><td class="node-name">Airtable: Save Deal ID</td><td><span class="nt nt-airtable">airtable</span></td><td class="node-desc">Stores the deal ID in Airtable for reference.</td></tr><tr><td class="node-name">Clay: Check Response</td><td><span class="nt nt-code">code</span></td><td class="node-desc">Analyzes the response from the Clay API for enrichment services.</td></tr><tr><td class="node-name">Airtable: Mark Email Rejected</td><td><span class="nt nt-airtable">airtable</span></td><td class="node-desc">Updates Airtable to indicate that the email was rejected.</td></tr></tbody>
     </table></div>
   </div>
 </div></div></section>
