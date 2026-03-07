@@ -1,631 +1,571 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en" data-theme="light">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Snov.io — Sales Playbook</title>
-  <style>
-    :root[data-theme="dark"] {
-      --bg: #000;
-      --bg2: #0a0a0a;
-      --bg3: #111;
-      --bg4: #161616;
-      --border: rgba(255,255,255,0.08);
-      --text: rgba(255,255,255,0.92);
-      --text2: rgba(255,255,255,0.55);
-      --text3: rgba(255,255,255,0.3);
-      --purple: #7B6EF6;
-      --purple-dim: rgba(123,110,246,0.12);
-      --purple-border: rgba(123,110,246,0.3);
-      --green: #30D158;
-      --green-dim: rgba(48,209,88,0.1);
-      --green-border: rgba(48,209,88,0.25);
-      --shadow: 0 1px 3px rgba(0,0,0,0.5);
-    }
-    :root[data-theme="light"] {
-      --bg: #f5f5f7;
-      --bg2: #fff;
-      --bg3: #f5f5f7;
-      --bg4: #fafafa;
-      --border: rgba(0,0,0,0.08);
-      --text: rgba(0,0,0,0.9);
-      --text2: rgba(0,0,0,0.5);
-      --text3: rgba(0,0,0,0.3);
-      --purple: #6B5CE7;
-      --purple-dim: rgba(107,92,231,0.08);
-      --purple-border: rgba(107,92,231,0.25);
-      --green: #34C759;
-      --green-dim: rgba(52,199,89,0.08);
-      --green-border: rgba(52,199,89,0.25);
-      --shadow: 0 1px 3px rgba(0,0,0,0.1);
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Snov.io Sales Playbook</title>
+<style>
+:root {
+  --purple: #6B5CE7;
+  --purple-light: #8B7FF0;
+  --purple-dim: rgba(107,92,231,0.08);
+  --sidebar-w: 232px;
+}
+[data-theme="light"] {
+  --bg: #f5f5f7;
+  --surface: #ffffff;
+  --surface2: #f5f5f7;
+  --border: rgba(0,0,0,0.09);
+  --text: #1d1d1f;
+  --text2: #6e6e73;
+  --text3: #999;
+  --header-bg: #fff;
+  --nav-active-bg: rgba(107,92,231,0.07);
+}
+[data-theme="dark"] {
+  --bg: #0d0d0d;
+  --surface: #1a1a1a;
+  --surface2: #111;
+  --border: rgba(255,255,255,0.08);
+  --text: rgba(255,255,255,0.92);
+  --text2: rgba(255,255,255,0.5);
+  --text3: rgba(255,255,255,0.28);
+  --header-bg: #111;
+  --nav-active-bg: rgba(107,92,231,0.14);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", sans-serif;
+  font-size: 13px;
+  background: var(--bg);
+  color: var(--text);
+  -webkit-font-smoothing: antialiased;
+  line-height: 1.5;
+}
 
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    html { scroll-behavior: smooth; font-size: 16px; }
+/* ── TOP HEADER ── */
+.topbar {
+  position: fixed; top: 0; left: 0; right: 0; height: 44px;
+  background: var(--header-bg);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center;
+  padding: 0 20px 0 0;
+  z-index: 200;
+  gap: 0;
+}
+.topbar-brand {
+  width: var(--sidebar-w);
+  padding: 0 16px;
+  display: flex; align-items: center; gap: 8px;
+  border-right: 1px solid var(--border);
+  height: 100%;
+  flex-shrink: 0;
+}
+.brand-logo {
+  width: 22px; height: 22px; border-radius: 6px;
+  background: var(--purple);
+  display: flex; align-items: center; justify-content: center;
+  color: white; font-weight: 700; font-size: 11px;
+}
+.brand-name { font-size: 13px; font-weight: 600; color: var(--text); letter-spacing: -0.01em; }
+.brand-sep { color: var(--text3); margin: 0 4px; font-size: 13px; }
+.brand-sub { font-size: 12px; color: var(--text2); }
+.topbar-right { margin-left: auto; display: flex; align-items: center; gap: 6px; }
+.topbar-meta { font-size: 11px; color: var(--text3); }
 
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      line-height: 1.5;
-      -webkit-font-smoothing: antialiased;
-    }
+.theme-toggle {
+  display: flex; align-items: center;
+  background: var(--surface2); border: 1px solid var(--border);
+  border-radius: 6px; padding: 2px; gap: 1px;
+}
+.theme-btn {
+  padding: 3px 8px; border-radius: 4px; border: none;
+  background: transparent; cursor: pointer;
+  font-size: 11px; font-weight: 500; color: var(--text3);
+  transition: all 0.12s;
+}
+.theme-btn.active { background: var(--surface); color: var(--text); box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
 
-    /* ── SIDEBAR ── */
-    .sidebar {
-      position: fixed; top: 0; left: 0; width: 240px; height: 100vh;
-      background: var(--bg2); border-right: 1px solid var(--border);
-      display: flex; flex-direction: column; z-index: 100; overflow: hidden;
-    }
-    .sidebar-logo {
-      padding: 22px 20px 16px;
-      border-bottom: 1px solid var(--border);
-    }
-    .sidebar-logo .brand {
-      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif;
-      font-size: 15px; font-weight: 600; color: var(--text); letter-spacing: -0.01em;
-    }
-    .sidebar-logo .brand span { color: var(--purple); }
-    .sidebar-logo .sub { font-size: 11px; color: var(--text3); margin-top: 2px; letter-spacing: 0.02em; }
+/* ── SIDEBAR ── */
+.sidebar {
+  position: fixed; top: 44px; left: 0;
+  width: var(--sidebar-w); height: calc(100vh - 44px);
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  overflow-y: auto; z-index: 100;
+}
+.sidebar::-webkit-scrollbar { width: 0; }
 
-    .sidebar-nav { flex: 1; overflow-y: auto; padding: 12px 0; }
-    .sidebar-nav::-webkit-scrollbar { width: 0; }
+.nav-folder {
+  padding: 12px 12px 4px;
+}
+.nav-folder-header {
+  display: flex; align-items: center; gap: 6px;
+  padding: 5px 8px; border-radius: 6px; cursor: pointer;
+  margin-bottom: 2px;
+  transition: background 0.12s;
+  user-select: none;
+}
+.nav-folder-header:hover { background: var(--purple-dim); }
+.folder-icon { color: var(--purple); flex-shrink: 0; }
+.nav-folder-label { font-size: 12px; font-weight: 600; color: var(--text); flex: 1; letter-spacing: -0.01em; }
+.nav-chevron { color: var(--text3); transition: transform 0.2s; }
+.nav-folder.open .nav-chevron { transform: rotate(90deg); }
+.nav-children { overflow: hidden; max-height: 0; transition: max-height 0.25s ease; }
+.nav-folder.open .nav-children { max-height: 1000px; }
 
-    .nav-section { margin-bottom: 4px; }
-    .nav-section-header {
-      display: flex; align-items: center; gap: 6px;
-      padding: 7px 16px; cursor: pointer; user-select: none;
-      border-radius: 8px; margin: 0 8px;
-      transition: background 0.15s;
-    }
-    .nav-section-header:hover { background: var(--purple-dim); }
-    .nav-section-header .folder-icon {
-      width: 18px; height: 18px; flex-shrink: 0;
-      color: var(--purple); opacity: 0.9;
-    }
-    .nav-section-title {
-      font-size: 13px; font-weight: 500; color: var(--text); flex: 1;
-      letter-spacing: -0.01em;
-    }
-    .nav-chevron {
-      width: 12px; height: 12px; color: var(--text3);
-      transition: transform 0.2s ease;
-    }
-    .nav-section.open .nav-chevron { transform: rotate(90deg); }
+.nav-item {
+  display: block; padding: 5px 8px 5px 28px;
+  font-size: 12px; color: var(--text2);
+  text-decoration: none; border-radius: 6px;
+  transition: all 0.12s; margin: 1px 0;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  letter-spacing: -0.005em;
+}
+.nav-item:hover { color: var(--text); background: var(--purple-dim); }
+.nav-item.active { color: var(--purple); background: var(--nav-active-bg); font-weight: 500; }
 
-    .nav-children {
-      overflow: hidden;
-      max-height: 0;
-      transition: max-height 0.25s ease;
-    }
-    .nav-section.open .nav-children { max-height: 800px; }
+.sidebar-footer {
+  padding: 12px 16px;
+  border-top: 1px solid var(--border);
+  font-size: 11px; color: var(--text3);
+  margin-top: 8px;
+}
 
-    .nav-item {
-      display: block;
-      padding: 6px 16px 6px 40px;
-      font-size: 12.5px; color: var(--text2);
-      text-decoration: none;
-      border-radius: 6px; margin: 0 8px 1px;
-      transition: all 0.15s;
-      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-      letter-spacing: -0.005em;
-    }
-    .nav-item:hover { color: var(--text); background: var(--purple-dim); }
-    .nav-item.active { color: var(--purple); background: var(--purple-dim); font-weight: 500; }
+/* ── MAIN ── */
+.main { margin-left: var(--sidebar-w); padding-top: 44px; }
 
-    .sidebar-footer {
-      padding: 12px 16px 16px;
-      border-top: 1px solid var(--border);
-      display: flex; align-items: center; justify-content: space-between;
-    }
-    .sidebar-footer-text { font-size: 11px; color: var(--text3); }
+/* ── HERO ── */
+.hero {
+  padding: 28px 32px 24px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: flex-start; justify-content: space-between; gap: 32px;
+}
+.hero-left { flex: 1; }
+.hero-eyebrow { font-size: 11px; font-weight: 500; color: var(--purple); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px; }
+.hero h1 {
+  font-family: -apple-system, "SF Pro Display", sans-serif;
+  font-size: 28px; font-weight: 700; line-height: 1.1;
+  letter-spacing: -0.025em; color: var(--text); margin-bottom: 8px;
+}
+.hero-desc { font-size: 13px; color: var(--text2); max-width: 480px; line-height: 1.55; }
+.hero-stats { display: flex; gap: 0; flex-shrink: 0; }
+.stat {
+  padding: 12px 20px;
+  border-left: 1px solid var(--border);
+  text-align: right;
+}
+.stat-num { font-size: 24px; font-weight: 700; letter-spacing: -0.02em; color: var(--text); line-height: 1; }
+.stat-label { font-size: 11px; color: var(--text3); margin-top: 3px; }
 
-    /* Dark/Light toggle */
-    .theme-toggle {
-      display: flex; align-items: center; gap: 6px;
-      background: var(--bg3); border: 1px solid var(--border);
-      border-radius: 20px; padding: 3px; cursor: pointer;
-      transition: all 0.2s;
-    }
-    .theme-btn {
-      width: 24px; height: 24px; border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      border: none; background: transparent; cursor: pointer;
-      color: var(--text3); font-size: 12px; transition: all 0.15s;
-    }
-    .theme-btn.active {
-      background: var(--bg2); color: var(--text);
-      box-shadow: 0 1px 3px rgba(0,0,0,0.2);
-    }
+/* ── WORKFLOW ── */
+.workflow { border-bottom: 1px solid var(--border); }
 
-    /* ── MAIN ── */
-    .main { margin-left: 240px; }
+.wf-header {
+  padding: 20px 32px 16px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+}
+.wf-meta { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+.wf-badge {
+  font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;
+  background: rgba(52,199,89,0.1); color: #1d9c4a;
+  padding: 2px 7px; border-radius: 4px; border: 1px solid rgba(52,199,89,0.2);
+}
+[data-theme="dark"] .wf-badge { color: #30d158; }
+.wf-trigger { font-size: 11px; color: var(--text3); font-family: "SF Mono", monospace; }
+.wf-header h2 {
+  font-size: 16px; font-weight: 600; letter-spacing: -0.015em; color: var(--text); margin-bottom: 6px;
+}
+.wf-overview { font-size: 13px; color: var(--text2); max-width: 680px; line-height: 1.6; }
 
-    /* ── HERO ── */
-    .hero {
-      padding: 72px 56px 56px;
-      background: var(--bg2);
-      border-bottom: 1px solid var(--border);
-    }
-    .hero-eyebrow {
-      font-size: 12px; font-weight: 500;
-      color: var(--purple); letter-spacing: 0.04em;
-      text-transform: uppercase; margin-bottom: 14px;
-    }
-    .hero h1 {
-      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif;
-      font-size: 44px; font-weight: 700; line-height: 1.07;
-      letter-spacing: -0.025em; color: var(--text); margin-bottom: 14px;
-    }
-    .hero-desc {
-      font-size: 17px; color: var(--text2); max-width: 500px;
-      line-height: 1.6; margin-bottom: 36px; letter-spacing: -0.01em;
-    }
-    .hero-stats { display: flex; gap: 40px; }
-    .stat-num {
-      font-family: -apple-system, "SF Pro Display", sans-serif;
-      font-size: 30px; font-weight: 700; letter-spacing: -0.02em; color: var(--text);
-    }
-    .stat-label { font-size: 12px; color: var(--text3); margin-top: 2px; letter-spacing: 0.01em; }
+.wf-body { padding: 20px 32px; background: var(--bg); }
 
-    /* ── WORKFLOW ── */
-    .workflow { border-bottom: 1px solid var(--border); }
+.wf-cols { display: grid; grid-template-columns: 340px 1fr; gap: 20px; }
+@media (max-width: 900px) { .wf-cols { grid-template-columns: 1fr; } }
 
-    .wf-header {
-      padding: 44px 56px 32px;
-      background: var(--bg2);
-      border-bottom: 1px solid var(--border);
-    }
-    .wf-meta { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; flex-wrap: wrap; }
-    .wf-badge {
-      font-size: 10px; font-weight: 600;
-      letter-spacing: 0.05em; text-transform: uppercase;
-      background: var(--green-dim); color: var(--green);
-      padding: 3px 8px; border-radius: 20px;
-      border: 1px solid var(--green-border);
-    }
-    .wf-trigger {
-      font-size: 12px; color: var(--text3);
-      font-family: "SF Mono", "Fira Mono", monospace;
-    }
-    .wf-header h2 {
-      font-family: -apple-system, "SF Pro Display", sans-serif;
-      font-size: 24px; font-weight: 600; letter-spacing: -0.02em;
-      color: var(--text); margin-bottom: 10px;
-    }
-    .wf-overview {
-      font-size: 15px; color: var(--text2); max-width: 680px;
-      line-height: 1.65; letter-spacing: -0.005em;
-    }
+.section-label {
+  font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.07em;
+  color: var(--text3); margin-bottom: 10px;
+  padding-bottom: 6px; border-bottom: 1px solid var(--border);
+}
 
-    .wf-body { padding: 36px 56px; background: var(--bg); }
-    .wf-section { margin-bottom: 32px; }
-    .wf-section h3 {
-      font-size: 10px; font-weight: 600;
-      letter-spacing: 0.08em; text-transform: uppercase;
-      color: var(--purple); margin-bottom: 14px;
-      padding-bottom: 8px; border-bottom: 1px solid var(--border);
-    }
+/* Phases */
+.phases { display: flex; flex-direction: column; gap: 4px; }
+.phase {
+  display: flex; align-items: flex-start; gap: 8px;
+  padding: 8px 10px; border-radius: 7px;
+  background: var(--surface); border: 1px solid var(--border);
+}
+.phase-num {
+  width: 18px; height: 18px; border-radius: 50%; flex-shrink: 0;
+  background: var(--purple-dim); border: 1px solid rgba(107,92,231,0.2);
+  color: var(--purple); font-size: 10px; font-weight: 600;
+  display: flex; align-items: center; justify-content: center;
+  margin-top: 1px; font-family: "SF Mono", monospace;
+}
+.phase strong { font-size: 12px; font-weight: 600; color: var(--text); }
+.phase-sep { color: var(--text3); }
+.phase { font-size: 12px; color: var(--text2); line-height: 1.5; }
 
-    /* Phases */
-    .phases { display: flex; flex-direction: column; gap: 6px; }
-    .phase { display: flex; gap: 14px; align-items: flex-start; padding: 12px 14px; border-radius: 10px; background: var(--bg2); border: 1px solid var(--border); }
-    .phase-num {
-      min-width: 22px; height: 22px; border-radius: 50%;
-      background: var(--purple-dim); border: 1px solid var(--purple-border);
-      color: var(--purple); font-size: 10px; font-weight: 600;
-      display: flex; align-items: center; justify-content: center;
-      margin-top: 1px; flex-shrink: 0;
-      font-family: "SF Mono", monospace;
-    }
-    .phase-body strong { font-size: 13px; font-weight: 600; color: var(--text); letter-spacing: -0.01em; }
-    .phase-body p { font-size: 13px; color: var(--text2); margin-top: 2px; line-height: 1.5; }
+.notes {
+  font-size: 12px; color: var(--text2); line-height: 1.6;
+  background: var(--surface); border: 1px solid var(--border);
+  border-left: 3px solid var(--purple);
+  padding: 10px 12px; border-radius: 6px;
+}
 
-    /* Table */
-    .table-wrap {
-      border-radius: 10px; border: 1px solid var(--border);
-      overflow: hidden;
-    }
-    table { width: 100%; border-collapse: collapse; font-size: 13px; }
-    thead tr { background: var(--bg3); }
-    th {
-      padding: 9px 14px; text-align: left;
-      font-size: 10px; font-weight: 600; text-transform: uppercase;
-      letter-spacing: 0.06em; color: var(--text3);
-      border-bottom: 1px solid var(--border);
-    }
-    td { padding: 10px 14px; border-bottom: 1px solid var(--border); color: var(--text); vertical-align: top; }
-    tr:last-child td { border-bottom: none; }
-    tr:hover td { background: var(--purple-dim); }
-    .node-name {
-      font-family: "SF Mono", "Fira Mono", "Consolas", monospace;
-      font-size: 12px; color: var(--text); white-space: nowrap;
-    }
-    .node-type-cell { white-space: nowrap; }
-    .nt {
-      font-family: "SF Mono", "Fira Mono", monospace;
-      font-size: 10px; padding: 2px 7px; border-radius: 5px;
-      background: var(--bg3); color: var(--text3); border: 1px solid var(--border);
-    }
-    .nt-webhook    { color: #FF9F0A; border-color: rgba(255,159,10,0.25); background: rgba(255,159,10,0.08); }
-    .nt-code       { color: #FFD60A; border-color: rgba(255,214,10,0.25); background: rgba(255,214,10,0.07); }
-    .nt-airtable   { color: #30D158; border-color: rgba(48,209,88,0.25); background: rgba(48,209,88,0.07); }
-    .nt-pipedrive  { color: #0A84FF; border-color: rgba(10,132,255,0.25); background: rgba(10,132,255,0.08); }
-    .nt-openAi     { color: #BF5AF2; border-color: rgba(191,90,242,0.25); background: rgba(191,90,242,0.08); }
-    .nt-httpRequest{ color: rgba(255,255,255,0.4); }
-    .nt-emailSend  { color: #FF375F; border-color: rgba(255,55,95,0.25); background: rgba(255,55,95,0.08); }
-    .nt-merge      { color: #64D2FF; border-color: rgba(100,210,255,0.25); background: rgba(100,210,255,0.08); }
-    .nt-if         { color: #FF9F0A; border-color: rgba(255,159,10,0.2); background: rgba(255,159,10,0.06); }
-    .nt-switch     { color: #FF9F0A; border-color: rgba(255,159,10,0.2); background: rgba(255,159,10,0.06); }
-    .nt-fireflies  { color: #BF5AF2; border-color: rgba(191,90,242,0.25); background: rgba(191,90,242,0.08); }
-    .nt-pipedriveTrigger { color: #0A84FF; border-color: rgba(10,132,255,0.25); background: rgba(10,132,255,0.08); }
-    .nt-calendlyTrigger  { color: #30D158; border-color: rgba(48,209,88,0.25); background: rgba(48,209,88,0.07); }
+/* Table */
+.table-wrap { border-radius: 8px; border: 1px solid var(--border); overflow: hidden; }
+table { width: 100%; border-collapse: collapse; }
+thead tr { background: var(--surface2); }
+th {
+  padding: 7px 10px; text-align: left;
+  font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em;
+  color: var(--text3); border-bottom: 1px solid var(--border);
+}
+td { padding: 7px 10px; border-bottom: 1px solid var(--border); vertical-align: top; }
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: var(--purple-dim); }
+.node-name { font-family: "SF Mono", "Fira Mono", monospace; font-size: 11px; color: var(--text); white-space: nowrap; }
+.node-desc { font-size: 12px; color: var(--text2); }
+.nt {
+  font-family: "SF Mono", monospace; font-size: 10px;
+  padding: 1px 6px; border-radius: 4px;
+  background: var(--surface2); color: var(--text3); border: 1px solid var(--border);
+  white-space: nowrap;
+}
+.nt-webhook     { color: #b45309; border-color: rgba(180,83,9,.2); background: rgba(255,159,10,.07); }
+.nt-code        { color: #854d0e; border-color: rgba(133,77,14,.2); background: rgba(255,214,10,.07); }
+.nt-airtable    { color: #166534; border-color: rgba(22,101,52,.2); background: rgba(52,199,89,.07); }
+.nt-pipedrive   { color: #1e40af; border-color: rgba(30,64,175,.2); background: rgba(59,130,246,.07); }
+.nt-openAi      { color: #6b21a8; border-color: rgba(107,33,168,.2); background: rgba(168,85,247,.07); }
+.nt-httpRequest { color: var(--text3); }
+.nt-emailSend   { color: #9f1239; border-color: rgba(159,18,57,.2); background: rgba(244,63,94,.07); }
+.nt-merge       { color: #0e7490; border-color: rgba(14,116,144,.2); background: rgba(6,182,212,.07); }
+.nt-if, .nt-switch { color: #9a3412; border-color: rgba(154,52,18,.2); background: rgba(249,115,22,.07); }
+.nt-fireflies   { color: #6b21a8; border-color: rgba(107,33,168,.2); background: rgba(168,85,247,.07); }
+.nt-pipedriveTrigger { color: #1e40af; border-color: rgba(30,64,175,.2); background: rgba(59,130,246,.07); }
+.nt-calendlyTrigger  { color: #166534; border-color: rgba(22,101,52,.2); background: rgba(52,199,89,.07); }
+[data-theme="dark"] .nt-webhook     { color: #fb923c; }
+[data-theme="dark"] .nt-code        { color: #fbbf24; }
+[data-theme="dark"] .nt-airtable    { color: #34d399; }
+[data-theme="dark"] .nt-pipedrive   { color: #60a5fa; }
+[data-theme="dark"] .nt-openAi      { color: #c084fc; }
+[data-theme="dark"] .nt-emailSend   { color: #fb7185; }
+[data-theme="dark"] .nt-merge       { color: #22d3ee; }
+[data-theme="dark"] .nt-if, [data-theme="dark"] .nt-switch { color: #fb923c; }
+[data-theme="dark"] .nt-pipedriveTrigger { color: #60a5fa; }
+[data-theme="dark"] .nt-calendlyTrigger  { color: #34d399; }
 
-    /* Notes */
-    .notes-section p {
-      font-size: 13px; color: var(--text2);
-      background: var(--bg2); border: 1px solid var(--border);
-      border-left: 3px solid var(--purple);
-      padding: 12px 14px; border-radius: 8px; line-height: 1.65;
-    }
-
-    [data-theme="light"] .nt-httpRequest { color: rgba(0,0,0,0.4); }
-
-    @media (max-width: 860px) {
-      .sidebar { display: none; }
-      .main { margin-left: 0; }
-      .hero, .wf-header, .wf-body { padding: 28px 20px; }
-    }
-  </style>
+@media (max-width: 768px) {
+  .sidebar { display: none; }
+  .main { margin-left: 0; }
+  .hero { flex-direction: column; }
+  .hero-stats { flex-direction: row; }
+  .wf-header, .wf-body, .hero { padding: 16px; }
+}
+</style>
 </head>
 <body>
 
-<nav class="sidebar">
-  <div class="sidebar-logo">
-    <div class="brand">Snov<span>.io</span></div>
-    <div class="sub">Sales Playbook</div>
+<!-- TOP BAR -->
+<header class="topbar">
+  <div class="topbar-brand">
+    <div class="brand-logo">S</div>
+    <span class="brand-name">Snov.io</span>
+    <span class="brand-sep">|</span>
+    <span class="brand-sub">Sales Playbook</span>
   </div>
-
-  <div class="sidebar-nav">
-    <div class="nav-section open" id="n8n-section">
-      <div class="nav-section-header" onclick="toggleSection()">
-        <svg class="folder-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-          <path d="M3 7a2 2 0 012-2h4l2 2h8a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V7z"/>
-        </svg>
-        <span class="nav-section-title">N8N Automations</span>
-        <svg class="nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M9 18l6-6-6-6"/>
-        </svg>
-      </div>
-      <div class="nav-children">
-        <a href="#fireflies-pid" class="nav-item wf-link">(Fireflies) PID Call Analysis + Coach</a><a href="#ringostat-calls" class="nav-item wf-link">(RINGOSTAT) Phone Call Analysis</a><a href="#api4com-calls" class="nav-item wf-link">(API 4COM) Phone Call Analysis</a><a href="#inbound-qualification" class="nav-item wf-link">Inbound Leads Qualification</a><a href="#discovery-call-deal" class="nav-item wf-link">Create/Update a deal from Discovery Call</a><a href="#crm-sync" class="nav-item wf-link">Sync CRM with Airtable + Add Time per Stage</a><a href="#clay-enrich" class="nav-item wf-link">(ENRICH) Update deal after Clay enrichment</a><a href="#payment" class="nav-item wf-link">(PAYMENT) Client entered on a paid plan</a><a href="#docs-sync" class="nav-item wf-link">Live update on Github documentations for N8N workflows</a>
-      </div>
-    </div>
-  </div>
-
-  <div class="sidebar-footer">
-    <span class="sidebar-footer-text">9 workflows · March 07, 2026 · 17:01</span>
+  <div class="topbar-right">
+    <span class="topbar-meta">9 workflows · Mar 07, 2026 · 17:10</span>
     <div class="theme-toggle">
-      <button class="theme-btn active" id="btn-dark" onclick="setTheme('dark')" title="Dark">🌙</button>
-      <button class="theme-btn" id="btn-light" onclick="setTheme('light')" title="Light">☀️</button>
+      <button class="theme-btn active" id="btn-light" onclick="setTheme('light')">Light</button>
+      <button class="theme-btn" id="btn-dark" onclick="setTheme('dark')">Dark</button>
     </div>
   </div>
+</header>
+
+<!-- SIDEBAR -->
+<nav class="sidebar">
+  <div class="nav-folder open" id="n8n-folder">
+    <div class="nav-folder-header" onclick="toggleFolder()">
+      <svg class="folder-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M3 7a2 2 0 012-2h4l2 2h8a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V7z"/>
+      </svg>
+      <span class="nav-folder-label">N8N Automations</span>
+      <svg class="nav-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+        <path d="M9 18l6-6-6-6"/>
+      </svg>
+    </div>
+    <div class="nav-children">
+      <a href="#fireflies-pid" class="nav-item">(Fireflies) PID Call Analysis + Coach</a><a href="#ringostat-calls" class="nav-item">(RINGOSTAT) Phone Call Analysis</a><a href="#api4com-calls" class="nav-item">(API 4COM) Phone Call Analysis</a><a href="#inbound-qualification" class="nav-item">Inbound Leads Qualification</a><a href="#discovery-call-deal" class="nav-item">Create/Update a deal from Discovery Call</a><a href="#crm-sync" class="nav-item">Sync CRM with Airtable + Add Time per Stage</a><a href="#clay-enrich" class="nav-item">(ENRICH) Update deal after Clay enrichment</a><a href="#payment" class="nav-item">(PAYMENT) Client entered on a paid plan</a><a href="#docs-sync" class="nav-item">Live update on Github documentations for N8N workflows</a>
+    </div>
+  </div>
+  <div class="sidebar-footer">Mar 07, 2026 · 17:10</div>
 </nav>
 
+<!-- MAIN -->
 <main class="main">
   <div class="hero">
-    <div class="hero-eyebrow">Snov.io · Sales Engineering</div>
-    <h1>Sales<br>Playbook</h1>
-    <p class="hero-desc">Live technical documentation for all active sales automations. Built from n8n workflow definitions.</p>
+    <div class="hero-left">
+      <div class="hero-eyebrow">Snov.io · Sales Engineering</div>
+      <h1>Sales Playbook</h1>
+      <p class="hero-desc">Live technical documentation for all active sales automations. Built directly from n8n workflow definitions.</p>
+    </div>
     <div class="hero-stats">
       <div class="stat"><div class="stat-num">9</div><div class="stat-label">Active workflows</div></div>
-      <div class="stat"><div class="stat-num">~50K</div><div class="stat-label">Leads/month processed</div></div>
-      <div class="stat"><div class="stat-num">4</div><div class="stat-label">Systems integrated</div></div>
+      <div class="stat"><div class="stat-num">~50K</div><div class="stat-label">Leads/month</div></div>
+      <div class="stat"><div class="stat-num">4</div><div class="stat-label">Systems</div></div>
     </div>
   </div>
 
-  
-<section class="workflow" id="fireflies-pid">
+  <section class="workflow" id="fireflies-pid">
   <div class="wf-header">
-    <div class="wf-meta">
-      <span class="wf-badge">Active</span>
-      <span class="wf-trigger">Webhook POST — Fireflies notification on call completion</span>
-    </div>
+    <div class="wf-meta"><span class="wf-badge">Active</span><span class="wf-trigger">Webhook POST — Fireflies call completion</span></div>
     <h2>(Fireflies) PID Call Analysis + Coach</h2>
-    <p class="wf-overview">Automatically analyzes every sales discovery call recorded via Fireflies.ai. Fetches the full transcript, extracts Pain/Impact/Decision signals, scores each dimension with GPT-4o-mini, saves results to Airtable, and emails the rep a PID report plus a personalized coaching message.</p>
+    <p class="wf-overview">Analyzes every discovery call recorded via Fireflies.ai. Fetches the transcript, extracts Pain/Impact/Decision signals, scores each dimension with GPT-4o-mini, saves to Airtable, and emails the rep a PID report and personalized coaching message.</p>
   </div>
   <div class="wf-body">
-    <div class="wf-section">
-      <h3>Execution Flow</h3>
-      <div class="phases"><div class="phase"><div class="phase-num">1</div><div class="phase-body"><strong>Trigger & Fetch</strong><p>Fireflies sends a webhook on call completion. The workflow fetches the full transcript via the Fireflies node.</p></div></div><div class="phase"><div class="phase-num">2</div><div class="phase-body"><strong>Input Cleaning</strong><p>Clean Input + Rep Map normalizes the transcript and maps the rep email to their display name and nick (14 reps mapped).</p></div></div><div class="phase"><div class="phase-num">3</div><div class="phase-body"><strong>PID Extraction</strong><p>Two parallel GPT calls run: PID Extraction pulls Pain, Impact, and Decision signals as structured JSON. Call Intelligence classifies the call type and extracts prospect metadata.</p></div></div><div class="phase"><div class="phase-num">4</div><div class="phase-body"><strong>Scoring — 3 parallel GPT calls</strong><p>PID Score: Pain, PID Score: Impact, and PID Score: Decision each score their dimension on a 0–10 scale with criteria-level reasoning.</p></div></div><div class="phase"><div class="phase-num">5</div><div class="phase-body"><strong>Calculate & Save</strong><p>Calculate Scores merges the three scores into a normalized total. Airtable: Upsert Call saves the full record. Two emails go out: PID Report (scores + evidence) and PID Coaching (personalized improvement tips).</p></div></div></div>
-    </div>
-    <div class="wf-section">
-      <h3>Node Reference</h3>
-      <div class="table-wrap">
-        <table>
-          <thead><tr><th>Node</th><th>Type</th><th>Description</th></tr></thead>
-          <tbody><tr><td class="node-name">Webhook</td><td class="node-type-cell"><span class="nt nt-webhook">webhook</span></td><td>Entry point. Receives Fireflies call completion notification.</td></tr><tr><td class="node-name">Get Transcript</td><td class="node-type-cell"><span class="nt nt-fireflies">fireflies</span></td><td>Fetches full call transcript via the Fireflies API.</td></tr><tr><td class="node-name">Clean Input + Rep Map</td><td class="node-type-cell"><span class="nt nt-code">code</span></td><td>Normalizes input data. Maps 14 rep emails to display names and nicks.</td></tr><tr><td class="node-name">Filter: Skip Internal Calls?</td><td class="node-type-cell"><span class="nt nt-if">if</span></td><td>Skips calls where both participants are internal @snov.io addresses.</td></tr><tr><td class="node-name">PID Extraction</td><td class="node-type-cell"><span class="nt nt-openAi">openAi</span></td><td>Extracts Pain, Impact, Decision signals as structured JSON.</td></tr><tr><td class="node-name">Parse PID</td><td class="node-type-cell"><span class="nt nt-code">code</span></td><td>Safe JSON parse with try/catch fallback to empty object on error.</td></tr><tr><td class="node-name">Call Intelligence</td><td class="node-type-cell"><span class="nt nt-openAi">openAi</span></td><td>Classifies call type and extracts prospect info and metadata.</td></tr><tr><td class="node-name">Parse Intelligence</td><td class="node-type-cell"><span class="nt nt-code">code</span></td><td>Safe JSON parse of Call Intelligence output.</td></tr><tr><td class="node-name">Merge Analysis</td><td class="node-type-cell"><span class="nt nt-merge">merge</span></td><td>Waits for both PID and Intelligence before scoring begins.</td></tr><tr><td class="node-name">Build Record</td><td class="node-type-cell"><span class="nt nt-code">code</span></td><td>Assembles unified record from PID + Intelligence + call metadata.</td></tr><tr><td class="node-name">PID Score: Pain / Impact / Decision</td><td class="node-type-cell"><span class="nt nt-openAi">openAi</span></td><td>Three parallel scoring nodes, each 0–10 with full criteria breakdown.</td></tr><tr><td class="node-name">Parse Pain / Impact / Decision Score</td><td class="node-type-cell"><span class="nt nt-code">code</span></td><td>Safe parse for each score node output.</td></tr><tr><td class="node-name">Merge Scores</td><td class="node-type-cell"><span class="nt nt-merge">merge</span></td><td>Waits for all three scores to complete.</td></tr><tr><td class="node-name">Calculate Scores</td><td class="node-type-cell"><span class="nt nt-code">code</span></td><td>Normalizes P+I+D into a final composite score. Builds coaching payload.</td></tr><tr><td class="node-name">Airtable: Upsert Call</td><td class="node-type-cell"><span class="nt nt-airtable">airtable</span></td><td>Saves the full call record to Airtable.</td></tr><tr><td class="node-name">Email: PID Report</td><td class="node-type-cell"><span class="nt nt-emailSend">emailSend</span></td><td>Sends score report to the rep.</td></tr><tr><td class="node-name">Email: PID Coaching</td><td class="node-type-cell"><span class="nt nt-emailSend">emailSend</span></td><td>Sends personalized coaching message to the rep.</td></tr></tbody>
-        </table>
+    <div class="wf-cols">
+      <div class="wf-left">
+        <div class="section-label">Execution Flow</div>
+        <div class="phases"><div class="phase"><span class="phase-num">1</span><div><strong>Trigger & Fetch</strong><span class="phase-sep"> — </span>Fireflies sends a webhook on call completion. Workflow fetches the full transcript via the Fireflies node.</div></div><div class="phase"><span class="phase-num">2</span><div><strong>Input Cleaning</strong><span class="phase-sep"> — </span>Clean Input + Rep Map normalizes the transcript and maps the rep email to display name/nick. 14 reps mapped.</div></div><div class="phase"><span class="phase-num">3</span><div><strong>PID Extraction</strong><span class="phase-sep"> — </span>Two parallel GPT calls: PID Extraction pulls Pain, Impact, Decision as structured JSON. Call Intelligence classifies call type and extracts prospect metadata.</div></div><div class="phase"><span class="phase-num">4</span><div><strong>Scoring — 3 parallel GPT calls</strong><span class="phase-sep"> — </span>PID Score: Pain, Impact, and Decision each score 0–10 with criteria-level reasoning.</div></div><div class="phase"><span class="phase-num">5</span><div><strong>Calculate & Save</strong><span class="phase-sep"> — </span>Calculate Scores merges three scores into a normalized total. Saves to Airtable. Sends PID Report + PID Coaching emails to rep.</div></div></div>
+        <div class="section-label" style="margin-top:20px">Technical Notes</div>
+        <p class="notes">Rep map is hardcoded in Clean Input node — update when team changes. Internal call filter uses @snov.io domain check. continueOnFail enabled on all GPT nodes.</p>
       </div>
-    </div>
-    <div class="wf-section notes-section">
-      <h3>Technical Notes</h3>
-      <p>Rep map is hardcoded in the Clean Input node — update when the team changes. Internal call filter uses @snov.io domain check. continueOnFail is enabled on all GPT nodes.</p>
+      <div class="wf-right">
+        <div class="section-label">Node Reference</div>
+        <div class="table-wrap"><table>
+          <thead><tr><th>Node</th><th>Type</th><th>Description</th></tr></thead>
+          <tbody><tr><td class="node-name">Webhook</td><td><span class="nt nt-webhook">webhook</span></td><td class="node-desc">Entry point. Receives Fireflies call completion notification.</td></tr><tr><td class="node-name">Get Transcript</td><td><span class="nt nt-fireflies">fireflies</span></td><td class="node-desc">Fetches full call transcript via Fireflies API.</td></tr><tr><td class="node-name">Clean Input + Rep Map</td><td><span class="nt nt-code">code</span></td><td class="node-desc">Normalizes input. Maps 14 rep emails to names/nicks.</td></tr><tr><td class="node-name">Filter: Skip Internal Calls?</td><td><span class="nt nt-if">if</span></td><td class="node-desc">Skips calls where both participants are @snov.io.</td></tr><tr><td class="node-name">PID Extraction</td><td><span class="nt nt-openAi">openAi</span></td><td class="node-desc">Extracts Pain, Impact, Decision signals as structured JSON.</td></tr><tr><td class="node-name">Parse PID</td><td><span class="nt nt-code">code</span></td><td class="node-desc">Safe JSON parse with try/catch fallback.</td></tr><tr><td class="node-name">Call Intelligence</td><td><span class="nt nt-openAi">openAi</span></td><td class="node-desc">Classifies call type, extracts prospect info and metadata.</td></tr><tr><td class="node-name">Parse Intelligence</td><td><span class="nt nt-code">code</span></td><td class="node-desc">Safe JSON parse of Call Intelligence output.</td></tr><tr><td class="node-name">Merge Analysis</td><td><span class="nt nt-merge">merge</span></td><td class="node-desc">Waits for PID + Intelligence before scoring.</td></tr><tr><td class="node-name">Build Record</td><td><span class="nt nt-code">code</span></td><td class="node-desc">Assembles unified record from all inputs.</td></tr><tr><td class="node-name">PID Score: Pain / Impact / Decision</td><td><span class="nt nt-openAi">openAi</span></td><td class="node-desc">Three parallel scoring nodes, 0–10 each.</td></tr><tr><td class="node-name">Parse Pain / Impact / Decision Score</td><td><span class="nt nt-code">code</span></td><td class="node-desc">Safe parse for each score node.</td></tr><tr><td class="node-name">Merge Scores</td><td><span class="nt nt-merge">merge</span></td><td class="node-desc">Waits for all three scores.</td></tr><tr><td class="node-name">Calculate Scores</td><td><span class="nt nt-code">code</span></td><td class="node-desc">Normalizes P+I+D into final composite score.</td></tr><tr><td class="node-name">Airtable: Upsert Call</td><td><span class="nt nt-airtable">airtable</span></td><td class="node-desc">Saves full call record to Airtable.</td></tr><tr><td class="node-name">Email: PID Report</td><td><span class="nt nt-emailSend">emailSend</span></td><td class="node-desc">Sends score report to rep.</td></tr><tr><td class="node-name">Email: PID Coaching</td><td><span class="nt nt-emailSend">emailSend</span></td><td class="node-desc">Sends personalized coaching message to rep.</td></tr></tbody>
+        </table></div>
+      </div>
     </div>
   </div>
 </section>
-
 <section class="workflow" id="ringostat-calls">
   <div class="wf-header">
-    <div class="wf-meta">
-      <span class="wf-badge">Active</span>
-      <span class="wf-trigger">Webhook POST — Ringostat call completion</span>
-    </div>
+    <div class="wf-meta"><span class="wf-badge">Active</span><span class="wf-trigger">Webhook POST — Ringostat call completion</span></div>
     <h2>(RINGOSTAT) Phone Call Analysis</h2>
-    <p class="wf-overview">Processes inbound and outbound phone calls from Ringostat. Downloads the call audio, transcribes via Whisper, runs GPT analysis on Opening, Pain, and Objection handling, scores each dimension, and saves results to Airtable. Short calls (under 60s) are routed to a separate rapport analysis track.</p>
+    <p class="wf-overview">Processes phone calls from Ringostat. Downloads audio, transcribes via Whisper, scores Opening/Pain/Objection handling, saves to Airtable. Short calls route to a separate rapport analysis track.</p>
   </div>
   <div class="wf-body">
-    <div class="wf-section">
-      <h3>Execution Flow</h3>
-      <div class="phases"><div class="phase"><div class="phase-num">1</div><div class="phase-body"><strong>Trigger & Route</strong><p>Receive Phone Call webhook captures the Ringostat payload. Route: Call Type splits execution into long-call full analysis and short-call rapport analysis.</p></div></div><div class="phase"><div class="phase-num">2</div><div class="phase-body"><strong>Transcription</strong><p>Downloads the audio file via HTTP. Transcribes using OpenAI Whisper API.</p></div></div><div class="phase"><div class="phase-num">3</div><div class="phase-body"><strong>Analysis — parallel</strong><p>Pain Extraction and Call Intelligence run in parallel. Pain pulls customer pain points; Intelligence classifies the call type and extracts metadata.</p></div></div><div class="phase"><div class="phase-num">4</div><div class="phase-body"><strong>Scoring — 3 parallel</strong><p>Score: Opening, Score: Pain, Score: Objection each produce a 0–10 score with criteria-level detail.</p></div></div><div class="phase"><div class="phase-num">5</div><div class="phase-body"><strong>Save</strong><p>Calculate Score merges scores. Airtable: Upsert Analysis saves the full record. Short calls: Rapport Analysis runs instead and saves to Airtable: Upsert Short Call.</p></div></div></div>
-    </div>
-    <div class="wf-section">
-      <h3>Node Reference</h3>
-      <div class="table-wrap">
-        <table>
-          <thead><tr><th>Node</th><th>Type</th><th>Description</th></tr></thead>
-          <tbody><tr><td class="node-name">Receive Phone Call</td><td class="node-type-cell"><span class="nt nt-webhook">webhook</span></td><td>Entry point. Captures Ringostat call payload.</td></tr><tr><td class="node-name">Clean Input + Rep Map</td><td class="node-type-cell"><span class="nt nt-code">code</span></td><td>Normalizes call data and maps the rep.</td></tr><tr><td class="node-name">Build Activity Record</td><td class="node-type-cell"><span class="nt nt-code">code</span></td><td>Builds the activity log entry.</td></tr><tr><td class="node-name">Airtable: Upsert Activity</td><td class="node-type-cell"><span class="nt nt-airtable">airtable</span></td><td>Logs call activity regardless of call length.</td></tr><tr><td class="node-name">Route: Call Type</td><td class="node-type-cell"><span class="nt nt-switch">switch</span></td><td>Routes to long-call analysis or short-call analysis.</td></tr><tr><td class="node-name">Download Audio</td><td class="node-type-cell"><span class="nt nt-httpRequest">httpRequest</span></td><td>Downloads the full call audio file.</td></tr><tr><td class="node-name">Transcribe Audio</td><td class="node-type-cell"><span class="nt nt-httpRequest">httpRequest</span></td><td>Whisper transcription of the full call.</td></tr><tr><td class="node-name">Pain Extraction / Call Intelligence</td><td class="node-type-cell"><span class="nt nt-openAi">openAi</span></td><td>Parallel pain signal extraction and call metadata classification.</td></tr><tr><td class="node-name">Score: Opening / Pain / Objection</td><td class="node-type-cell"><span class="nt nt-openAi">openAi</span></td><td>Three parallel scoring nodes (0–10 each).</td></tr><tr><td class="node-name">Calculate Score</td><td class="node-type-cell"><span class="nt nt-code">code</span></td><td>Merges all scores into a final result.</td></tr><tr><td class="node-name">Airtable: Upsert Analysis</td><td class="node-type-cell"><span class="nt nt-airtable">airtable</span></td><td>Saves the full analysis record.</td></tr><tr><td class="node-name">Download / Transcribe Audio (Short)</td><td class="node-type-cell"><span class="nt nt-httpRequest">httpRequest</span></td><td>Short call audio download and transcription.</td></tr><tr><td class="node-name">Rapport Analysis</td><td class="node-type-cell"><span class="nt nt-openAi">openAi</span></td><td>Analyses rapport quality for short calls.</td></tr><tr><td class="node-name">Airtable: Upsert Short Call</td><td class="node-type-cell"><span class="nt nt-airtable">airtable</span></td><td>Saves short call rapport record.</td></tr></tbody>
-        </table>
+    <div class="wf-cols">
+      <div class="wf-left">
+        <div class="section-label">Execution Flow</div>
+        <div class="phases"><div class="phase"><span class="phase-num">1</span><div><strong>Trigger & Route</strong><span class="phase-sep"> — </span>Webhook captures Ringostat payload. Route: Call Type splits into long-call full analysis and short-call rapport analysis.</div></div><div class="phase"><span class="phase-num">2</span><div><strong>Transcription</strong><span class="phase-sep"> — </span>Downloads audio file via HTTP. Transcribes using OpenAI Whisper.</div></div><div class="phase"><span class="phase-num">3</span><div><strong>Analysis — parallel</strong><span class="phase-sep"> — </span>Pain Extraction and Call Intelligence run in parallel.</div></div><div class="phase"><span class="phase-num">4</span><div><strong>Scoring — 3 parallel</strong><span class="phase-sep"> — </span>Score: Opening, Pain, Objection each produce a 0–10 score.</div></div><div class="phase"><span class="phase-num">5</span><div><strong>Save</strong><span class="phase-sep"> — </span>Calculate Score merges scores → Airtable. Short calls: Rapport Analysis → Airtable: Upsert Short Call.</div></div></div>
+        <div class="section-label" style="margin-top:20px">Technical Notes</div>
+        <p class="notes">Short call threshold defined in Route node. All GPT nodes have continueOnFail enabled.</p>
       </div>
-    </div>
-    <div class="wf-section notes-section">
-      <h3>Technical Notes</h3>
-      <p>Short call threshold is defined in the Route node. All GPT nodes have continueOnFail enabled.</p>
+      <div class="wf-right">
+        <div class="section-label">Node Reference</div>
+        <div class="table-wrap"><table>
+          <thead><tr><th>Node</th><th>Type</th><th>Description</th></tr></thead>
+          <tbody><tr><td class="node-name">Receive Phone Call</td><td><span class="nt nt-webhook">webhook</span></td><td class="node-desc">Entry point. Captures Ringostat call payload.</td></tr><tr><td class="node-name">Clean Input + Rep Map</td><td><span class="nt nt-code">code</span></td><td class="node-desc">Normalizes call data and maps rep.</td></tr><tr><td class="node-name">Build Activity Record</td><td><span class="nt nt-code">code</span></td><td class="node-desc">Builds activity log entry.</td></tr><tr><td class="node-name">Airtable: Upsert Activity</td><td><span class="nt nt-airtable">airtable</span></td><td class="node-desc">Logs call activity regardless of length.</td></tr><tr><td class="node-name">Route: Call Type</td><td><span class="nt nt-switch">switch</span></td><td class="node-desc">Routes to long-call or short-call analysis.</td></tr><tr><td class="node-name">Download Audio</td><td><span class="nt nt-httpRequest">httpRequest</span></td><td class="node-desc">Downloads full call audio.</td></tr><tr><td class="node-name">Transcribe Audio</td><td><span class="nt nt-httpRequest">httpRequest</span></td><td class="node-desc">Whisper transcription.</td></tr><tr><td class="node-name">Pain Extraction / Call Intelligence</td><td><span class="nt nt-openAi">openAi</span></td><td class="node-desc">Parallel pain extraction and call classification.</td></tr><tr><td class="node-name">Score: Opening / Pain / Objection</td><td><span class="nt nt-openAi">openAi</span></td><td class="node-desc">Three parallel scoring nodes.</td></tr><tr><td class="node-name">Calculate Score</td><td><span class="nt nt-code">code</span></td><td class="node-desc">Merges scores into final result.</td></tr><tr><td class="node-name">Airtable: Upsert Analysis</td><td><span class="nt nt-airtable">airtable</span></td><td class="node-desc">Saves full analysis record.</td></tr><tr><td class="node-name">Download / Transcribe Audio (Short)</td><td><span class="nt nt-httpRequest">httpRequest</span></td><td class="node-desc">Short call audio + transcription.</td></tr><tr><td class="node-name">Rapport Analysis</td><td><span class="nt nt-openAi">openAi</span></td><td class="node-desc">Rapport quality scoring for short calls.</td></tr><tr><td class="node-name">Airtable: Upsert Short Call</td><td><span class="nt nt-airtable">airtable</span></td><td class="node-desc">Saves short call record.</td></tr></tbody>
+        </table></div>
+      </div>
     </div>
   </div>
 </section>
-
 <section class="workflow" id="api4com-calls">
   <div class="wf-header">
-    <div class="wf-meta">
-      <span class="wf-badge">Active</span>
-      <span class="wf-trigger">Webhook POST — 4COM API call completion</span>
-    </div>
+    <div class="wf-meta"><span class="wf-badge">Active</span><span class="wf-trigger">Webhook POST — 4COM API call completion</span></div>
     <h2>(API 4COM) Phone Call Analysis</h2>
-    <p class="wf-overview">Identical analysis pipeline to RINGOSTAT but receives call data from the 4COM telephony API. Downloads audio, transcribes, scores Opening/Pain/Objection, and saves to Airtable. Short calls route to rapport analysis.</p>
+    <p class="wf-overview">Identical pipeline to RINGOSTAT but receives data from the 4COM telephony API. Downloads audio, transcribes, scores Opening/Pain/Objection, saves to Airtable. Short calls route to rapport analysis.</p>
   </div>
   <div class="wf-body">
-    <div class="wf-section">
-      <h3>Execution Flow</h3>
-      <div class="phases"><div class="phase"><div class="phase-num">1</div><div class="phase-body"><strong>Trigger & Route</strong><p>Webhook receives the 4COM payload. Route: Call Type splits long vs short calls.</p></div></div><div class="phase"><div class="phase-num">2</div><div class="phase-body"><strong>Transcription</strong><p>Downloads audio file. Transcribes via Whisper.</p></div></div><div class="phase"><div class="phase-num">3</div><div class="phase-body"><strong>Analysis & Scoring</strong><p>Pain Extraction + Call Intelligence in parallel. Three scoring nodes for Opening, Pain, and Objection.</p></div></div><div class="phase"><div class="phase-num">4</div><div class="phase-body"><strong>Save</strong><p>Calculate Score → Airtable: Upsert Analysis. Short calls → Rapport Analysis → Airtable: Upsert Short Call.</p></div></div></div>
-    </div>
-    <div class="wf-section">
-      <h3>Node Reference</h3>
-      <div class="table-wrap">
-        <table>
-          <thead><tr><th>Node</th><th>Type</th><th>Description</th></tr></thead>
-          <tbody><tr><td class="node-name">Webhook</td><td class="node-type-cell"><span class="nt nt-webhook">webhook</span></td><td>Entry point from 4COM API.</td></tr><tr><td class="node-name">Clean Input + Rep Map</td><td class="node-type-cell"><span class="nt nt-code">code</span></td><td>Normalizes 4COM payload and maps the rep.</td></tr><tr><td class="node-name">Build Activity Record</td><td class="node-type-cell"><span class="nt nt-code">code</span></td><td>Builds the activity log entry.</td></tr><tr><td class="node-name">Airtable: Upsert Activity</td><td class="node-type-cell"><span class="nt nt-airtable">airtable</span></td><td>Logs call activity.</td></tr><tr><td class="node-name">Route: Call Type</td><td class="node-type-cell"><span class="nt nt-switch">switch</span></td><td>Routes long vs short calls.</td></tr><tr><td class="node-name">Download / Transcribe Audio</td><td class="node-type-cell"><span class="nt nt-httpRequest">httpRequest</span></td><td>Audio download and Whisper transcription.</td></tr><tr><td class="node-name">Pain Extraction / Call Intelligence</td><td class="node-type-cell"><span class="nt nt-openAi">openAi</span></td><td>Parallel pain extraction and metadata classification.</td></tr><tr><td class="node-name">Score: Opening / Pain / Objection</td><td class="node-type-cell"><span class="nt nt-openAi">openAi</span></td><td>Three parallel scoring nodes.</td></tr><tr><td class="node-name">Calculate Score</td><td class="node-type-cell"><span class="nt nt-code">code</span></td><td>Final score calculation.</td></tr><tr><td class="node-name">Airtable: Upsert Analysis</td><td class="node-type-cell"><span class="nt nt-airtable">airtable</span></td><td>Saves full analysis record.</td></tr><tr><td class="node-name">Rapport Analysis</td><td class="node-type-cell"><span class="nt nt-openAi">openAi</span></td><td>Short call rapport scoring.</td></tr><tr><td class="node-name">Airtable: Upsert Short Call</td><td class="node-type-cell"><span class="nt nt-airtable">airtable</span></td><td>Saves short call rapport record.</td></tr></tbody>
-        </table>
+    <div class="wf-cols">
+      <div class="wf-left">
+        <div class="section-label">Execution Flow</div>
+        <div class="phases"><div class="phase"><span class="phase-num">1</span><div><strong>Trigger & Route</strong><span class="phase-sep"> — </span>Webhook receives 4COM payload. Route: Call Type splits long vs short calls.</div></div><div class="phase"><span class="phase-num">2</span><div><strong>Transcription</strong><span class="phase-sep"> — </span>Downloads audio. Transcribes via Whisper.</div></div><div class="phase"><span class="phase-num">3</span><div><strong>Analysis & Scoring</strong><span class="phase-sep"> — </span>Pain Extraction + Call Intelligence in parallel. Three scoring nodes.</div></div><div class="phase"><span class="phase-num">4</span><div><strong>Save</strong><span class="phase-sep"> — </span>Calculate Score → Airtable. Short calls → Rapport Analysis → Airtable: Upsert Short Call.</div></div></div>
+        <div class="section-label" style="margin-top:20px">Technical Notes</div>
+        <p class="notes">Same architecture as RINGOSTAT. Only trigger source differs.</p>
       </div>
-    </div>
-    <div class="wf-section notes-section">
-      <h3>Technical Notes</h3>
-      <p>Same architecture as RINGOSTAT. Only the trigger source differs (4COM vs Ringostat).</p>
+      <div class="wf-right">
+        <div class="section-label">Node Reference</div>
+        <div class="table-wrap"><table>
+          <thead><tr><th>Node</th><th>Type</th><th>Description</th></tr></thead>
+          <tbody><tr><td class="node-name">Webhook</td><td><span class="nt nt-webhook">webhook</span></td><td class="node-desc">Entry point from 4COM API.</td></tr><tr><td class="node-name">Clean Input + Rep Map</td><td><span class="nt nt-code">code</span></td><td class="node-desc">Normalizes 4COM payload and maps rep.</td></tr><tr><td class="node-name">Build Activity Record</td><td><span class="nt nt-code">code</span></td><td class="node-desc">Builds activity entry.</td></tr><tr><td class="node-name">Airtable: Upsert Activity</td><td><span class="nt nt-airtable">airtable</span></td><td class="node-desc">Logs call activity.</td></tr><tr><td class="node-name">Route: Call Type</td><td><span class="nt nt-switch">switch</span></td><td class="node-desc">Routes long vs short calls.</td></tr><tr><td class="node-name">Download / Transcribe Audio</td><td><span class="nt nt-httpRequest">httpRequest</span></td><td class="node-desc">Audio download + Whisper transcription.</td></tr><tr><td class="node-name">Pain Extraction / Call Intelligence</td><td><span class="nt nt-openAi">openAi</span></td><td class="node-desc">Parallel extraction and classification.</td></tr><tr><td class="node-name">Score: Opening / Pain / Objection</td><td><span class="nt nt-openAi">openAi</span></td><td class="node-desc">Three parallel scoring nodes.</td></tr><tr><td class="node-name">Calculate Score</td><td><span class="nt nt-code">code</span></td><td class="node-desc">Final score calculation.</td></tr><tr><td class="node-name">Airtable: Upsert Analysis</td><td><span class="nt nt-airtable">airtable</span></td><td class="node-desc">Saves full record.</td></tr><tr><td class="node-name">Rapport Analysis</td><td><span class="nt nt-openAi">openAi</span></td><td class="node-desc">Short call rapport scoring.</td></tr><tr><td class="node-name">Airtable: Upsert Short Call</td><td><span class="nt nt-airtable">airtable</span></td><td class="node-desc">Saves short call record.</td></tr></tbody>
+        </table></div>
+      </div>
     </div>
   </div>
 </section>
-
 <section class="workflow" id="inbound-qualification">
   <div class="wf-header">
-    <div class="wf-meta">
-      <span class="wf-badge">Active</span>
-      <span class="wf-trigger">Webhook POST /send-user-data — Snov.io registration</span>
-    </div>
+    <div class="wf-meta"><span class="wf-badge">Active</span><span class="wf-trigger">Webhook POST /send-user-data — Snov.io registration</span></div>
     <h2>Inbound Leads Qualification</h2>
-    <p class="wf-overview">Processes every new Snov.io registration. Verifies email (polling loop), phone (Abstract API), person name, and company name (GPT). Applies 5 ICP gates and scores the lead. Routes qualified leads to Pipedrive (Person + Org + Deal) and sends them to Clay for enrichment. All records are persisted in Airtable.</p>
+    <p class="wf-overview">Processes every new Snov.io registration. Verifies email (polling loop), phone (Abstract API), name and company (GPT). Applies 5 ICP gates. Routes qualified leads to Pipedrive (Person + Org + Deal) and sends to Clay for enrichment. All records persisted in Airtable.</p>
   </div>
   <div class="wf-body">
-    <div class="wf-section">
-      <h3>Execution Flow</h3>
-      <div class="phases"><div class="phase"><div class="phase-num">1</div><div class="phase-body"><strong>Trigger & Raw Record</strong><p>Webhook receives the registration payload. Airtable: Create Registration immediately creates a raw record.</p></div></div><div class="phase"><div class="phase-num">2</div><div class="phase-body"><strong>Verification — 6 parallel</strong><p>Email: Snov.io API with polling loop (up to 8×15s). Person name: GPT validation. Company name: GPT validation. Domain match: GPT check. Phone: Abstract API. Direct passthrough.</p></div></div><div class="phase"><div class="phase-num">3</div><div class="phase-body"><strong>Record Assembly & ICP Gates — 5 parallel</strong><p>Build Lead Record assembles all results, assigns team, calculates lead score and data score. Five gates: country, personal email, job position, main goals, data score (must be 100). All must pass.</p></div></div><div class="phase"><div class="phase-num">4</div><div class="phase-body"><strong>Pipedrive Creation — 2 parallel</strong><p>Search Person → update or create. Create Organization (always). Both merge before deal creation.</p></div></div><div class="phase"><div class="phase-num">5</div><div class="phase-body"><strong>Deal + Enrichment</strong><p>Create Deal with 16 custom fields. Save Deal ID to Airtable. Send to Clay (with retry). Check for org duplicates.</p></div></div></div>
-    </div>
-    <div class="wf-section">
-      <h3>Node Reference</h3>
-      <div class="table-wrap">
-        <table>
-          <thead><tr><th>Node</th><th>Type</th><th>Description</th></tr></thead>
-          <tbody><tr><td class="node-name">Webhook</td><td class="node-type-cell"><span class="nt nt-webhook">webhook</span></td><td>POST /send-user-data. Payload: email, name, phone, company, goals, country.</td></tr><tr><td class="node-name">Airtable: Create Registration</td><td class="node-type-cell"><span class="nt nt-airtable">airtable</span></td><td>Creates raw record immediately on lead arrival.</td></tr><tr><td class="node-name">Snov: Get Token → Start Verification → Wait → Get Result</td><td class="node-type-cell"><span class="nt nt-httpRequest">httpRequest</span></td><td>Email verification polling loop. Max 8 attempts × 15s.</td></tr><tr><td class="node-name">Classify Email Domain / Qualify Email</td><td class="node-type-cell"><span class="nt nt-code">code</span></td><td>Freemail check. Corporate vs personal email classification.</td></tr><tr><td class="node-name">GPT: Validate Person / Company Name + Domain Match</td><td class="node-type-cell"><span class="nt nt-openAi">openAi</span></td><td>3 parallel GPT-4o-mini calls. continueOnFail on all.</td></tr><tr><td class="node-name">API: Verify Phone</td><td class="node-type-cell"><span class="nt nt-httpRequest">httpRequest</span></td><td>Abstract API phone validation. Returns carrier, type, and country.</td></tr><tr><td class="node-name">Build Lead Record</td><td class="node-type-cell"><span class="nt nt-code">code</span></td><td>Master assembly node. Handles team assignment, lead score, and data score.</td></tr><tr><td class="node-name">Check Country / Email / Position / Goals / DataScore</td><td class="node-type-cell"><span class="nt nt-code">code</span></td><td>5 parallel ICP gates. All must return true.</td></tr><tr><td class="node-name">Assemble Qualification Result</td><td class="node-type-cell"><span class="nt nt-code">code</span></td><td>Computes the goesPipedrive boolean.</td></tr><tr><td class="node-name">Airtable: Update Hygiene + Qualification</td><td class="node-type-cell"><span class="nt nt-airtable">airtable</span></td><td>Two Airtable updates with hygiene and qualification results.</td></tr><tr><td class="node-name">Pipedrive: Search / Create / Update Person</td><td class="node-type-cell"><span class="nt nt-httpRequest">httpRequest</span></td><td>Dedup by email. Update if exists, create if not.</td></tr><tr><td class="node-name">Pipedrive: Create Organization</td><td class="node-type-cell"><span class="nt nt-httpRequest">httpRequest</span></td><td>Always creates org. Dedup is advisory via note.</td></tr><tr><td class="node-name">Pipedrive: Create Deal</td><td class="node-type-cell"><span class="nt nt-pipedrive">pipedrive</span></td><td>16 custom fields: country, position, goals, team, score, referrer.</td></tr><tr><td class="node-name">Clay: Send Enrichment (+ retry)</td><td class="node-type-cell"><span class="nt nt-httpRequest">httpRequest</span></td><td>Sends lead to Clay. Single retry on failure.</td></tr><tr><td class="node-name">Pipedrive: Add Duplicate Note</td><td class="node-type-cell"><span class="nt nt-httpRequest">httpRequest</span></td><td>Flags potential duplicate orgs via deal note.</td></tr></tbody>
-        </table>
+    <div class="wf-cols">
+      <div class="wf-left">
+        <div class="section-label">Execution Flow</div>
+        <div class="phases"><div class="phase"><span class="phase-num">1</span><div><strong>Trigger & Raw Record</strong><span class="phase-sep"> — </span>Webhook receives registration. Airtable: Create Registration immediately creates a raw record.</div></div><div class="phase"><span class="phase-num">2</span><div><strong>Verification — 6 parallel</strong><span class="phase-sep"> — </span>Email: Snov.io polling loop (up to 8×15s). Person name, company name, domain match: GPT. Phone: Abstract API. Direct passthrough.</div></div><div class="phase"><span class="phase-num">3</span><div><strong>Record Assembly & ICP Gates — 5 parallel</strong><span class="phase-sep"> — </span>Build Lead Record assembles all results. Five gates: country, personal email, job position, main goals, data score. All must pass.</div></div><div class="phase"><span class="phase-num">4</span><div><strong>Pipedrive Creation — 2 parallel</strong><span class="phase-sep"> — </span>Search Person → update or create. Create Organization. Both merge before deal creation.</div></div><div class="phase"><span class="phase-num">5</span><div><strong>Deal + Enrichment</strong><span class="phase-sep"> — </span>Create Deal with 16 custom fields. Save Deal ID to Airtable. Send to Clay with retry. Check org duplicates.</div></div></div>
+        <div class="section-label" style="margin-top:20px">Technical Notes</div>
+        <p class="notes">Data score gate: must equal 100 (name 24 + company 24 + phone 52). Volume: ~40–50K registrations/month. Country blocklist and freemail list hardcoded in code nodes.</p>
       </div>
-    </div>
-    <div class="wf-section notes-section">
-      <h3>Technical Notes</h3>
-      <p>Data score gate: person_score must equal 100 (name 24 + company 24 + phone 52). Volume: ~40–50K registrations/month. Country blocklist and freemail list are hardcoded in code nodes.</p>
+      <div class="wf-right">
+        <div class="section-label">Node Reference</div>
+        <div class="table-wrap"><table>
+          <thead><tr><th>Node</th><th>Type</th><th>Description</th></tr></thead>
+          <tbody><tr><td class="node-name">Webhook</td><td><span class="nt nt-webhook">webhook</span></td><td class="node-desc">POST /send-user-data. Payload: email, name, phone, company, goals, country.</td></tr><tr><td class="node-name">Airtable: Create Registration</td><td><span class="nt nt-airtable">airtable</span></td><td class="node-desc">Creates raw record on lead arrival.</td></tr><tr><td class="node-name">Snov: Get Token → Verify → Wait → Get Result</td><td><span class="nt nt-httpRequest">httpRequest</span></td><td class="node-desc">Email verification polling loop. Max 8 × 15s.</td></tr><tr><td class="node-name">Classify Email Domain / Qualify Email</td><td><span class="nt nt-code">code</span></td><td class="node-desc">Freemail check. Corporate vs personal classification.</td></tr><tr><td class="node-name">GPT: Validate Person / Company Name + Domain</td><td><span class="nt nt-openAi">openAi</span></td><td class="node-desc">3 parallel GPT-4o-mini calls. continueOnFail on all.</td></tr><tr><td class="node-name">API: Verify Phone</td><td><span class="nt nt-httpRequest">httpRequest</span></td><td class="node-desc">Abstract API. Returns carrier, type, country.</td></tr><tr><td class="node-name">Build Lead Record</td><td><span class="nt nt-code">code</span></td><td class="node-desc">Master assembly. Team assignment, lead score, data score.</td></tr><tr><td class="node-name">Check Country / Email / Position / Goals / DataScore</td><td><span class="nt nt-code">code</span></td><td class="node-desc">5 parallel ICP gates. All must pass.</td></tr><tr><td class="node-name">Assemble Qualification Result</td><td><span class="nt nt-code">code</span></td><td class="node-desc">Computes goesPipedrive boolean.</td></tr><tr><td class="node-name">Airtable: Update Hygiene + Qualification</td><td><span class="nt nt-airtable">airtable</span></td><td class="node-desc">Two Airtable updates with hygiene and qualification data.</td></tr><tr><td class="node-name">Pipedrive: Search / Create / Update Person</td><td><span class="nt nt-httpRequest">httpRequest</span></td><td class="node-desc">Dedup by email. Update if exists, create if not.</td></tr><tr><td class="node-name">Pipedrive: Create Organization</td><td><span class="nt nt-httpRequest">httpRequest</span></td><td class="node-desc">Always creates. Dedup advisory via note.</td></tr><tr><td class="node-name">Pipedrive: Create Deal</td><td><span class="nt nt-pipedrive">pipedrive</span></td><td class="node-desc">16 custom fields: country, position, goals, team, score, referrer.</td></tr><tr><td class="node-name">Clay: Send Enrichment (+ retry)</td><td><span class="nt nt-httpRequest">httpRequest</span></td><td class="node-desc">Sends to Clay. Single retry on failure.</td></tr><tr><td class="node-name">Pipedrive: Add Duplicate Note</td><td><span class="nt nt-httpRequest">httpRequest</span></td><td class="node-desc">Flags potential duplicate orgs.</td></tr></tbody>
+        </table></div>
+      </div>
     </div>
   </div>
 </section>
-
 <section class="workflow" id="discovery-call-deal">
   <div class="wf-header">
-    <div class="wf-meta">
-      <span class="wf-badge">Active</span>
-      <span class="wf-trigger">Calendly webhook — Discovery Call booked</span>
-    </div>
+    <div class="wf-meta"><span class="wf-badge">Active</span><span class="wf-trigger">Calendly webhook — Discovery Call booked</span></div>
     <h2>Create/Update a deal from Discovery Call</h2>
-    <p class="wf-overview">When a prospect books a Discovery Call via Calendly, this workflow creates or updates their deal in Pipedrive. Verifies email and phone, searches for an existing person, creates person and org if needed, creates or updates the deal, assigns the correct owner, adds a deal note, and links the Calendly activity to the deal.</p>
+    <p class="wf-overview">When a prospect books a Discovery Call via Calendly, creates or updates their deal in Pipedrive. Verifies email and phone, searches for existing person, creates person/org if needed, assigns owner, adds deal note, and links the Calendly activity to the deal.</p>
   </div>
   <div class="wf-body">
-    <div class="wf-section">
-      <h3>Execution Flow</h3>
-      <div class="phases"><div class="phase"><div class="phase-num">1</div><div class="phase-body"><strong>Trigger & Parse</strong><p>Calendly sends a booking webhook. Parse Calendly Event extracts attendee data. Add Deal Owner ID maps the host to the correct Pipedrive user ID.</p></div></div><div class="phase"><div class="phase-num">2</div><div class="phase-body"><strong>Person Lookup</strong><p>Searches Pipedrive for an existing person by email. If found, checks for an open deal. If not found, verifies phone and creates the person.</p></div></div><div class="phase"><div class="phase-num">3</div><div class="phase-body"><strong>Email Verification</strong><p>Snov.io email verification polling loop — same as Inbound Leads Qualification.</p></div></div><div class="phase"><div class="phase-num">4</div><div class="phase-body"><strong>Deal Create / Update</strong><p>Creates or updates the deal with owner, stage, and custom fields. Changes owner and adds a deal note.</p></div></div><div class="phase"><div class="phase-num">5</div><div class="phase-body"><strong>Activity Linking</strong><p>Waits for the Calendly activity to appear in Pipedrive. Finds the activity by type. Links it to the deal.</p></div></div><div class="phase"><div class="phase-num">6</div><div class="phase-body"><strong>Airtable Sync</strong><p>Creates or updates the Airtable registration record with deal data.</p></div></div></div>
-    </div>
-    <div class="wf-section">
-      <h3>Node Reference</h3>
-      <div class="table-wrap">
-        <table>
-          <thead><tr><th>Node</th><th>Type</th><th>Description</th></tr></thead>
-          <tbody><tr><td class="node-name">Discovery Booked</td><td class="node-type-cell"><span class="nt nt-calendlyTrigger">calendlyTrigger</span></td><td>Calendly webhook. Triggers on new booking.</td></tr><tr><td class="node-name">Parse Calendly Event</td><td class="node-type-cell"><span class="nt nt-code">code</span></td><td>Extracts name, email, phone, and company from the Calendly payload.</td></tr><tr><td class="node-name">Add Deal Owner ID</td><td class="node-type-cell"><span class="nt nt-code">code</span></td><td>Maps Calendly host email to Pipedrive user ID.</td></tr><tr><td class="node-name">Person exists on Pipedrive?</td><td class="node-type-cell"><span class="nt nt-httpRequest">httpRequest</span></td><td>Searches by email via Pipedrive v2 API.</td></tr><tr><td class="node-name">Does it have an open deal?</td><td class="node-type-cell"><span class="nt nt-httpRequest">httpRequest</span></td><td>Checks for existing open deals on the person.</td></tr><tr><td class="node-name">Email verification nodes</td><td class="node-type-cell"><span class="nt nt-httpRequest">httpRequest</span></td><td>Snov.io polling loop for email validation.</td></tr><tr><td class="node-name">Create a person</td><td class="node-type-cell"><span class="nt nt-pipedrive">pipedrive</span></td><td>Creates new person if not found.</td></tr><tr><td class="node-name">Create organization</td><td class="node-type-cell"><span class="nt nt-httpRequest">httpRequest</span></td><td>Creates org for the new person.</td></tr><tr><td class="node-name">Create / Update a deal</td><td class="node-type-cell"><span class="nt nt-pipedrive">pipedrive</span></td><td>Creates new deal or syncs existing deal.</td></tr><tr><td class="node-name">Change Owner</td><td class="node-type-cell"><span class="nt nt-httpRequest">httpRequest</span></td><td>Assigns correct deal owner.</td></tr><tr><td class="node-name">Add Deal Note</td><td class="node-type-cell"><span class="nt nt-httpRequest">httpRequest</span></td><td>Adds booking context note to the deal.</td></tr><tr><td class="node-name">Get / Find / Link Activity</td><td class="node-type-cell"><span class="nt nt-httpRequest">httpRequest</span></td><td>Links the Calendly booking activity to the deal.</td></tr><tr><td class="node-name">GPT: Normalize Job Position</td><td class="node-type-cell"><span class="nt nt-openAi">openAi</span></td><td>Normalizes job title to standard categories.</td></tr><tr><td class="node-name">Airtable: Create Registration / Sync Existing Deal</td><td class="node-type-cell"><span class="nt nt-airtable">airtable</span></td><td>Syncs registration record to Airtable.</td></tr></tbody>
-        </table>
+    <div class="wf-cols">
+      <div class="wf-left">
+        <div class="section-label">Execution Flow</div>
+        <div class="phases"><div class="phase"><span class="phase-num">1</span><div><strong>Trigger & Parse</strong><span class="phase-sep"> — </span>Calendly webhook. Parse Calendly Event extracts attendee data. Add Deal Owner ID maps host to Pipedrive user ID.</div></div><div class="phase"><span class="phase-num">2</span><div><strong>Person Lookup</strong><span class="phase-sep"> — </span>Searches Pipedrive by email. If found, checks for open deal. If not, verifies phone and creates person.</div></div><div class="phase"><span class="phase-num">3</span><div><strong>Email Verification</strong><span class="phase-sep"> — </span>Snov.io polling loop — same as Inbound Leads Qualification.</div></div><div class="phase"><span class="phase-num">4</span><div><strong>Deal Create / Update</strong><span class="phase-sep"> — </span>Creates or updates deal with owner, stage, custom fields. Adds deal note.</div></div><div class="phase"><span class="phase-num">5</span><div><strong>Activity Linking</strong><span class="phase-sep"> — </span>Waits for Calendly activity to appear. Finds by type. Links to deal.</div></div><div class="phase"><span class="phase-num">6</span><div><strong>Airtable Sync</strong><span class="phase-sep"> — </span>Creates or updates Airtable registration record.</div></div></div>
+        <div class="section-label" style="margin-top:20px">Technical Notes</div>
+        <p class="notes">Owner mapping hardcoded in Add Deal Owner ID — update when team changes. Activity linking has a wait node to account for Calendly sync delay.</p>
       </div>
-    </div>
-    <div class="wf-section notes-section">
-      <h3>Technical Notes</h3>
-      <p>Owner mapping is hardcoded in Add Deal Owner ID — update when the sales team changes. Activity linking has a wait node to account for Calendly sync delay.</p>
+      <div class="wf-right">
+        <div class="section-label">Node Reference</div>
+        <div class="table-wrap"><table>
+          <thead><tr><th>Node</th><th>Type</th><th>Description</th></tr></thead>
+          <tbody><tr><td class="node-name">Discovery Booked</td><td><span class="nt nt-calendlyTrigger">calendlyTrigger</span></td><td class="node-desc">Calendly webhook on new booking.</td></tr><tr><td class="node-name">Parse Calendly Event</td><td><span class="nt nt-code">code</span></td><td class="node-desc">Extracts name, email, phone, company.</td></tr><tr><td class="node-name">Add Deal Owner ID</td><td><span class="nt nt-code">code</span></td><td class="node-desc">Maps Calendly host email to Pipedrive user ID.</td></tr><tr><td class="node-name">Person exists on Pipedrive?</td><td><span class="nt nt-httpRequest">httpRequest</span></td><td class="node-desc">Searches by email via Pipedrive v2 API.</td></tr><tr><td class="node-name">Does it have an open deal?</td><td><span class="nt nt-httpRequest">httpRequest</span></td><td class="node-desc">Checks for existing open deals.</td></tr><tr><td class="node-name">Email verification nodes</td><td><span class="nt nt-httpRequest">httpRequest</span></td><td class="node-desc">Snov.io polling loop for email validation.</td></tr><tr><td class="node-name">Create a person</td><td><span class="nt nt-pipedrive">pipedrive</span></td><td class="node-desc">Creates new person if not found.</td></tr><tr><td class="node-name">Create organization</td><td><span class="nt nt-httpRequest">httpRequest</span></td><td class="node-desc">Creates org for new person.</td></tr><tr><td class="node-name">Create / Update a deal</td><td><span class="nt nt-pipedrive">pipedrive</span></td><td class="node-desc">Creates new deal or syncs existing.</td></tr><tr><td class="node-name">Change Owner</td><td><span class="nt nt-httpRequest">httpRequest</span></td><td class="node-desc">Assigns correct deal owner.</td></tr><tr><td class="node-name">Add Deal Note</td><td><span class="nt nt-httpRequest">httpRequest</span></td><td class="node-desc">Adds booking note to deal.</td></tr><tr><td class="node-name">Get / Find / Link Activity</td><td><span class="nt nt-httpRequest">httpRequest</span></td><td class="node-desc">Links Calendly booking activity to deal.</td></tr><tr><td class="node-name">GPT: Normalize Job Position</td><td><span class="nt nt-openAi">openAi</span></td><td class="node-desc">Normalizes job title to standard categories.</td></tr><tr><td class="node-name">Airtable: Create Registration / Sync Existing Deal</td><td><span class="nt nt-airtable">airtable</span></td><td class="node-desc">Syncs registration to Airtable.</td></tr></tbody>
+        </table></div>
+      </div>
     </div>
   </div>
 </section>
-
 <section class="workflow" id="crm-sync">
   <div class="wf-header">
-    <div class="wf-meta">
-      <span class="wf-badge">Active</span>
-      <span class="wf-trigger">Pipedrive deal update trigger — real-time</span>
-    </div>
+    <div class="wf-meta"><span class="wf-badge">Active</span><span class="wf-trigger">Pipedrive deal update trigger — real-time</span></div>
     <h2>Sync CRM with Airtable + Add Time per Stage</h2>
-    <p class="wf-overview">Fires on every Pipedrive deal update. Filters to SALES 2026 pipeline only. Syncs deal data to Airtable and tracks time spent in each funnel stage (Registration, MQL Trying, MQL Contact, SQL, SAL Trial, SAL Commit). Marks deal milestones — MQL, SAL, First Contact, Won, Lost — in Airtable.</p>
+    <p class="wf-overview">Fires on every Pipedrive deal update. Filters to SALES 2026 pipeline. Syncs deal data to Airtable and tracks time spent in each funnel stage. Marks deal milestones — MQL, SAL, First Contact, Won, Lost — in Airtable.</p>
   </div>
   <div class="wf-body">
-    <div class="wf-section">
-      <h3>Execution Flow</h3>
-      <div class="phases"><div class="phase"><div class="phase-num">1</div><div class="phase-body"><strong>Trigger & Filter</strong><p>Pipedrive Trigger fires on any deal change. SALES 2026 only? gate filters out all other pipelines.</p></div></div><div class="phase"><div class="phase-num">2</div><div class="phase-body"><strong>Build & Sync</strong><p>Build Deal Data assembles the normalized record. Update Sales Database upserts it to Airtable.</p></div></div><div class="phase"><div class="phase-num">3</div><div class="phase-body"><strong>Stage Time Tracking — 6 parallel</strong><p>For each stage the deal may have exited, queries Pipedrive deal history to calculate time spent. Runs only if the deal was previously in that stage.</p></div></div><div class="phase"><div class="phase-num">4</div><div class="phase-body"><strong>Milestone Marking</strong><p>Checks if the deal entered MQL, SAL, First Contact, Won, or Lost. Updates Airtable with the milestone timestamp.</p></div></div></div>
-    </div>
-    <div class="wf-section">
-      <h3>Node Reference</h3>
-      <div class="table-wrap">
-        <table>
-          <thead><tr><th>Node</th><th>Type</th><th>Description</th></tr></thead>
-          <tbody><tr><td class="node-name">Pipedrive Trigger</td><td class="node-type-cell"><span class="nt nt-pipedriveTrigger">pipedriveTrigger</span></td><td>Fires on any deal update in Pipedrive.</td></tr><tr><td class="node-name">SALES 2026 only?</td><td class="node-type-cell"><span class="nt nt-if">if</span></td><td>Filters to the target pipeline ID only.</td></tr><tr><td class="node-name">Build Deal Data</td><td class="node-type-cell"><span class="nt nt-code">code</span></td><td>Assembles the normalized deal record.</td></tr><tr><td class="node-name">Update Sales Database</td><td class="node-type-cell"><span class="nt nt-airtable">airtable</span></td><td>Upserts deal record to Airtable.</td></tr><tr><td class="node-name">Registration / MQL / SAL / SQL before?</td><td class="node-type-cell"><span class="nt nt-if">if</span></td><td>6 parallel checks — was the deal previously in each stage?</td></tr><tr><td class="node-name">PD: Time in [Stage]</td><td class="node-type-cell"><span class="nt nt-pipedrive">pipedrive</span></td><td>Queries deal history for stage entry/exit timestamps.</td></tr><tr><td class="node-name">Entered MQL / SAL / First Contact?</td><td class="node-type-cell"><span class="nt nt-if">if</span></td><td>Milestone entry detection.</td></tr><tr><td class="node-name">Won / Lost? (Airtable)</td><td class="node-type-cell"><span class="nt nt-if">if</span></td><td>Win/loss detection.</td></tr><tr><td class="node-name">AT: Mark MQL / SAL / Contacted / Won / Lost</td><td class="node-type-cell"><span class="nt nt-airtable">airtable</span></td><td>Writes milestone timestamp to Airtable.</td></tr><tr><td class="node-name">PD: Update Lost / Won</td><td class="node-type-cell"><span class="nt nt-pipedrive">pipedrive</span></td><td>Updates Pipedrive deal with win/loss metadata.</td></tr></tbody>
-        </table>
+    <div class="wf-cols">
+      <div class="wf-left">
+        <div class="section-label">Execution Flow</div>
+        <div class="phases"><div class="phase"><span class="phase-num">1</span><div><strong>Trigger & Filter</strong><span class="phase-sep"> — </span>Pipedrive Trigger fires on any deal change. SALES 2026 only? gate filters other pipelines.</div></div><div class="phase"><span class="phase-num">2</span><div><strong>Build & Sync</strong><span class="phase-sep"> — </span>Build Deal Data assembles normalized record. Update Sales Database upserts to Airtable.</div></div><div class="phase"><span class="phase-num">3</span><div><strong>Stage Time Tracking — 6 parallel</strong><span class="phase-sep"> — </span>For each stage the deal may have exited, queries Pipedrive history to calculate time spent.</div></div><div class="phase"><span class="phase-num">4</span><div><strong>Milestone Marking</strong><span class="phase-sep"> — </span>Checks if deal entered MQL, SAL, First Contact, Won, or Lost. Updates Airtable with timestamp.</div></div></div>
+        <div class="section-label" style="margin-top:20px">Technical Notes</div>
+        <p class="notes">Stage IDs documented in the Stage IDs sticky note inside the workflow. Pipeline filter must be updated if pipeline ID changes.</p>
       </div>
-    </div>
-    <div class="wf-section notes-section">
-      <h3>Technical Notes</h3>
-      <p>Stage IDs are documented in the Stage IDs sticky note inside the workflow. Pipeline filter must be updated if the pipeline ID changes. HTTP Request1 at the end handles a secondary sync step.</p>
+      <div class="wf-right">
+        <div class="section-label">Node Reference</div>
+        <div class="table-wrap"><table>
+          <thead><tr><th>Node</th><th>Type</th><th>Description</th></tr></thead>
+          <tbody><tr><td class="node-name">Pipedrive Trigger</td><td><span class="nt nt-pipedriveTrigger">pipedriveTrigger</span></td><td class="node-desc">Fires on any deal update in Pipedrive.</td></tr><tr><td class="node-name">SALES 2026 only?</td><td><span class="nt nt-if">if</span></td><td class="node-desc">Filters to target pipeline ID.</td></tr><tr><td class="node-name">Build Deal Data</td><td><span class="nt nt-code">code</span></td><td class="node-desc">Assembles normalized deal record.</td></tr><tr><td class="node-name">Update Sales Database</td><td><span class="nt nt-airtable">airtable</span></td><td class="node-desc">Upserts deal record to Airtable.</td></tr><tr><td class="node-name">Registration / MQL / SAL / SQL before?</td><td><span class="nt nt-if">if</span></td><td class="node-desc">6 parallel checks — was deal in each stage?</td></tr><tr><td class="node-name">PD: Time in [Stage]</td><td><span class="nt nt-pipedrive">pipedrive</span></td><td class="node-desc">Queries deal history for stage timestamps.</td></tr><tr><td class="node-name">Entered MQL / SAL / First Contact?</td><td><span class="nt nt-if">if</span></td><td class="node-desc">Milestone entry detection.</td></tr><tr><td class="node-name">Won / Lost? (Airtable)</td><td><span class="nt nt-if">if</span></td><td class="node-desc">Win/loss detection.</td></tr><tr><td class="node-name">AT: Mark MQL / SAL / Contacted / Won / Lost</td><td><span class="nt nt-airtable">airtable</span></td><td class="node-desc">Writes milestone timestamp.</td></tr><tr><td class="node-name">PD: Update Lost / Won</td><td><span class="nt nt-pipedrive">pipedrive</span></td><td class="node-desc">Updates Pipedrive deal with win/loss metadata.</td></tr></tbody>
+        </table></div>
+      </div>
     </div>
   </div>
 </section>
-
 <section class="workflow" id="clay-enrich">
   <div class="wf-header">
-    <div class="wf-meta">
-      <span class="wf-badge">Active</span>
-      <span class="wf-trigger">Webhook POST /receive-clay-data — Clay enrichment callback</span>
-    </div>
+    <div class="wf-meta"><span class="wf-badge">Active</span><span class="wf-trigger">Webhook POST /receive-clay-data — Clay callback</span></div>
     <h2>(ENRICH) Update deal after Clay enrichment</h2>
-    <p class="wf-overview">Minimal 2-node workflow. After Clay completes enrichment on a lead, it sends a callback with the Deal ID and LinkedIn URL. This workflow receives the callback and updates the corresponding Pipedrive deal with the LinkedIn custom field.</p>
+    <p class="wf-overview">Minimal 2-node workflow. Clay sends a callback with Deal ID and LinkedIn URL after enrichment. Workflow updates the corresponding Pipedrive deal with the LinkedIn custom field.</p>
   </div>
   <div class="wf-body">
-    <div class="wf-section">
-      <h3>Execution Flow</h3>
-      <div class="phases"><div class="phase"><div class="phase-num">1</div><div class="phase-body"><strong>Receive & Update</strong><p>Webhook receives the Clay callback with Deal_ID and LinkedIn. Update a deal patches the Pipedrive deal's LinkedIn custom field.</p></div></div></div>
-    </div>
-    <div class="wf-section">
-      <h3>Node Reference</h3>
-      <div class="table-wrap">
-        <table>
-          <thead><tr><th>Node</th><th>Type</th><th>Description</th></tr></thead>
-          <tbody><tr><td class="node-name">Webhook</td><td class="node-type-cell"><span class="nt nt-webhook">webhook</span></td><td>POST /receive-clay-data. Receives Clay enrichment callback.</td></tr><tr><td class="node-name">Update a deal</td><td class="node-type-cell"><span class="nt nt-pipedrive">pipedrive</span></td><td>PATCH deal — updates LinkedIn custom field (021312270e...) with the LinkedIn URL.</td></tr></tbody>
-        </table>
+    <div class="wf-cols">
+      <div class="wf-left">
+        <div class="section-label">Execution Flow</div>
+        <div class="phases"><div class="phase"><span class="phase-num">1</span><div><strong>Receive & Update</strong><span class="phase-sep"> — </span>Webhook receives Clay callback with Deal_ID and LinkedIn. Update a deal patches the Pipedrive LinkedIn field.</div></div></div>
+        <div class="section-label" style="margin-top:20px">Technical Notes</div>
+        <p class="notes">LinkedIn field key hardcoded (021312270ecddc7d5167019c73b28ef262e04861). Called downstream by Inbound Leads Qualification.</p>
       </div>
-    </div>
-    <div class="wf-section notes-section">
-      <h3>Technical Notes</h3>
-      <p>LinkedIn field key is hardcoded (021312270ecddc7d5167019c73b28ef262e04861). Called downstream by Inbound Leads Qualification after Clay enrichment completes.</p>
+      <div class="wf-right">
+        <div class="section-label">Node Reference</div>
+        <div class="table-wrap"><table>
+          <thead><tr><th>Node</th><th>Type</th><th>Description</th></tr></thead>
+          <tbody><tr><td class="node-name">Webhook</td><td><span class="nt nt-webhook">webhook</span></td><td class="node-desc">POST /receive-clay-data. Receives Clay enrichment callback.</td></tr><tr><td class="node-name">Update a deal</td><td><span class="nt nt-pipedrive">pipedrive</span></td><td class="node-desc">PATCH deal — updates LinkedIn custom field with URL.</td></tr></tbody>
+        </table></div>
+      </div>
     </div>
   </div>
 </section>
-
 <section class="workflow" id="payment">
   <div class="wf-header">
-    <div class="wf-meta">
-      <span class="wf-badge">Active</span>
-      <span class="wf-trigger">Webhook POST /went-paid-plan</span>
-    </div>
+    <div class="wf-meta"><span class="wf-badge">Active</span><span class="wf-trigger">Webhook POST /went-paid-plan</span></div>
     <h2>(PAYMENT) Client entered on a paid plan</h2>
-    <p class="wf-overview">Stub workflow. Receives a webhook notification when a Snov.io client upgrades to a paid plan. Currently only has the trigger node — downstream logic (Pipedrive update, Airtable sync, notification) is pending implementation.</p>
+    <p class="wf-overview">Stub workflow. Receives notification when a client upgrades to a paid plan. Downstream logic (Pipedrive update, Airtable sync, notification) is pending implementation.</p>
   </div>
   <div class="wf-body">
-    <div class="wf-section">
-      <h3>Execution Flow</h3>
-      <div class="phases"><div class="phase"><div class="phase-num">1</div><div class="phase-body"><strong>Trigger — stub</strong><p>Webhook receives the paid plan event. No downstream nodes yet.</p></div></div></div>
-    </div>
-    <div class="wf-section">
-      <h3>Node Reference</h3>
-      <div class="table-wrap">
-        <table>
-          <thead><tr><th>Node</th><th>Type</th><th>Description</th></tr></thead>
-          <tbody><tr><td class="node-name">Webhook</td><td class="node-type-cell"><span class="nt nt-webhook">webhook</span></td><td>POST /went-paid-plan. Entry point for paid plan conversion events.</td></tr></tbody>
-        </table>
+    <div class="wf-cols">
+      <div class="wf-left">
+        <div class="section-label">Execution Flow</div>
+        <div class="phases"><div class="phase"><span class="phase-num">1</span><div><strong>Trigger — stub</strong><span class="phase-sep"> — </span>Webhook receives paid plan event. No downstream nodes yet.</div></div></div>
+        <div class="section-label" style="margin-top:20px">Technical Notes</div>
+        <p class="notes">Stub — downstream logic not yet implemented. Webhook is live and receiving events.</p>
       </div>
-    </div>
-    <div class="wf-section notes-section">
-      <h3>Technical Notes</h3>
-      <p>Stub — downstream logic not yet implemented. Webhook is live and receiving events.</p>
+      <div class="wf-right">
+        <div class="section-label">Node Reference</div>
+        <div class="table-wrap"><table>
+          <thead><tr><th>Node</th><th>Type</th><th>Description</th></tr></thead>
+          <tbody><tr><td class="node-name">Webhook</td><td><span class="nt nt-webhook">webhook</span></td><td class="node-desc">POST /went-paid-plan. Entry point for paid plan events.</td></tr></tbody>
+        </table></div>
+      </div>
     </div>
   </div>
 </section>
-
 <section class="workflow" id="docs-sync">
   <div class="wf-header">
-    <div class="wf-meta">
-      <span class="wf-badge">Active</span>
-      <span class="wf-trigger">Webhook POST /n8n-docs-sync — manual or automated trigger</span>
-    </div>
+    <div class="wf-meta"><span class="wf-badge">Active</span><span class="wf-trigger">Webhook POST /n8n-docs-sync</span></div>
     <h2>Live update on Github documentations for N8N workflows</h2>
-    <p class="wf-overview">This workflow itself — the one that generates and publishes this playbook. Fetches all n8n workflows via the internal API, generates the full HTML documentation page, retrieves the current file SHA from GitHub, and commits the updated HTML to the n8n-docs repo. GitHub Pages publishes automatically.</p>
+    <p class="wf-overview">This workflow — the one that generates and publishes this playbook. Fetches all n8n workflows, generates the full HTML documentation page, and commits it to GitHub. Pages publishes automatically.</p>
   </div>
   <div class="wf-body">
-    <div class="wf-section">
-      <h3>Execution Flow</h3>
-      <div class="phases"><div class="phase"><div class="phase-num">1</div><div class="phase-body"><strong>Trigger</strong><p>Webhook POST triggers the documentation sync.</p></div></div><div class="phase"><div class="phase-num">2</div><div class="phase-body"><strong>Fetch Workflows</strong><p>GET /api/v1/workflows fetches all workflows from the n8n instance.</p></div></div><div class="phase"><div class="phase-num">3</div><div class="phase-body"><strong>Generate HTML</strong><p>Code node generates the full playbook HTML with all workflow documentation.</p></div></div><div class="phase"><div class="phase-num">4</div><div class="phase-body"><strong>GitHub Commit</strong><p>Get File SHA fetches the current index.html SHA. Commit to GitHub PUTs the new content with the SHA for a conflict-free update.</p></div></div></div>
-    </div>
-    <div class="wf-section">
-      <h3>Node Reference</h3>
-      <div class="table-wrap">
-        <table>
-          <thead><tr><th>Node</th><th>Type</th><th>Description</th></tr></thead>
-          <tbody><tr><td class="node-name">Webhook</td><td class="node-type-cell"><span class="nt nt-webhook">webhook</span></td><td>POST /n8n-docs-sync. Entry point for documentation sync.</td></tr><tr><td class="node-name">Get All Workflows</td><td class="node-type-cell"><span class="nt nt-httpRequest">httpRequest</span></td><td>GET /api/v1/workflows with X-N8N-API-KEY header.</td></tr><tr><td class="node-name">Generate HTML</td><td class="node-type-cell"><span class="nt nt-code">code</span></td><td>Generates full playbook HTML. Returns base64-encoded content.</td></tr><tr><td class="node-name">Get File SHA</td><td class="node-type-cell"><span class="nt nt-httpRequest">httpRequest</span></td><td>GET GitHub API — retrieves current index.html SHA.</td></tr><tr><td class="node-name">Commit to GitHub</td><td class="node-type-cell"><span class="nt nt-httpRequest">httpRequest</span></td><td>PUT GitHub API — commits updated HTML to the repo.</td></tr></tbody>
-        </table>
+    <div class="wf-cols">
+      <div class="wf-left">
+        <div class="section-label">Execution Flow</div>
+        <div class="phases"><div class="phase"><span class="phase-num">1</span><div><strong>Trigger</strong><span class="phase-sep"> — </span>Webhook POST triggers the sync.</div></div><div class="phase"><span class="phase-num">2</span><div><strong>Fetch Workflows</strong><span class="phase-sep"> — </span>GET /api/v1/workflows fetches all workflows from n8n.</div></div><div class="phase"><span class="phase-num">3</span><div><strong>Generate HTML</strong><span class="phase-sep"> — </span>Code node generates full playbook HTML with base64 encoding.</div></div><div class="phase"><span class="phase-num">4</span><div><strong>GitHub Commit</strong><span class="phase-sep"> — </span>Get File SHA → Commit to GitHub via PUT API.</div></div></div>
+        <div class="section-label" style="margin-top:20px">Technical Notes</div>
+        <p class="notes">GitHub token and n8n API key stored in node headers. Rotate token when expired. Trigger this after any significant automation change.</p>
       </div>
-    </div>
-    <div class="wf-section notes-section">
-      <h3>Technical Notes</h3>
-      <p>GitHub token and n8n API key are stored directly in node headers. Token must be rotated when expired. Trigger this workflow after any significant automation change.</p>
+      <div class="wf-right">
+        <div class="section-label">Node Reference</div>
+        <div class="table-wrap"><table>
+          <thead><tr><th>Node</th><th>Type</th><th>Description</th></tr></thead>
+          <tbody><tr><td class="node-name">Webhook</td><td><span class="nt nt-webhook">webhook</span></td><td class="node-desc">POST /n8n-docs-sync. Triggers documentation sync.</td></tr><tr><td class="node-name">Get All Workflows</td><td><span class="nt nt-httpRequest">httpRequest</span></td><td class="node-desc">GET /api/v1/workflows with X-N8N-API-KEY.</td></tr><tr><td class="node-name">Generate HTML</td><td><span class="nt nt-code">code</span></td><td class="node-desc">Generates playbook HTML. Returns base64-encoded content.</td></tr><tr><td class="node-name">Get File SHA</td><td><span class="nt nt-httpRequest">httpRequest</span></td><td class="node-desc">GET GitHub API — retrieves current index.html SHA.</td></tr><tr><td class="node-name">Commit to GitHub</td><td><span class="nt nt-httpRequest">httpRequest</span></td><td class="node-desc">PUT GitHub API — commits updated HTML.</td></tr></tbody>
+        </table></div>
+      </div>
     </div>
   </div>
 </section>
-
 </main>
 
 <script>
-  function setTheme(t) {
-    document.documentElement.setAttribute('data-theme', t);
-    document.getElementById('btn-dark').classList.toggle('active', t === 'dark');
-    document.getElementById('btn-light').classList.toggle('active', t === 'light');
-    localStorage.setItem('theme', t);
-  }
+function setTheme(t) {
+  document.documentElement.setAttribute('data-theme', t);
+  document.getElementById('btn-light').classList.toggle('active', t === 'light');
+  document.getElementById('btn-dark').classList.toggle('active', t === 'dark');
+  localStorage.setItem('theme', t);
+}
+function toggleFolder() {
+  document.getElementById('n8n-folder').classList.toggle('open');
+}
+const saved = localStorage.getItem('theme');
+if (saved) setTheme(saved);
 
-  function toggleSection() {
-    document.getElementById('n8n-section').classList.toggle('open');
-  }
-
-  // Restore theme
-  const saved = localStorage.getItem('theme');
-  if (saved) setTheme(saved);
-
-  // Active nav on scroll
-  const sections = document.querySelectorAll('.workflow');
-  const navLinks = document.querySelectorAll('.nav-item');
-  const obs = new IntersectionObserver(entries => {
-    entries.forEach(e => {
-      if (e.isIntersecting) {
-        navLinks.forEach(n => n.classList.remove('active'));
-        const a = document.querySelector('.nav-item[href="#' + e.target.id + '"]');
-        if (a) a.classList.add('active');
-      }
-    });
-  }, { threshold: 0.25 });
-  sections.forEach(s => obs.observe(s));
+// Active nav on scroll
+const sections = document.querySelectorAll('.workflow');
+const navLinks = document.querySelectorAll('.nav-item');
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      navLinks.forEach(n => n.classList.remove('active'));
+      const a = document.querySelector('.nav-item[href="#' + e.target.id + '"]');
+      if (a) a.classList.add('active');
+    }
+  });
+}, { threshold: 0.2 });
+sections.forEach(s => obs.observe(s));
 </script>
 </body>
 </html>
