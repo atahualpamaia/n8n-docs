@@ -1,1 +1,1384 @@
-{"workflows":{}}
+{
+  "workflows": {
+    "5hykJZPh0hjB0eS4": {
+      "hash": "2f45ndgfio5",
+      "doc": {
+        "slug": "inbound-leads-qualification",
+        "trigger": "Triggered by an inbound webhook submission for a new lead.",
+        "overview": "This workflow automates the qualification and enrichment of inbound leads by validating their contact data, enriching key fields, and updating CRM and Airtable records. It leverages verification APIs, OpenAI validation, and conditional logic to determine lead quality and suitability for sales pipelines. The process ensures only high-quality, qualified leads are created in Pipedrive and recorded in Airtable, minimizing manual review and improving sales efficiency.",
+        "phases": [
+          [
+            "Lead Data Intake",
+            "Ingest lead data from inbound webhook and restore its structure for processing."
+          ],
+          [
+            "Data Validation & Enrichment",
+            "Verify the email, phone, and company data using external APIs and OpenAI to ensure accuracy and fit to ICP."
+          ],
+          [
+            "Qualification Processing",
+            "Apply business logic to qualify or reject leads, updating CRM and Airtable based on results."
+          ],
+          [
+            "CRM & Record Update",
+            "Create or update records in Pipedrive and Airtable, handling duplicates and data enrichment asynchronously."
+          ]
+        ],
+        "nodes": [
+          [
+            "Webhook1",
+            "webhook",
+            "Receives new inbound lead data via HTTP POST."
+          ],
+          [
+            "Restore Webhook Data1",
+            "code",
+            "Normalizes and restores webhook payload for downstream use."
+          ],
+          [
+            "Prepare Rejection Data",
+            "code",
+            "Prepares rejection details for leads that do not qualify."
+          ],
+          [
+            "Snov: Get Token",
+            "httpRequest",
+            "Retrieves API token for Snov email verification service."
+          ],
+          [
+            "Snov: Start Verification",
+            "httpRequest",
+            "Initiates email verification process via Snov API."
+          ],
+          [
+            "Email: Wait 15s",
+            "wait",
+            "Introduces delay to allow asynchronous verification process to complete."
+          ],
+          [
+            "Snov: Get Verification Result",
+            "httpRequest",
+            "Retrieves the result of the email verification check."
+          ],
+          [
+            "Qualify Email",
+            "code",
+            "Interprets email verification results to classify lead's email."
+          ],
+          [
+            "Email Qualified?",
+            "if",
+            "Branch: Continues only if the lead's email passes qualification checks."
+          ],
+          [
+            "Parse Person Name Result",
+            "code",
+            "Extracts and cleans person name verification data."
+          ],
+          [
+            "Phone Has Carrier?",
+            "if",
+            "Branch: Validates if phone number has an associated carrier."
+          ],
+          [
+            "Parse Phone Result",
+            "set",
+            "Extracts relevant data from phone verification result."
+          ],
+          [
+            "Check Data Score",
+            "code",
+            "Calculates a qualification score based on data validity."
+          ],
+          [
+            "Check Job Position",
+            "code",
+            "Assesses job title for ICP fit."
+          ],
+          [
+            "Check Main Goals",
+            "code",
+            "Analyses lead's expressed goals for alignment."
+          ],
+          [
+            "Merge: Collect ICP Checks",
+            "merge",
+            "Aggregates different ICP checks for scoring."
+          ],
+          [
+            "Assemble Qualification Result",
+            "code",
+            "Compiles the overall qualification determination."
+          ],
+          [
+            "Parse Company Name Result",
+            "code",
+            "Processes company name validation results."
+          ],
+          [
+            "GPT: Match Domain to Company",
+            "openAi",
+            "Uses AI to match the lead's domain with a company name."
+          ],
+          [
+            "Airtable: Create Registration",
+            "airtable",
+            "Creates a preliminary lead registration in Airtable."
+          ],
+          [
+            "Check Personal Email",
+            "code",
+            "Identifies if the email domain is personal or business."
+          ],
+          [
+            "Check Country",
+            "code",
+            "Validates lead's country against target geographies."
+          ],
+          [
+            "Build Lead Record",
+            "code",
+            "Assembles a complete data record for the lead."
+          ],
+          [
+            "Airtable: Update Hygiene",
+            "airtable",
+            "Updates Airtable with data hygiene results."
+          ],
+          [
+            "Qualified for Pipedrive?",
+            "if",
+            "Branch: Routes processing if lead is qualified for sales pipeline."
+          ],
+          [
+            "Pipedrive: Create Organization",
+            "httpRequest",
+            "Creates a new organization in Pipedrive via API."
+          ],
+          [
+            "Pipedrive: Create Person",
+            "pipedrive",
+            "Adds the lead as a person in Pipedrive."
+          ],
+          [
+            "Prepare Deal Data",
+            "code",
+            "Prepares all necessary data to create a deal in CRM."
+          ],
+          [
+            "Pipedrive: Create Deal",
+            "pipedrive",
+            "Creates a deal in Pipedrive for qualified leads."
+          ],
+          [
+            "Airtable: Save Deal ID",
+            "airtable",
+            "Saves Pipedrive deal ID back to Airtable for cross-referencing."
+          ],
+          [
+            "Clay: Send Enrichment",
+            "httpRequest",
+            "Requests additional company/person enrichment via Clay API."
+          ],
+          [
+            "Person Exists?",
+            "code",
+            "Checks if a similar person already exists in Pipedrive."
+          ],
+          [
+            "Pipedrive: Search Org",
+            "httpRequest",
+            "Searches for existing organizations in Pipedrive to prevent duplicates."
+          ],
+          [
+            "Org Duplicate?",
+            "if",
+            "Branch: Handles organization duplicate logic in Pipedrive."
+          ],
+          [
+            "Pipedrive: Add Duplicate Note",
+            "httpRequest",
+            "Adds a note in Pipedrive for duplicate organizations."
+          ],
+          [
+            "Airtable: Mark Email Rejected",
+            "airtable",
+            "Flags rejected leads in Airtable due to email or other failures."
+          ]
+        ],
+        "notes": "When integrating with multiple external APIs (Snov, Clay, Pipedrive), monitor for rate limits and failures; periodic review of qualification logic is recommended to align with evolving ICP criteria.",
+        "_name": "Inbound Leads Qualification"
+      }
+    },
+    "DRkLTskRZ80nBZjn": {
+      "hash": "1ri4thojvtg",
+      "doc": {
+        "slug": "create-update-deal-from-discovery-call",
+        "trigger": "Triggered when a 'Discovery Booked' event occurs in Calendly.",
+        "overview": "This workflow automates the process of creating or updating a deal in Pipedrive when a discovery call is booked via Calendly. It verifies contact details, manages organization and person records, and links deal-related activities to ensure accurate sales pipeline data. The workflow also performs data normalization for improved record consistency and syncs results with Airtable for further tracking.",
+        "phases": [
+          [
+            "Trigger & Data Capture",
+            "Captures Calendly event data when a discovery call is booked and prepares the initial context."
+          ],
+          [
+            "Contact & Deal Management",
+            "Verifies and updates person, organization, and deal records in Pipedrive, including enriching and normalizing input data."
+          ],
+          [
+            "Activity Linking & Enrichment",
+            "Associates activities and notes with the deal, normalizes job position information, and synchronizes with Airtable for reporting."
+          ]
+        ],
+        "nodes": [
+          [
+            "Discovery Booked",
+            "calendlyTrigger",
+            "Listens for a new discovery call booking from Calendly."
+          ],
+          [
+            "add deal owner ID1",
+            "code",
+            "Assigns the appropriate deal owner based on incoming data."
+          ],
+          [
+            "If2",
+            "if",
+            "Branches logic based on conditional checks for required data."
+          ],
+          [
+            "person exists on Pipedrive?1",
+            "httpRequest",
+            "Queries Pipedrive to check if the person record exists."
+          ],
+          [
+            "If3",
+            "if",
+            "Decides flow based on the existence of the person in Pipedrive."
+          ],
+          [
+            "does it have an open deal?1",
+            "httpRequest",
+            "Checks if the person has an open deal in Pipedrive."
+          ],
+          [
+            "Create a person1",
+            "pipedrive",
+            "Creates a new person record in Pipedrive if none exists."
+          ],
+          [
+            "isValidPhoneNumber1",
+            "set",
+            "Validates the contact's phone number format."
+          ],
+          [
+            "does phone number exist?1",
+            "httpRequest",
+            "Verifies if the phone number is already in Pipedrive."
+          ],
+          [
+            "Merge1",
+            "merge",
+            "Combines streams of logic or data for unified processing."
+          ],
+          [
+            "generate token1",
+            "httpRequest",
+            "Initiates email verification by generating a token."
+          ],
+          [
+            "start verification1",
+            "httpRequest",
+            "Starts the email verification process with an external service."
+          ],
+          [
+            "Email: Wait 15s1",
+            "wait",
+            "Pauses the workflow to allow for email verification latency."
+          ],
+          [
+            "Snov: Get Verification Result1",
+            "httpRequest",
+            "Retrieves the result of the email verification check."
+          ],
+          [
+            "Parse Email Check1",
+            "set",
+            "Parses and formats the email verification response."
+          ],
+          [
+            "Classify Email Domain1",
+            "code",
+            "Classifies the email domain as business or personal."
+          ],
+          [
+            "qualify email1",
+            "code",
+            "Applies logic to qualify or disqualify the email address."
+          ],
+          [
+            "create organization1",
+            "httpRequest",
+            "Creates a new organization record if it does not exist."
+          ],
+          [
+            "Create a deal1",
+            "pipedrive",
+            "Creates a new deal record in Pipedrive."
+          ],
+          [
+            "Change Owner1",
+            "httpRequest",
+            "Updates deal owner in Pipedrive records as needed."
+          ],
+          [
+            "Get a person1",
+            "pipedrive",
+            "Fetches person details from Pipedrive for reference."
+          ],
+          [
+            "Parse Calendly Event1",
+            "code",
+            "Extracts and transforms data from the incoming Calendly event."
+          ],
+          [
+            "Email: Check If Done1",
+            "code",
+            "Determines if email verification is complete."
+          ],
+          [
+            "Email: Verification Ready?1",
+            "if",
+            "Branches the workflow based on email verification status."
+          ],
+          [
+            "Prep Post Deal",
+            "code",
+            "Prepares data and actions after deal creation."
+          ],
+          [
+            "Add Deal Note",
+            "httpRequest",
+            "Adds a note to the deal in Pipedrive for context."
+          ],
+          [
+            "Wait Activity",
+            "wait",
+            "Waits to ensure all related activities are available."
+          ],
+          [
+            "Get Activities",
+            "httpRequest",
+            "Retrieves related activities from Pipedrive."
+          ],
+          [
+            "Find Activity",
+            "code",
+            "Finds the relevant activities to link to the deal."
+          ],
+          [
+            "Link Activity to Deal",
+            "httpRequest",
+            "Associates an activity record with the deal."
+          ],
+          [
+            "Normalize Person ID1",
+            "code",
+            "Normalizes the person ID for consistent referencing."
+          ],
+          [
+            "Build Deal Data1",
+            "code",
+            "Builds structured deal data for downstream nodes."
+          ],
+          [
+            "Change Owner New Deal1",
+            "httpRequest",
+            "Transfers ownership of the new deal to the right user."
+          ],
+          [
+            "Prep Post Deal1",
+            "code",
+            "Prepares follow-up actions and payloads post deal creation."
+          ],
+          [
+            "Add Deal Note1",
+            "httpRequest",
+            "Adds further notes to the deal as required."
+          ],
+          [
+            "Wait Activity1",
+            "wait",
+            "Provides additional buffer for asynchronous updates."
+          ],
+          [
+            "Get Activities1",
+            "httpRequest",
+            "Fetches updated list of activities from Pipedrive."
+          ],
+          [
+            "Find Activity1",
+            "code",
+            "Locates the correct activity to link after updates."
+          ],
+          [
+            "Link Activity to Deal1",
+            "httpRequest",
+            "Links updated activity data to the deal."
+          ],
+          [
+            "GPT: Normalize Job Position1",
+            "openAi",
+            "Normalizes the job title/position using GPT for uniformity."
+          ],
+          [
+            "Airtable: Create Registration1",
+            "airtable",
+            "Creates a registration record in Airtable for reporting."
+          ],
+          [
+            "Parse Job Position1",
+            "code",
+            "Extracts and parses job position details."
+          ],
+          [
+            "Airtable: Sync Existing Deal1",
+            "airtable",
+            "Updates Airtable with changes to existing deals."
+          ]
+        ],
+        "notes": "Ensure Calendly, Pipedrive, and Airtable API credentials are valid and kept up to date; changes to field structures in external systems may require node configuration adjustments.",
+        "_name": "Create/Update a deal from Discovery Call"
+      }
+    },
+    "EmNmUNWxoEyXTAqz": {
+      "hash": "196vqssvj8g",
+      "doc": {
+        "slug": "api-4com-phone-call-analysis",
+        "trigger": "Workflow is triggered by an inbound webhook upon receipt of a new phone call event.",
+        "overview": "This workflow ingests a new phone call event, downloads and transcribes the call audio, then performs analysis and scoring of the call conversation using various AI models. Key results and detailed analytic data are written back to Airtable for reporting and continuous improvement of sales calls.",
+        "phases": [
+          [
+            "Inbound Handling",
+            "Receives the trigger, cleans input, and logs initial activity details to Airtable."
+          ],
+          [
+            "Transcription & Analysis",
+            "Downloads audio, transcribes the call, extracts key pain points, and performs advanced AI-driven analysis and scoring."
+          ],
+          [
+            "Results Storage",
+            "Scores are calculated and final analytic results are upserted into the relevant Airtable tables."
+          ]
+        ],
+        "nodes": [
+          [
+            "Webhook",
+            "webhook",
+            "Initiates the workflow when a new phone call event is received."
+          ],
+          [
+            "Clean Input + Rep Map",
+            "code",
+            "Sanitizes and normalizes incoming call data and maps it to the internal representative."
+          ],
+          [
+            "Build Activity Record",
+            "code",
+            "Prepares data structure for logging the initial call activity."
+          ],
+          [
+            "Airtable: Upsert Activity",
+            "airtable",
+            "Creates or updates the call activity record in Airtable."
+          ],
+          [
+            "Download Audio",
+            "httpRequest",
+            "Fetches the raw audio file of the phone call from an external source."
+          ],
+          [
+            "Transcribe Audio",
+            "httpRequest",
+            "Sends audio to a transcription service and receives a text transcript."
+          ],
+          [
+            "Build Transcript Record",
+            "code",
+            "Structures the transcript data for further analysis and storage."
+          ],
+          [
+            "Pain Extraction",
+            "openAi",
+            "Applies AI to identify customer pain points within the transcript."
+          ],
+          [
+            "Parse Pain",
+            "code",
+            "Extracts and formats pain point data from the AI's output."
+          ],
+          [
+            "Call Intelligence",
+            "openAi",
+            "Performs general conversational intelligence analysis using AI."
+          ],
+          [
+            "Parse Intelligence",
+            "code",
+            "Processes and formats intelligence analysis results."
+          ],
+          [
+            "Merge Analysis",
+            "merge",
+            "Consolidates pain and intelligence insights into a unified analysis object."
+          ],
+          [
+            "Build Record",
+            "code",
+            "Prepares the merged analysis for scoring and storage."
+          ],
+          [
+            "Score: Opening",
+            "openAi",
+            "Uses AI to numerically evaluate the call’s opening section."
+          ],
+          [
+            "Parse Opening Score",
+            "code",
+            "Extracts and formats the opening score."
+          ],
+          [
+            "Score: Pain",
+            "openAi",
+            "Scores the discussion of customer pain in the call."
+          ],
+          [
+            "Parse Pain Score",
+            "code",
+            "Processes the AI output for pain scoring."
+          ],
+          [
+            "Score: Objection",
+            "openAi",
+            "Assigns a score for objection handling in the call."
+          ],
+          [
+            "Parse Objection Score",
+            "code",
+            "Formats the objection score output."
+          ],
+          [
+            "Merge Scores",
+            "merge",
+            "Combines individual analytic scores into a comprehensive total."
+          ],
+          [
+            "Calculate Score",
+            "code",
+            "Calculates final scores for call success based on merged scores."
+          ],
+          [
+            "Airtable: Upsert Analysis",
+            "airtable",
+            "Upserts the analytic results to the primary Airtable."
+          ],
+          [
+            "Route: Call Type",
+            "switch",
+            "Determines workflow path based on call length/type to handle short calls differently."
+          ],
+          [
+            "Download Audio (Short)",
+            "httpRequest",
+            "Fetches audio for short-duration calls."
+          ],
+          [
+            "Transcribe Audio (Short)",
+            "httpRequest",
+            "Transcribes short call audio files."
+          ],
+          [
+            "Build Short Transcript",
+            "code",
+            "Structures short transcript data for rapport analysis."
+          ],
+          [
+            "Rapport Analysis",
+            "openAi",
+            "Uses AI to analyze rapport in short calls."
+          ],
+          [
+            "Parse Rapport",
+            "code",
+            "Formats the rapport analysis results from AI."
+          ],
+          [
+            "Airtable: Upsert Short Call",
+            "airtable",
+            "Writes short-call analysis results to Airtable."
+          ]
+        ],
+        "notes": "Maintain API credentials for all connected services; monitor OpenAI and transcription costs as usage scales; confirm Airtable schema compatibility before updating fields.",
+        "_name": "(API 4COM) Phone Call Analysis"
+      }
+    },
+    "JkcTyGn87jjDlVuQ": {
+      "hash": "11cas9zfmq",
+      "doc": {
+        "slug": "leads-coming-from-events-courses",
+        "trigger": "Triggered by an incoming webhook when a new lead is submitted from an event or course.",
+        "overview": "This workflow captures leads generated from events or courses and automates their entry into the Pipedrive CRM. It processes the incoming lead data, organizes it, and creates associated records for deals, people, and organizations in Pipedrive. This ensures that event/course leads are systematically tracked and managed for sales follow-up.",
+        "phases": [
+          [
+            "Intake",
+            "The workflow receives and processes incoming lead data from events or courses."
+          ],
+          [
+            "CRM Entry",
+            "Lead information is standardized and used to create or update corresponding records in Pipedrive."
+          ]
+        ],
+        "nodes": [
+          [
+            "Webhook",
+            "webhook",
+            "Accepts incoming lead data from an external source."
+          ],
+          [
+            "Edit Fields",
+            "code",
+            "Processes and formats lead data for CRM compatibility."
+          ],
+          [
+            "Code in JavaScript",
+            "code",
+            "Applies custom logic to manipulate specific lead properties."
+          ],
+          [
+            "Merge5",
+            "merge",
+            "Combines multiple data streams before CRM creation steps."
+          ],
+          [
+            "Create an organization",
+            "pipedrive",
+            "Creates a new organization entry in Pipedrive if needed."
+          ],
+          [
+            "Create a person5",
+            "pipedrive",
+            "Creates or updates a person contact in Pipedrive."
+          ],
+          [
+            "Create a deal2",
+            "pipedrive",
+            "Creates a new deal in Pipedrive linked to the lead."
+          ],
+          [
+            "Code in JavaScript1",
+            "code",
+            "Performs final processing or cleanup operations on the lead data."
+          ]
+        ],
+        "notes": "Ensure Pipedrive API credentials are current and test webhook connectivity after any schema changes.",
+        "_name": "Leads coming from events/courses"
+      }
+    },
+    "NfKqkfZCTfBEokUY": {
+      "hash": "1gjximwuguc",
+      "doc": {
+        "slug": "fireflies-pid-call-analysis-coach",
+        "trigger": "Triggered by receiving a webhook with call data.",
+        "overview": "This workflow analyzes sales call transcripts, extracts PID (Pain, Impact, Decision) insights using AI, and compiles coaching feedback. The processed data and coaching summaries are upserted to Airtable and emailed to relevant stakeholders for performance improvement.",
+        "phases": [
+          [
+            "Call Intake",
+            "The workflow ingests incoming call data, retrieves transcripts, and cleans input."
+          ],
+          [
+            "PID Analysis & Coaching",
+            "AI models extract and score PID criteria, compile intelligence, and send results via email after storing them in Airtable."
+          ]
+        ],
+        "nodes": [
+          [
+            "Webhook",
+            "webhook",
+            "Receives call data to trigger the workflow."
+          ],
+          [
+            "Get Transcript",
+            "fireflies",
+            "Fetches the call transcript from Fireflies."
+          ],
+          [
+            "Clean Input + Rep Map",
+            "code",
+            "Normalizes transcript input and maps to the sales representative."
+          ],
+          [
+            "Filter: Skip Internal Calls?",
+            "if",
+            "Determines if the call should proceed based on criteria (e.g., skipping internal calls)."
+          ],
+          [
+            "PID Extraction",
+            "openAi",
+            "Extracts PID (Pain, Impact, Decision) entities using OpenAI."
+          ],
+          [
+            "Parse PID",
+            "code",
+            "Parses the PID output into structured data."
+          ],
+          [
+            "Call Intelligence",
+            "openAi",
+            "Analyzes call for additional insights and call intelligence using an AI model."
+          ],
+          [
+            "Parse Intelligence",
+            "code",
+            "Processes and formats intelligence insights."
+          ],
+          [
+            "Merge Analysis",
+            "merge",
+            "Combines PID and intelligence data into a single report."
+          ],
+          [
+            "Build Record",
+            "code",
+            "Prepares structured data for database upsert and reporting."
+          ],
+          [
+            "PID Score: Pain",
+            "openAi",
+            "Scores the 'Pain' component using AI."
+          ],
+          [
+            "Parse Pain Score",
+            "code",
+            "Extracts and formats the 'Pain' score."
+          ],
+          [
+            "PID Score: Impact",
+            "openAi",
+            "Scores the 'Impact' component using AI."
+          ],
+          [
+            "Parse Impact Score",
+            "code",
+            "Extracts and formats the 'Impact' score."
+          ],
+          [
+            "PID Score: Decision",
+            "openAi",
+            "Scores the 'Decision' component using AI."
+          ],
+          [
+            "Parse Decision Score",
+            "code",
+            "Extracts and formats the 'Decision' score."
+          ],
+          [
+            "Merge Scores",
+            "merge",
+            "Aggregates all PID scores for final processing."
+          ],
+          [
+            "Calculate Scores",
+            "code",
+            "Calculates final aggregated PID scores."
+          ],
+          [
+            "Airtable: Upsert Call",
+            "airtable",
+            "Upserts the final call analysis and scores into Airtable."
+          ],
+          [
+            "Email: PID Report",
+            "emailSend",
+            "Sends a detailed PID analysis report via email."
+          ],
+          [
+            "Email: PID Coaching",
+            "emailSend",
+            "Delivers coaching recommendations to the sales representative via email."
+          ]
+        ],
+        "notes": "Review OpenAI API limits and monitor Airtable schema changes to prevent workflow failures.",
+        "_name": "(Fireflies) PID Call Analysis + Coach"
+      }
+    },
+    "SF9TrgB67UjKccY7": {
+      "hash": "28muq2hbroa",
+      "doc": {
+        "slug": "payment-client-entered-on-a-paid-plan",
+        "trigger": "A webhook is triggered when a client is entered on a paid plan.",
+        "overview": "This workflow is designed to initiate automated processes as soon as a client transitions onto a paid plan. It ensures immediate downstream actions or notifications can be triggered upon payment event capture.",
+        "phases": [
+          [
+            "Trigger Capture",
+            "Captures the event when a client is added to a paid plan via webhook."
+          ]
+        ],
+        "nodes": [
+          [
+            "Webhook",
+            "webhook",
+            "Receives incoming requests when a client is entered on a paid plan."
+          ]
+        ],
+        "notes": "Ensure the webhook URL is correctly registered with the payment platform to capture all relevant paid plan events.",
+        "_name": "(PAYMENT) Client entered on a paid plan"
+      }
+    },
+    "dDb8zxo3Vvqg60WZ": {
+      "hash": "hv0cb6w00",
+      "doc": {
+        "slug": "phone-call-ringostat-call-processed-by-ai",
+        "trigger": "Workflow is triggered by an incoming webhook when a Ringostat phone call event occurs.",
+        "overview": "This workflow receives and processes phone call data from Ringostat via a webhook trigger. Its purpose is to automate the initial handling of call events, enabling further automated analysis or actions as needed.",
+        "phases": [
+          [
+            "Detection",
+            "Receives Ringostat phone call event data through a webhook trigger."
+          ],
+          [
+            "Processing",
+            "Initializes the workflow for downstream AI-driven call processing."
+          ]
+        ],
+        "nodes": [
+          [
+            "Phone call processed by AI",
+            "webhook",
+            "Captures Ringostat call details via incoming webhook for further automation."
+          ]
+        ],
+        "notes": "Ensure the webhook URL is correctly configured in Ringostat and secured to prevent unauthorized triggers.",
+        "_name": "[Phone Call] - Ringostat call processed by AI"
+      }
+    },
+    "ecufqr7ZfxSIEggr": {
+      "hash": "1ryyhemtqxe",
+      "doc": {
+        "slug": "live-update-on-github-documentations-for-n8n-workflows",
+        "trigger": "Runs every 23 hours using a schedule trigger.",
+        "overview": "This workflow automates the generation and update of documentation for all n8n workflows, committing changes directly to a GitHub repository. It detects updates, generates documentation using OpenAI, and ensures documentation stays synchronized with the latest workflow changes.",
+        "phases": [
+          [
+            "Fetch & Split Workflows",
+            "Periodically requests all workflows, splits them out, and filters for active ones."
+          ],
+          [
+            "Summarize & Detect Changes",
+            "Summarizes workflow details, checks against previously cached data, and identifies new or updated workflows."
+          ],
+          [
+            "Generate & Merge Docs",
+            "Creates documentation using OpenAI, aggregates new docs, and merges them into final HTML."
+          ],
+          [
+            "Commit Updates",
+            "Builds the HTML file, updates the cache, fetches the target file SHA, and commits the new documentation to GitHub."
+          ]
+        ],
+        "nodes": [
+          [
+            "Every 23 Hours",
+            "webhook",
+            "Triggers the workflow on a 23-hour schedule."
+          ],
+          [
+            "Get All Workflows",
+            "httpRequest",
+            "Fetches all available workflows from the n8n instance."
+          ],
+          [
+            "Split Workflows",
+            "code",
+            "Splits the list of workflows for processing individually."
+          ],
+          [
+            "Filter Active",
+            "code",
+            "Filters out inactive workflows from the processing stream."
+          ],
+          [
+            "Get Workflow Detail",
+            "httpRequest",
+            "Retrieves detailed information for each active workflow."
+          ],
+          [
+            "Prepare Summary + Hash",
+            "code",
+            "Builds workflow summaries and hashes for change detection."
+          ],
+          [
+            "Aggregate Summaries",
+            "code",
+            "Groups all summaries for bulk comparison and aggregation."
+          ],
+          [
+            "Fetch Cache",
+            "httpRequest",
+            "Retrieves the previous cache to detect changes since last run."
+          ],
+          [
+            "Diff & Process",
+            "code",
+            "Compares new and cached summaries to identify changed workflows."
+          ],
+          [
+            "IF Has Changes",
+            "if",
+            "Branches execution if there are detected changes."
+          ],
+          [
+            "Split Changed",
+            "code",
+            "Splits out only the workflows that have changed."
+          ],
+          [
+            "OpenAI: Generate Doc",
+            "openAi",
+            "Uses OpenAI to generate natural language documentation for workflows."
+          ],
+          [
+            "Add Workflow Name",
+            "code",
+            "Appends workflow names to the generated documentation."
+          ],
+          [
+            "Aggregate New Docs",
+            "code",
+            "Collects new documentation snippets for final assembly."
+          ],
+          [
+            "Merge Docs",
+            "code",
+            "Merges all new and existing documentation together."
+          ],
+          [
+            "Build Final HTML",
+            "code",
+            "Constructs the final HTML documentation file."
+          ],
+          [
+            "Prepare Cache Body",
+            "code",
+            "Prepares the latest summaries for cache update."
+          ],
+          [
+            "Save Cache",
+            "httpRequest",
+            "Saves the updated workflow summaries cache."
+          ],
+          [
+            "Get File SHA",
+            "httpRequest",
+            "Fetches the GitHub file SHA for the documentation file."
+          ],
+          [
+            "Commit to GitHub",
+            "httpRequest",
+            "Commits the updated documentation HTML to the GitHub repository."
+          ]
+        ],
+        "notes": "Keep the OpenAI API credentials secured and be mindful of rate limits from both GitHub and n8n endpoints; verify the cache file integrity regularly for consistent change detection.",
+        "_name": "Live update on Github documentations for N8N workflows"
+      }
+    },
+    "n6aw1ToC5HJ7Sw0x": {
+      "hash": "4yi62xbcss",
+      "doc": {
+        "slug": "sync-crm-with-airtable-add-time-per-stage",
+        "trigger": "The workflow is triggered by updates in Pipedrive via Pipedrive Trigger.",
+        "overview": "This workflow syncs deal data between a CRM (Pipedrive) and Airtable by updating records as deals progress across stages. At each pipeline stage change, it records the time spent and updates both systems to reflect these changes for better sales analytics. The process ensures consistent data across platforms and calculates time-per-stage for improved reporting.",
+        "phases": [
+          [
+            "Trigger & Qualification",
+            "Detects updates in the CRM and verifies if the deal is relevant to the sales pipeline."
+          ],
+          [
+            "Stage Timing & Sync",
+            "Calculates time spent in each deal stage and updates both Airtable and Pipedrive records accordingly."
+          ],
+          [
+            "Deal Outcome Handling",
+            "Checks for deal outcomes such as won or lost, and marks them appropriately in both systems."
+          ]
+        ],
+        "nodes": [
+          [
+            "Pipedrive Trigger1",
+            "pipedriveTrigger",
+            "Starts the workflow when a deal in Pipedrive is updated."
+          ],
+          [
+            "SALES 2026 only?1",
+            "if",
+            "Checks if the deal is part of the designated SALES 2026 pipeline."
+          ],
+          [
+            "Build Deal Data1",
+            "code",
+            "Formats and prepares deal data for syncing."
+          ],
+          [
+            "Update Sales Database1",
+            "airtable",
+            "Updates the corresponding Airtable record with deal information."
+          ],
+          [
+            "Registration before1",
+            "if",
+            "Detects if the deal was previously in the Registration stage."
+          ],
+          [
+            "MQL Trying before1",
+            "if",
+            "Determines if the deal was in the MQL Trying stage before stage change."
+          ],
+          [
+            "MQL Contact before1",
+            "if",
+            "Checks if the deal had previously been at MQL Contact."
+          ],
+          [
+            "SAL Trial before1",
+            "if",
+            "Assesses if the deal was previously in the SAL Trial stage."
+          ],
+          [
+            "SAL Commit before1",
+            "if",
+            "Confirms if the deal was at SAL Commit before."
+          ],
+          [
+            "PD: Time in Registration1",
+            "pipedrive",
+            "Retrieves and calculates time spent in Registration within Pipedrive."
+          ],
+          [
+            "PD: Time in MQL Trying1",
+            "pipedrive",
+            "Retrieves and calculates time spent in the MQL Trying stage."
+          ],
+          [
+            "PD: Time in MQL Contact1",
+            "pipedrive",
+            "Gets time spent in MQL Contact stage from Pipedrive."
+          ],
+          [
+            "PD: Time in SQL1",
+            "pipedrive",
+            "Obtains time tracking in the SQL stage from Pipedrive."
+          ],
+          [
+            "PD: Time in SAL Trial1",
+            "pipedrive",
+            "Calculates time in SAL Trial stage in Pipedrive."
+          ],
+          [
+            "PD: Time in SAL Commit1",
+            "pipedrive",
+            "Records time in the SAL Commit pipeline stage."
+          ],
+          [
+            "PD: Update Lost1",
+            "pipedrive",
+            "Updates the deal as lost in Pipedrive if applicable."
+          ],
+          [
+            "PD: Update Won1",
+            "pipedrive",
+            "Marks the deal as won in Pipedrive when conditions are met."
+          ],
+          [
+            "Entered MQL?1",
+            "if",
+            "Checks if the deal has entered the MQL stage."
+          ],
+          [
+            "Entered SAL?1",
+            "if",
+            "Verifies deal entry into the SAL stage."
+          ],
+          [
+            "First Contact?1",
+            "if",
+            "Identifies if the first contact with the deal has been made."
+          ],
+          [
+            "Won? (Airtable)1",
+            "if",
+            "Checks if the deal is marked as won in Airtable."
+          ],
+          [
+            "Lost? (Airtable)1",
+            "if",
+            "Evaluates if the deal is lost in Airtable."
+          ],
+          [
+            "AT: Mark MQL1",
+            "airtable",
+            "Updates the Airtable record when a deal reaches the MQL stage."
+          ],
+          [
+            "AT: Mark SAL1",
+            "airtable",
+            "Marks the deal as SAL in Airtable."
+          ],
+          [
+            "AT: Mark Contacted1",
+            "airtable",
+            "Indicates first contact in Airtable records."
+          ],
+          [
+            "AT: Mark Won1",
+            "airtable",
+            "Flags the deal as won in Airtable."
+          ],
+          [
+            "AT: Mark Lost1",
+            "airtable",
+            "Flags the deal as lost in Airtable."
+          ],
+          [
+            "Edit Fields",
+            "set",
+            "Prepares and maps fields for data updates."
+          ],
+          [
+            "SQL before",
+            "if",
+            "Checks if the deal was previously at the SQL stage."
+          ],
+          [
+            "If Lost",
+            "if",
+            "Evaluates conditions for deal loss."
+          ],
+          [
+            "If Won",
+            "if",
+            "Evaluates conditions for deal win."
+          ],
+          [
+            "HTTP Request1",
+            "httpRequest",
+            "Makes an HTTP request, possibly for external integration or logging."
+          ]
+        ],
+        "notes": "Ensure field mappings between Pipedrive and Airtable remain consistent, and monitor API rate limits if processing many deal updates.",
+        "_name": "Sync CRM with Airtable + Add Time per Stage"
+      }
+    },
+    "qfPOqBWgOqnWdIvG": {
+      "hash": "u5al63gnh4",
+      "doc": {
+        "slug": "enrich-update-deal-after-clay-enrichment",
+        "trigger": "Fires when the webhook endpoint receives a request.",
+        "overview": "This workflow receives enriched deal data from Clay via webhook and updates the corresponding deal in Pipedrive. It ensures CRM records are continuously enhanced with the latest external data, streamlining sales operations.",
+        "phases": [
+          [
+            "Receive Enrichment Data",
+            "Collects new or updated deal information from Clay through a webhook."
+          ],
+          [
+            "Update Pipedrive",
+            "Pushes the enriched information into the relevant Pipedrive deal."
+          ]
+        ],
+        "nodes": [
+          [
+            "Webhook",
+            "webhook",
+            "Receives incoming HTTP requests containing enriched deal data from Clay."
+          ],
+          [
+            "Update a deal",
+            "pipedrive",
+            "Updates the corresponding Pipedrive deal with the new enrichment data."
+          ]
+        ],
+        "notes": "Ensure the webhook endpoint is securely managed and the data mapping aligns with Pipedrive field requirements.",
+        "_name": "(ENRICH) Update deal after Clay enrichment"
+      }
+    },
+    "qvGfQfiuSMORoiKh": {
+      "hash": "1vls3vqyc1y",
+      "doc": {
+        "slug": "ringostat-phone-call-analysis",
+        "trigger": "Triggered by an incoming phone call received via webhook.",
+        "overview": "This workflow automates the analysis of phone calls by transcribing audio, extracting key call insights, and upserting results into Airtable. It uses OpenAI for semantic analysis and scoring, enabling detailed reporting and quality monitoring for sales or support calls.",
+        "phases": [
+          [
+            "Call Reception & Routing",
+            "The call data is received, sanitized, and routed based on call type."
+          ],
+          [
+            "Audio Transcription & Analysis",
+            "Call audio is transcribed, analyzed for pain points and intelligence, and scores are generated using OpenAI models."
+          ],
+          [
+            "Data Upsert",
+            "Summarized results and details are stored in Airtable for reporting and further action."
+          ]
+        ],
+        "nodes": [
+          [
+            "Receive Phone Call",
+            "webhook",
+            "Handles incoming phone call event data and starts workflow execution."
+          ],
+          [
+            "Clean Input + Rep Map",
+            "code",
+            "Sanitizes incoming payload and maps rep details."
+          ],
+          [
+            "Build Activity Record",
+            "code",
+            "Prepares call activity data structure for storage."
+          ],
+          [
+            "Airtable: Upsert Activity",
+            "airtable",
+            "Upserts the call activity record into Airtable."
+          ],
+          [
+            "Route: Call Type",
+            "switch",
+            "Branches workflow based on the call type for specialized processing."
+          ],
+          [
+            "Download Audio",
+            "httpRequest",
+            "Downloads the full call audio file for transcription."
+          ],
+          [
+            "Transcribe Audio",
+            "httpRequest",
+            "Sends call audio for transcription service and receives the text transcript."
+          ],
+          [
+            "Build Transcript Record",
+            "code",
+            "Structures the transcript data for downstream analysis and storage."
+          ],
+          [
+            "Pain Extraction",
+            "openAi",
+            "Extracts customer pain points from the call transcript using AI."
+          ],
+          [
+            "Parse Pain",
+            "code",
+            "Parses structured pain point output from OpenAI for consistency."
+          ],
+          [
+            "Call Intelligence",
+            "openAi",
+            "Analyzes call for intelligence and insights using OpenAI models."
+          ],
+          [
+            "Parse Intelligence",
+            "code",
+            "Extracts and structures call intelligence details."
+          ],
+          [
+            "Merge Analysis",
+            "merge",
+            "Combines pain and intelligence analysis results."
+          ],
+          [
+            "Build Record",
+            "code",
+            "Prepares final analysis record for scoring."
+          ],
+          [
+            "Score: Opening",
+            "openAi",
+            "Scores the call opening using OpenAI for quality assurance."
+          ],
+          [
+            "Parse Opening Score",
+            "code",
+            "Parses the opening score for standardized data storage."
+          ],
+          [
+            "Score: Pain",
+            "openAi",
+            "Generates a pain discussion score using OpenAI."
+          ],
+          [
+            "Parse Pain Score",
+            "code",
+            "Extracts and structures the pain score result."
+          ],
+          [
+            "Score: Objection",
+            "openAi",
+            "Scores how objections were handled using OpenAI."
+          ],
+          [
+            "Parse Objection Score",
+            "code",
+            "Parses the objection score for uniform reporting."
+          ],
+          [
+            "Merge Scores",
+            "merge",
+            "Brings together all scoring outputs for aggregation."
+          ],
+          [
+            "Calculate Score",
+            "code",
+            "Calculates the overall call performance score."
+          ],
+          [
+            "Airtable: Upsert Analysis",
+            "airtable",
+            "Inserts or updates the detailed call analysis record in Airtable."
+          ],
+          [
+            "Download Audio (Short)",
+            "httpRequest",
+            "Downloads a short version of call audio for rapid review or summary analysis."
+          ],
+          [
+            "Transcribe Audio (Short)",
+            "httpRequest",
+            "Transcribes the short audio clip to text."
+          ],
+          [
+            "Build Short Transcript",
+            "code",
+            "Structures the short transcript data for analysis."
+          ],
+          [
+            "Rapport Analysis",
+            "openAi",
+            "Analyzes conversation rapport using OpenAI models."
+          ],
+          [
+            "Parse Rapport",
+            "code",
+            "Parses rapport analysis results for consistency."
+          ],
+          [
+            "Airtable: Upsert Short Call",
+            "airtable",
+            "Inserts or updates the short call report in Airtable."
+          ]
+        ],
+        "notes": "Ensure API keys for transcription and OpenAI nodes are kept secure and monitor Airtable limits to prevent failed upserts during high call volumes.",
+        "_name": "(RINGOSTAT) Phone Call Analysis"
+      }
+    }
+  }
+}
