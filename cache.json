@@ -1,3 +1,339 @@
 {
-  "workflows": {}
+  "workflows": {
+    "5hykJZPh0hjB0eS4": {
+      "hash": "2f45ndgfio5",
+      "doc": {
+        "slug": "inbound-leads-qualification",
+        "trigger": "Webhook to receive incoming leads data",
+        "overview": "This workflow automates the qualification process for inbound leads by verifying their contact information and assessing their fit with the company's Ideal Customer Profile (ICP). It integrates various services to enrich, validate, and store lead data efficiently in Airtable and Pipedrive.",
+        "phases": [
+          [
+            "Data Reception",
+            "Lead data is received through a webhook for processing."
+          ],
+          [
+            "Data Verification and Enrichment",
+            "Contact and company information is verified and enriched using various APIs and services."
+          ],
+          [
+            "Qualification Assessment",
+            "Leads are assessed against predefined criteria to determine their qualification status."
+          ],
+          [
+            "Data Storage",
+            "Qualified leads are saved into Airtable and Pipedrive for further action."
+          ]
+        ],
+        "nodes": [
+          [
+            "Webhook1",
+            "webhook",
+            "Receives incoming lead data via HTTP request."
+          ],
+          [
+            "Restore Webhook Data1",
+            "code",
+            "Processes and restores data received from the webhook."
+          ],
+          [
+            "Prepare Rejection Data",
+            "code",
+            "Prepares data if a lead is rejected based on qualification criteria."
+          ],
+          [
+            "Merge: Person + Org + Lead",
+            "code",
+            "Merges lead data with associated person and organization information."
+          ],
+          [
+            "Snov: Get Token",
+            "httpRequest",
+            "Requests an access token from Snov for verification purposes."
+          ],
+          [
+            "Snov: Start Verification",
+            "httpRequest",
+            "Initiates the email verification process using Snov."
+          ],
+          [
+            "Email: Wait 15s",
+            "wait",
+            "Delays for 15 seconds to allow email verification to process."
+          ],
+          [
+            "Snov: Get Verification Result",
+            "httpRequest",
+            "Retrieves the result of the email verification from Snov."
+          ],
+          [
+            "Parse Email Check",
+            "set",
+            "Parses and sets the email verification results for further checks."
+          ],
+          [
+            "Qualify Email",
+            "code",
+            "Executes qualification checks based on the email verification result."
+          ],
+          [
+            "Email Qualified?",
+            "if",
+            "Determines if the email passed the qualification checks."
+          ],
+          [
+            "Parse Person Name Result",
+            "code",
+            "Processes the result of the person name verification."
+          ],
+          [
+            "Phone Has Carrier?",
+            "if",
+            "Checks if the phone number has an associated carrier."
+          ],
+          [
+            "Parse Phone Result",
+            "set",
+            "Saves the results of the phone verification process."
+          ],
+          [
+            "Check Data Score",
+            "code",
+            "Evaluates the overall score of the lead's data quality."
+          ],
+          [
+            "Check Job Position",
+            "code",
+            "Assesses if the job position fits within the target criteria."
+          ],
+          [
+            "Check Main Goals",
+            "code",
+            "Analyzes the main goals of the lead to ensure alignment."
+          ],
+          [
+            "Merge: Collect ICP Checks",
+            "merge",
+            "Combines results of various ICP qualification checks."
+          ],
+          [
+            "Assemble Qualification Result",
+            "code",
+            "Compiles the final qualification result based on checks."
+          ],
+          [
+            "Parse Company Name Result",
+            "code",
+            "Processes and validates the company name from leads."
+          ],
+          [
+            "Parse Domain Match Result",
+            "code",
+            "Checks if the domain matches the company name provided."
+          ],
+          [
+            "Airtable: Create Registration",
+            "airtable",
+            "Creates a new registration record in Airtable for the lead."
+          ],
+          [
+            "Check Personal Email",
+            "code",
+            "Verifies if the provided email is personal or professional."
+          ],
+          [
+            "Check Country",
+            "code",
+            "Validates if the lead's country aligns with the target market."
+          ],
+          [
+            "Build Lead Record",
+            "code",
+            "Constructs a structured lead record for further processing."
+          ],
+          [
+            "GPT: Match Domain to Company",
+            "openAi",
+            "Uses OpenAI to match domains with corresponding companies."
+          ],
+          [
+            "GPT: Validate Company Name",
+            "openAi",
+            "Validates the company name using GPT for accuracy."
+          ],
+          [
+            "API: Verify Phone",
+            "httpRequest",
+            "Verifies the phone number through an external API."
+          ],
+          [
+            "Merge: Collect Validations",
+            "merge",
+            "Aggregates the results of various validation processes."
+          ],
+          [
+            "GPT: Validate Person Name",
+            "openAi",
+            "Validates the person's name against known profiles."
+          ],
+          [
+            "Airtable: Update Hygiene",
+            "airtable",
+            "Updates data hygiene records in Airtable."
+          ],
+          [
+            "Airtable: Update Qualification",
+            "airtable",
+            "Updates the qualification status for the lead in Airtable."
+          ],
+          [
+            "Qualified for Pipedrive?",
+            "if",
+            "Checks if the lead qualifies for entry into Pipedrive."
+          ],
+          [
+            "Pipedrive: Create Organization",
+            "httpRequest",
+            "Creates a new organization record in Pipedrive."
+          ],
+          [
+            "Pipedrive: Create Person",
+            "pipedrive",
+            "Adds a new person record in Pipedrive linked to the organization."
+          ],
+          [
+            "Prepare Deal Data",
+            "code",
+            "Prepares data necessary for creating a deal in Pipedrive."
+          ],
+          [
+            "Pipedrive: Create Deal",
+            "pipedrive",
+            "Creates a new deal in Pipedrive associated with the lead."
+          ],
+          [
+            "Airtable: Save Deal ID",
+            "airtable",
+            "Stores the created deal ID in Airtable for tracking."
+          ],
+          [
+            "Clay: Send Enrichment",
+            "httpRequest",
+            "Sends lead data for enrichment to Clay."
+          ],
+          [
+            "Prepare Clay Data",
+            "set",
+            "Prepares the data format required by Clay for enrichment."
+          ],
+          [
+            "Merge: Deal + Airtable IDs",
+            "merge",
+            "Merges deal IDs with corresponding Airtable IDs."
+          ],
+          [
+            "Extract IDs for Airtable",
+            "code",
+            "Extracts necessary IDs for storing information in Airtable."
+          ],
+          [
+            "Classify Email Domain",
+            "code",
+            "Categorizes the email domain to assess quality."
+          ],
+          [
+            "Email: Check If Done",
+            "code",
+            "Checks if the email verification process is complete."
+          ],
+          [
+            "Email: Verification Ready?",
+            "if",
+            "Determines if the email is ready for further processing."
+          ],
+          [
+            "Pipedrive: Search Person",
+            "httpRequest",
+            "Searches for existing person records in Pipedrive."
+          ],
+          [
+            "Person Exists?",
+            "code",
+            "Determines if a person record already exists in Pipedrive."
+          ],
+          [
+            "Person Found?",
+            "if",
+            "Checks if the person search returned a valid result."
+          ],
+          [
+            "Pipedrive: Update Person",
+            "httpRequest",
+            "Updates the existing person record in Pipedrive."
+          ],
+          [
+            "Normalize Person ID",
+            "code",
+            "Standardizes the format of the person ID for consistency."
+          ],
+          [
+            "Pipeline OK?",
+            "if",
+            "Checks if the qualification pipeline is functioning correctly."
+          ],
+          [
+            "Wait: Person + Org",
+            "merge",
+            "Waits for processes involving person and organization to complete."
+          ],
+          [
+            "Pipedrive: Search Org",
+            "httpRequest",
+            "Searches for existing organization records in Pipedrive."
+          ],
+          [
+            "Check Org Duplicate?",
+            "code",
+            "Verifies if the organization record already exists."
+          ],
+          [
+            "Org Duplicate?",
+            "if",
+            "Checks the result of the organization duplication check."
+          ],
+          [
+            "Pipedrive: Add Duplicate Note",
+            "httpRequest",
+            "Adds a note for duplicate organization records in Pipedrive."
+          ],
+          [
+            "Clay: Check Response",
+            "code",
+            "Checks the response from Clay to determine success."
+          ],
+          [
+            "Clay: Failed?",
+            "if",
+            "Determines if the enrichment process via Clay was unsuccessful."
+          ],
+          [
+            "Clay: Wait 5s",
+            "wait",
+            "Pauses for 5 seconds before retrying the enrichment."
+          ],
+          [
+            "Clay: Retry",
+            "httpRequest",
+            "Retries sending data for enrichment to Clay if it previously failed."
+          ],
+          [
+            "Airtable: Mark Email Rejected",
+            "airtable",
+            "Marks emails as rejected in Airtable if they do not qualify."
+          ]
+        ],
+        "notes": "Ensure to monitor API limits and error handling as multiple external requests are made throughout the workflow.",
+        "_name": "Inbound Leads Qualification"
+      }
+    }
+  }
 }
