@@ -1,7 +1,7 @@
 {
   "workflows": {
     "AfyRBWkgEONyqNtl": {
-      "hash": "26wua3x3yli",
+      "hash": "2abzu5an8wg",
       "doc": {
         "slug": "fireflies-pid-call-analysis-coach-supabase",
         "trigger": "Triggered by an incoming webhook when a Fireflies call transcript is available.",
@@ -142,7 +142,7 @@
       }
     },
     "BQUB8mnTqGB9eL5w": {
-      "hash": "pkmuj0j4zk",
+      "hash": "24434zc92yk",
       "doc": {
         "slug": "inbound-leads-qualification-supabase",
         "trigger": "Starts when an inbound lead is submitted to the workflow’s webhook endpoint.",
@@ -272,7 +272,7 @@
       }
     },
     "BYPDAdpkbLxCWiew": {
-      "hash": "fgd6ih0ssw",
+      "hash": "294xu1vajz9",
       "doc": {
         "slug": "sync-crm-with-supabase-add-time-per-stage",
         "trigger": "Triggered by changes in Pipedrive CRM deals.",
@@ -545,7 +545,7 @@
       }
     },
     "V7j1ZgaI9kHPUtwJ": {
-      "hash": "75yyfymcvd",
+      "hash": "lr6p0toqxl",
       "doc": {
         "slug": "create-update-deal-from-discovery-call-supabase",
         "trigger": "Triggered by a Calendly event when a Discovery Call is booked.",
@@ -890,7 +890,7 @@
       }
     },
     "ecufqr7ZfxSIEggr": {
-      "hash": "1ryyhemtqxe",
+      "hash": "p8cy7ee12z",
       "doc": {
         "slug": "live-update-on-github-documentations-for-n8n-workflows",
         "trigger": "Runs every 23 hours using a schedule trigger.",
@@ -1020,7 +1020,7 @@
       }
     },
     "h6Ny08MA0hpoSXJI": {
-      "hash": "wvi64ros1s",
+      "hash": "trrkrlvxl9",
       "doc": {
         "slug": "ringostat-phone-call-analysis-supabase",
         "trigger": "Triggered by an incoming webhook on phone call reception.",
@@ -1215,7 +1215,7 @@
       }
     },
     "m8v1bYhSGhu1cJNh": {
-      "hash": "1gbbr23copo",
+      "hash": "7ozgnzpji7",
       "doc": {
         "slug": "api4com-phone-call-analysis-supabase",
         "trigger": "Triggered by an incoming webhook to process call analysis requests.",
@@ -1439,6 +1439,124 @@
         ],
         "notes": "Ensure the webhook endpoint is securely managed and the data mapping aligns with Pipedrive field requirements.",
         "_name": "(ENRICH) Update deal after Clay enrichment"
+      }
+    },
+    "JGZdwcjhxcwkwFsA": {
+      "hash": "18j58g4vrla",
+      "doc": {
+        "slug": "transcript-embedding-generator-daily",
+        "trigger": "Runs on a schedule trigger every 2 hours.",
+        "overview": "This workflow generates vector embeddings for call transcripts stored in Supabase that do not yet have embeddings. It queries for unembedded records, batches them, sends them to OpenAI text-embedding-3-small for vectorization, and updates each record with its embedding. This powers semantic search across call transcripts in the Sales Intelligence dashboard.",
+        "phases": [
+          [
+            "Fetch Unembedded Records",
+            "Queries Supabase for call_transcripts rows where the embedding column is null, up to 50 records per run."
+          ],
+          [
+            "Batch & Embed",
+            "Prepares transcript text into a batch payload and sends it to OpenAI Embeddings API (text-embedding-3-small, 1536 dimensions)."
+          ],
+          [
+            "Update Records",
+            "Maps each embedding back to its source record and updates the Supabase call_transcripts table with the generated vector."
+          ]
+        ],
+        "nodes": [
+          [
+            "Schedule Trigger",
+            "scheduleTrigger",
+            "Fires every 2 hours to process new unembedded transcripts."
+          ],
+          [
+            "Supabase: Get Unembedded",
+            "httpRequest",
+            "Queries Supabase REST API for call_transcripts where embedding is null (limit 50)."
+          ],
+          [
+            "Prepare Batch",
+            "code",
+            "Validates results and formats transcript records into a batch array for the embeddings API."
+          ],
+          [
+            "OpenAI: Generate Embeddings",
+            "httpRequest",
+            "Sends transcript texts to OpenAI text-embedding-3-small and receives vector embeddings."
+          ],
+          [
+            "Map Updates",
+            "code",
+            "Pairs each generated embedding with its source record ID for the update step."
+          ],
+          [
+            "Supabase: Update Embedding",
+            "httpRequest",
+            "PATCHes each call_transcripts row in Supabase with its newly generated embedding vector."
+          ]
+        ]
+      }
+    },
+    "YYQMPCRpAfRjsExQ": {
+      "hash": "27zvm4zgvx2",
+      "doc": {
+        "slug": "auto-link-calendar-meetings-to-deals",
+        "trigger": "Triggered by a Pipedrive activity creation event.",
+        "overview": "This workflow automatically links calendar meeting activities in Pipedrive to the most relevant open deal in the SALES 2026 pipeline (pipeline 33). When a meeting is created without a deal association, it extracts the prospect person ID from attendees, looks up their open deals, picks the best match (preferring same-rep ownership and most recently updated), and links the activity to that deal.",
+        "phases": [
+          [
+            "Filter & Extract",
+            "Filters for meeting-type activities without a deal, then extracts the prospect person ID from the attendee list (excluding the organizer/user)."
+          ],
+          [
+            "Deal Lookup",
+            "Queries the Pipedrive API for all deals associated with the prospect person, then selects the best open deal in pipeline 33 based on rep ownership and recency."
+          ],
+          [
+            "Link Activity",
+            "Updates the Pipedrive activity to associate it with the matched deal via the Pipedrive API."
+          ]
+        ],
+        "nodes": [
+          [
+            "Activity Created",
+            "pipedriveTrigger",
+            "Listens for new activity creation events from Pipedrive."
+          ],
+          [
+            "Is Meeting + No Deal?",
+            "filter",
+            "Checks that the activity is a meeting type and has no deal already linked."
+          ],
+          [
+            "Extract Prospect Person ID",
+            "code",
+            "Parses attendees to find the prospect (non-organizer with a person_id)."
+          ],
+          [
+            "Has Person ID?",
+            "filter",
+            "Ensures a valid prospect person_id was found before proceeding."
+          ],
+          [
+            "Get Person Deals",
+            "httpRequest",
+            "Fetches all deals for the prospect person from the Pipedrive API."
+          ],
+          [
+            "Pick Best Deal",
+            "code",
+            "Selects the best open deal in pipeline 33, preferring same-rep ownership and most recent update."
+          ],
+          [
+            "Found Deal?",
+            "filter",
+            "Checks that a matching deal was found."
+          ],
+          [
+            "Link Activity to Deal",
+            "httpRequest",
+            "Updates the Pipedrive activity to link it to the selected deal."
+          ]
+        ]
       }
     }
   }
