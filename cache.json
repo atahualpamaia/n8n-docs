@@ -1,466 +1,712 @@
 {
   "workflows": {
     "AfyRBWkgEONyqNtl": {
-      "hash": "2abzu5an8wg",
+      "hash": "153ml1aekef",
       "doc": {
         "slug": "fireflies-pid-call-analysis-coach-supabase",
-        "trigger": "Triggered by an incoming webhook when a Fireflies call transcript is available.",
-        "overview": "This workflow analyzes sales call transcripts using Fireflies, extracts Pain, Impact, and Decision (PID) insights via OpenAI, and sends automated coaching emails based on these findings. Key results and scores are logged to Supabase for future tracking and reporting. The workflow is designed to automate call reviews, provide feedback to reps, and systematically store intelligence.",
+        "trigger": "Triggered by a webhook upon receiving a new call recording.",
+        "overview": "This workflow processes sales call transcripts using Fireflies and analyzes them with OpenAI to extract and score Pain, Impact, and Decision (PID) metrics. Results are stored in Supabase and emailed to relevant stakeholders for continuous coaching and performance improvement.",
         "phases": [
           [
-            "Data Ingestion",
-            "Captures call transcript data from Fireflies and gathers relevant rep metadata."
+            "Trigger & Transcript Collection",
+            "Captures incoming calls and fetches transcripts from Fireflies."
           ],
           [
-            "PID Analysis",
-            "Utilizes OpenAI to extract and score Pain, Impact, and Decision insights from calls."
+            "PID Analysis & Scoring",
+            "Uses OpenAI to extract and score PID attributes from the call transcript, then parses and merges the results."
           ],
           [
-            "Reporting & Storage",
-            "Sends PID analysis and coaching emails, then syncs the results with Supabase for record-keeping."
+            "Data Storage & Notification",
+            "Saves analyzed data into Supabase and sends summary and coaching emails."
           ]
         ],
         "nodes": [
           [
             "Webhook",
             "webhook",
-            "Receives incoming trigger containing call details for analysis."
+            "Receives the initial call event data."
           ],
           [
             "Get Transcript",
             "fireflies",
-            "Fetches the transcript of the specified call from Fireflies."
+            "Fetches the call transcript from Fireflies API."
           ],
           [
             "Clean Input + Rep Map",
             "code",
-            "Cleans transcript data and maps it to the corresponding sales rep."
+            "Normalizes transcript data and maps it to the correct sales rep."
           ],
           [
             "PID Extraction",
             "openAi",
-            "Requests OpenAI to extract PID data from the call transcript."
+            "Uses OpenAI to extract Pain, Impact, and Decision indicators from transcript."
           ],
           [
             "Parse PID",
             "code",
-            "Processes and structures the extracted PID data."
+            "Structures the PID output for downstream processing."
           ],
           [
             "Call Intelligence",
             "openAi",
-            "Uses OpenAI to derive additional call intelligence insights."
+            "Uses OpenAI to generate call intelligence insights."
           ],
           [
             "Parse Intelligence",
             "code",
-            "Structures output from the call intelligence step."
+            "Parses call intelligence results for merge and storage."
           ],
           [
             "Merge Analysis",
             "merge",
-            "Combines PID and call intelligence results."
+            "Combines PID extraction and intelligence results."
           ],
           [
             "Build Record",
             "code",
-            "Prepares the consolidated record for reporting and storage."
+            "Compiles all analysis into a single record for storage."
           ],
           [
             "PID Score: Pain",
             "openAi",
-            "Analyzes transcript for Pain score using OpenAI."
+            "Scores the Pain aspect using OpenAI."
           ],
           [
             "Parse Pain Score",
             "code",
-            "Extracts and formats Pain score output."
+            "Extracts and validates the Pain score."
           ],
           [
             "PID Score: Impact",
             "openAi",
-            "Analyzes transcript for Impact score using OpenAI."
+            "Scores the Impact aspect using OpenAI."
           ],
           [
             "Parse Impact Score",
             "code",
-            "Extracts and formats Impact score output."
+            "Extracts and validates the Impact score."
           ],
           [
             "PID Score: Decision",
             "openAi",
-            "Analyzes transcript for Decision score using OpenAI."
+            "Scores the Decision aspect using OpenAI."
           ],
           [
             "Parse Decision Score",
             "code",
-            "Extracts and formats Decision score output."
+            "Extracts and validates the Decision score."
           ],
           [
             "Merge Scores",
             "merge",
-            "Combines Pain, Impact, and Decision scores for unified evaluation."
+            "Consolidates individual PID scores."
           ],
           [
             "Calculate Scores",
             "code",
-            "Calculates final aggregated PID metrics."
+            "Performs final calculations on the PID scores."
           ],
           [
             "Email: PID Report",
             "emailSend",
-            "Sends a summary PID report to stakeholders."
+            "Sends a summary report of the PID analysis to stakeholders."
           ],
           [
             "Email: PID Coaching",
             "emailSend",
-            "Sends automated coaching advice based on call analysis."
+            "Sends coaching recommendations based on call analysis."
           ],
           [
             "Filter: Skip Internal Calls?",
             "if",
-            "Checks if the call is internal and bypasses PID analysis for those cases."
+            "Checks if the call is internal and skips further processing if true."
           ],
           [
             "Supabase: Get Reps",
             "httpRequest",
-            "Queries Supabase for sales representative details."
+            "Retrieves sales rep information from Supabase."
           ],
           [
             "Map Video Call",
             "code",
-            "Links call data with associated video details if applicable."
+            "Associates the call with a video session if available."
           ],
           [
             "Supabase: Upsert Call",
             "httpRequest",
-            "Upserts the full call analysis record into Supabase for persistent storage."
+            "Saves or updates the call record in Supabase."
+          ],
+          [
+            "Build Transcript Record (Vector)",
+            "code",
+            "Prepares transcript content for vector storage."
+          ],
+          [
+            "Supabase: Save Transcript",
+            "httpRequest",
+            "Persists the transcript vector to Supabase."
+          ],
+          [
+            "Lookup Deal",
+            "httpRequest",
+            "Fetches associated deal information."
+          ],
+          [
+            "Guard: Has Transcript?",
+            "if",
+            "Ensures the workflow only continues if a transcript is available."
           ]
         ],
-        "notes": "Review OpenAI node usage for cost and API limits; validate Supabase endpoints and permission scopes regularly.",
+        "notes": "Ensure API rate limits for Fireflies and OpenAI are managed to avoid delays; regularly update Supabase schema if fields change.",
         "_name": "(Fireflies) PID Call Analysis + Coach (Supabase)"
       }
     },
     "BQUB8mnTqGB9eL5w": {
-      "hash": "24434zc92yk",
+      "hash": "pkmuj0j4zk",
       "doc": {
         "slug": "inbound-leads-qualification-supabase",
-        "trigger": "Starts when an inbound lead is submitted to the workflow’s webhook endpoint.",
-        "overview": "This workflow automates the qualification of inbound leads using external data enrichment, validation, and CRM integration. It verifies and scores lead contact information, enriches lead data with third-party tools, and syncs qualified leads to Supabase and Pipedrive. The process ensures leads meet specific criteria before entering the main sales pipeline.",
+        "trigger": "Starts when a new lead arrives via a webhook.",
+        "overview": "This workflow automates the qualification of inbound leads by verifying their contact information, enriching their profiles, and syncing results to both Supabase and Pipedrive. It streamlines the decision-making process, leveraging data verification APIs and AI to ensure high-quality leads are nurtured or rejected efficiently. Qualified leads are pushed to CRM systems, while unqualified ones are tracked in Supabase for reporting.",
         "phases": [
           [
-            "Data Collection & Restoration",
-            "Inbound lead data is captured via webhook and prepared for processing."
+            "Data Ingestion",
+            "Collect lead data from the inbound webhook and restore the incoming payload."
           ],
           [
-            "Contact Verification & Enrichment",
-            "Lead contact details are verified and enriched using tools like Snov, Clay, and OpenAI."
+            "Lead Enrichment & Verification",
+            "Verify and enrich contact details using third-party services, and run AI-based validation checks."
           ],
           [
-            "Qualification & Scoring",
-            "Leads are evaluated against multiple criteria such as email, phone, job position, and company details to determine qualification."
+            "Qualification Logic",
+            "Merge enrichment results, apply qualification rules, and decide on next steps for each lead."
           ],
           [
             "CRM & Database Sync",
-            "Qualified leads are sent to Pipedrive and Supabase, while rejected or duplicate leads are handled appropriately."
+            "Sync qualified leads and associated objects to Pipedrive, update Supabase with deal and lead statuses."
           ]
         ],
         "nodes": [
           [
             "Webhook1",
             "webhook",
-            "Receives new inbound lead submissions."
+            "Receives inbound lead data to trigger the workflow."
           ],
           [
             "Restore Webhook Data1",
             "code",
-            "Restores and preprocesses the raw webhook input data."
+            "Reconstructs the webhook payload for downstream processing."
+          ],
+          [
+            "Prepare Rejection Data",
+            "code",
+            "Builds rejection information for leads that do not qualify."
+          ],
+          [
+            "Merge: Person + Org + Lead",
+            "code",
+            "Combines person, organization, and lead data for unified processing."
           ],
           [
             "Snov: Get Token",
             "httpRequest",
-            "Requests an authentication token from Snov.io API for email verification."
+            "Fetches an authorization token from Snov.io for later API calls."
           ],
           [
             "Snov: Start Verification",
             "httpRequest",
-            "Initiates email verification request to Snov.io."
+            "Initiates email verification through Snov.io's API."
           ],
           [
             "Email: Wait 15s",
             "wait",
-            "Pauses to allow sufficient time for external email verification."
+            "Waits 15 seconds to allow time for external email verification to complete."
           ],
           [
             "Snov: Get Verification Result",
             "httpRequest",
-            "Retrieves the result of the email verification process."
+            "Retrieves the result of the external email verification process."
+          ],
+          [
+            "Parse Email Check",
+            "set",
+            "Extracts and formats email verification results for decision logic."
           ],
           [
             "Qualify Email",
             "code",
-            "Assesses email quality and deliverability for further qualification."
+            "Applies logic to determine if the email meets qualification criteria."
           ],
           [
             "Email Qualified?",
             "if",
-            "Checks if the email address meets qualification criteria."
+            "Branches workflow based on whether the email passed validation."
+          ],
+          [
+            "Parse Person Name Result",
+            "code",
+            "Processes and normalizes person name data from enrichment APIs."
+          ],
+          [
+            "Phone Has Carrier?",
+            "if",
+            "Checks if the lead's phone number provider is valid."
+          ],
+          [
+            "Parse Phone Result",
+            "set",
+            "Extracts phone verification results for qualification logic."
+          ],
+          [
+            "Check Data Score",
+            "code",
+            "Evaluates the completeness and quality score of the lead data."
+          ],
+          [
+            "Check Job Position",
+            "code",
+            "Assesses if the lead's job position fits the target persona."
+          ],
+          [
+            "Check Main Goals",
+            "code",
+            "Verifies if the lead's goals align with ICP (ideal customer profile) checks."
+          ],
+          [
+            "Merge: Collect ICP Checks",
+            "merge",
+            "Consolidates results of various ICP-related qualification checks."
+          ],
+          [
+            "Assemble Qualification Result",
+            "code",
+            "Summarizes qualification status and reason codes for each lead."
+          ],
+          [
+            "Parse Company Name Result",
+            "code",
+            "Processes company name after enrichment and normalization."
+          ],
+          [
+            "Parse Domain Match Result",
+            "code",
+            "Checks if the email domain matches the company domain."
+          ],
+          [
+            "Check Personal Email",
+            "code",
+            "Flags leads using personal email domains as non-qualified."
+          ],
+          [
+            "Check Country",
+            "code",
+            "Validates if the lead country is within the accepted territory list."
+          ],
+          [
+            "Build Lead Record",
+            "code",
+            "Assembles the finalized lead record for syncing to CRM and database."
           ],
           [
             "GPT: Match Domain to Company",
             "openAi",
-            "Uses OpenAI to determine if the lead's email domain matches their company."
+            "Uses GPT to infer company affiliation from the email domain."
+          ],
+          [
+            "GPT: Validate Company Name",
+            "openAi",
+            "Leverages AI to validate the company name's relevance and accuracy."
           ],
           [
             "API: Verify Phone",
             "httpRequest",
-            "Validates the phone number through an external verification API."
+            "Sends the lead's phone number to a validation API for carrier and activity check."
           ],
           [
             "Merge: Collect Validations",
             "merge",
-            "Aggregates validation results from various enrichment nodes."
+            "Aggregates all validation and enrichment results for downstream use."
+          ],
+          [
+            "GPT: Validate Person Name",
+            "openAi",
+            "Uses GPT to verify the authenticity and plausibility of the person’s name."
+          ],
+          [
+            "Qualified for Pipedrive?",
+            "if",
+            "Decides if the lead should be pushed into Pipedrive based on qualification outcomes."
           ],
           [
             "Pipedrive: Create Organization",
             "httpRequest",
-            "Sends a request to create a new organization in Pipedrive."
+            "Creates a new organization in Pipedrive CRM."
           ],
           [
             "Pipedrive: Create Person",
             "pipedrive",
-            "Creates a new person/contact in Pipedrive CRM."
+            "Adds a new contact/person to Pipedrive under the organization."
           ],
           [
             "Prepare Deal Data",
             "code",
-            "Prepares the data structure needed for new Pipedrive deals."
+            "Formulates the data structure for a new deal in Pipedrive."
           ],
           [
             "Pipedrive: Create Deal",
             "pipedrive",
-            "Creates a deal and attaches it to the qualified organization and person in Pipedrive."
+            "Creates a new sales deal in Pipedrive for qualified leads."
+          ],
+          [
+            "Clay: Send Enrichment",
+            "httpRequest",
+            "Sends data to Clay for further AI-driven enrichment."
+          ],
+          [
+            "Prepare Clay Data",
+            "set",
+            "Prepares and formats data for Clay enrichment requests."
+          ],
+          [
+            "Merge: Deal + Supabase IDs",
+            "merge",
+            "Links Pipedrive deal and Supabase record IDs for synchronization."
+          ],
+          [
+            "Extract IDs for Supabase",
+            "code",
+            "Pulls out Supabase-related IDs to support downstream record updates."
+          ],
+          [
+            "Classify Email Domain",
+            "code",
+            "Classifies the type/quality of the lead's email domain (corporate, generic, etc.)."
+          ],
+          [
+            "Email: Check If Done",
+            "code",
+            "Determines if email verification and enrichment phases are complete."
+          ],
+          [
+            "Email: Verification Ready?",
+            "if",
+            "Branches based on email verification and enrichment readiness."
+          ],
+          [
+            "Pipedrive: Search Person",
+            "httpRequest",
+            "Searches for an existing person in Pipedrive to prevent duplicates."
+          ],
+          [
+            "Person Exists?",
+            "code",
+            "Flags whether a matching person was found in Pipedrive."
+          ],
+          [
+            "Person Found?",
+            "if",
+            "Branches logic based on the search result for persons in Pipedrive."
+          ],
+          [
+            "Pipedrive: Update Person",
+            "httpRequest",
+            "Updates an existing Pipedrive person contact with new info."
+          ],
+          [
+            "Normalize Person ID",
+            "code",
+            "Standardizes the person ID for consistent use in further steps."
+          ],
+          [
+            "Pipeline OK?",
+            "if",
+            "Checks whether all pipeline and sync requirements are met before progressing."
+          ],
+          [
+            "Wait: Person + Org",
+            "merge",
+            "Waits for both person and organization creation to finish."
+          ],
+          [
+            "Pipedrive: Search Org",
+            "httpRequest",
+            "Checks for existing organizations in Pipedrive to avoid duplication."
+          ],
+          [
+            "Check Org Duplicate?",
+            "code",
+            "Identifies if the organization already exists in Pipedrive."
+          ],
+          [
+            "Org Duplicate?",
+            "if",
+            "Branches the workflow based on whether a duplicate organization is detected."
+          ],
+          [
+            "Pipedrive: Add Duplicate Note",
+            "httpRequest",
+            "Adds a note to duplicate organization records in Pipedrive for visibility."
+          ],
+          [
+            "Clay: Check Response",
+            "code",
+            "Assesses Clay enrichment response success or failure."
+          ],
+          [
+            "Clay: Failed?",
+            "if",
+            "Branches dependent on the outcome of Clay enrichment."
+          ],
+          [
+            "Clay: Wait 5s",
+            "wait",
+            "Waits 5 seconds before attempting a Clay retry to handle API rate limits."
+          ],
+          [
+            "Clay: Retry",
+            "httpRequest",
+            "Attempts Clay enrichment again if the previous call failed."
+          ],
+          [
+            "Map Registration",
+            "code",
+            "Prepares registration data for Supabase syncing."
           ],
           [
             "Supabase: Create Registration",
             "httpRequest",
-            "Saves the new registration record to Supabase."
+            "Creates a new registration record in Supabase database."
+          ],
+          [
+            "Map Hygiene",
+            "code",
+            "Formats hygiene information for Supabase updates."
           ],
           [
             "Supabase: Update Hygiene",
             "httpRequest",
-            "Updates Supabase with hygiene check results for the lead."
+            "Updates Supabase with the latest lead data hygiene metrics."
+          ],
+          [
+            "Map Qualification",
+            "code",
+            "Builds qualification data structures for Supabase updates."
           ],
           [
             "Supabase: Update Qualification",
             "httpRequest",
-            "Saves the qualification score and details to Supabase."
+            "Pushes lead qualification results to Supabase."
+          ],
+          [
+            "Map Deal ID",
+            "code",
+            "Prepares the deal ID for relating Supabase and Pipedrive entries."
           ],
           [
             "Supabase: Save Deal ID",
             "httpRequest",
-            "Links the Pipedrive deal ID to the lead record in Supabase."
+            "Stores the Pipedrive deal ID in Supabase for cross-referencing."
+          ],
+          [
+            "Map Rejected",
+            "code",
+            "Prepares rejection data for disqualified leads."
           ],
           [
             "Supabase: Mark Rejected",
             "httpRequest",
-            "Marks leads that fail qualification as rejected in Supabase."
+            "Marks unqualified or rejected leads in Supabase for tracking."
           ]
         ],
-        "notes": "Periodic review and update of external API credentials, validation criteria, and webhook endpoints are essential for uninterrupted workflow operation.",
+        "notes": "Maintain and periodically monitor third-party API credentials, as changes or downtime in external validation services may impact workflow reliability.",
         "_name": "Inbound Leads Qualification (Supabase)"
       }
     },
     "BYPDAdpkbLxCWiew": {
-      "hash": "294xu1vajz9",
+      "hash": "hvhw3j3vh",
       "doc": {
         "slug": "sync-crm-with-supabase-add-time-per-stage",
-        "trigger": "Triggered by changes in Pipedrive CRM deals.",
-        "overview": "This workflow synchronizes Pipedrive CRM deal data with Supabase and records the time spent at each stage of the sales pipeline. It exists to ensure all deal progress is accurately tracked for sales analytics and automated stage timing assignments in Supabase.",
+        "trigger": "Triggered when a deal is created, updated, or deleted in Pipedrive.",
+        "overview": "This workflow synchronizes deal data between Pipedrive and Supabase, while also calculating and storing the time a deal spends in each sales pipeline stage. The process ensures data consistency across systems and provides visibility on deal progression timeframes.",
         "phases": [
           [
-            "Trigger & Filter",
-            "Detect relevant CRM changes and filter for target sales pipelines."
+            "Deal Event Detection",
+            "Detects changes to deals in Pipedrive, including updates and deletions."
           ],
           [
-            "Stage Timing & Processing",
-            "Determine stage entry/exit, calculate time spent, and update both Pipedrive and Supabase."
-          ],
-          [
-            "Supabase Sync",
-            "Create or update corresponding deal records in Supabase reflecting current stage and durations."
+            "Stage Time Calculation & Sync",
+            "Calculates time spent in each pipeline stage and updates this data in both Pipedrive and Supabase."
           ]
         ],
         "nodes": [
           [
             "Pipedrive Trigger1",
             "pipedriveTrigger",
-            "Listens for updates to deals in the target Pipedrive pipeline."
+            "Starts the workflow when a relevant event occurs in Pipedrive."
           ],
           [
             "SALES 2026 only?1",
             "if",
-            "Checks if the deal belongs to the 'SALES 2026' pipeline."
+            "Checks if the deal belongs to the 'SALES 2026' pipeline for conditional processing."
           ],
           [
             "Build Deal Data1",
             "code",
-            "Structures incoming data to prepare for processing."
+            "Constructs normalized deal data for downstream nodes."
           ],
           [
             "Map Deal Update",
             "code",
-            "Transforms or enriches deal data before further logic."
+            "Maps incoming changes to the appropriate update operations."
           ],
           [
             "Registration before1",
             "if",
-            "Checks if the deal has previously entered the Registration stage."
+            "Determines if the deal was previously in the Registration stage."
           ],
           [
             "MQL Trying before1",
             "if",
-            "Checks for prior entry into the MQL Trying stage."
+            "Checks previous presence in MQL Trying stage."
           ],
           [
             "MQL Contact before1",
             "if",
-            "Determines if the deal previously hit the MQL Contact stage."
+            "Checks previous presence in MQL Contact stage."
           ],
           [
             "SAL Trial before1",
             "if",
-            "Verifies if the deal was in the SAL Trial stage before."
+            "Checks prior residence in SAL Trial stage."
           ],
           [
             "SAL Commit before1",
             "if",
-            "Checks if the deal has already entered the SAL Commit stage."
+            "Checks if the deal was previously in SAL Commit stage."
           ],
           [
             "PD: Time in Registration1",
             "pipedrive",
-            "Fetches the duration the deal spent in the Registration stage."
+            "Updates time spent in the Registration stage in Pipedrive."
           ],
           [
             "PD: Time in MQL Trying1",
             "pipedrive",
-            "Fetches the time spent in MQL Trying."
+            "Updates time in MQL Trying stage in Pipedrive."
           ],
           [
             "PD: Time in MQL Contact1",
             "pipedrive",
-            "Retrieves time in MQL Contact stage."
+            "Updates time in MQL Contact stage in Pipedrive."
           ],
           [
             "PD: Time in SQL1",
             "pipedrive",
-            "Gets the duration spent in SQL stage."
+            "Records time spent in SQL stage in Pipedrive."
           ],
           [
             "PD: Time in SAL Trial1",
             "pipedrive",
-            "Fetches time spent in SAL Trial."
+            "Records time in SAL Trial stage in Pipedrive."
           ],
           [
             "PD: Time in SAL Commit1",
             "pipedrive",
-            "Retrieves duration in SAL Commit stage."
+            "Records time in SAL Commit stage in Pipedrive."
           ],
           [
             "PD: Update Lost1",
             "pipedrive",
-            "Marks the deal as lost in Pipedrive if applicable."
+            "Updates deal status to Lost in Pipedrive if applicable."
           ],
           [
             "PD: Update Won1",
             "pipedrive",
-            "Marks the deal as won in Pipedrive if applicable."
+            "Updates deal status to Won in Pipedrive if applicable."
           ],
           [
             "Entered MQL?1",
             "if",
-            "Checks if stage transition to MQL occurred."
+            "Checks if deal has entered MQL stage."
           ],
           [
             "Entered SAL?1",
             "if",
-            "Checks for transition into SAL stage."
+            "Checks if deal has entered SAL stage."
           ],
           [
             "First Contact?1",
             "if",
-            "Tests if first contact was made for the deal."
+            "Checks if First Contact has been made."
           ],
           [
             "Won?1",
             "if",
-            "Determines if the deal status is won."
+            "Checks if deal is marked as Won."
           ],
           [
             "Lost?1",
             "if",
-            "Determines if the deal status is lost."
+            "Checks if deal is marked as Lost."
           ],
           [
             "SB: Mark MQL1",
             "httpRequest",
-            "Marks the deal as entered MQL in Supabase."
+            "Marks the deal as MQL in Supabase."
           ],
           [
             "SB: Mark SAL1",
             "httpRequest",
-            "Flags SAL stage entry in Supabase."
+            "Marks the deal as SAL in Supabase."
           ],
           [
             "SB: Mark Contacted1",
             "httpRequest",
-            "Marks the deal as contacted in Supabase."
+            "Updates contacted status in Supabase."
           ],
           [
             "SB: Mark Won1",
             "httpRequest",
-            "Updates the deal as won in Supabase."
+            "Updates deal as Won in Supabase."
           ],
           [
             "SB: Mark Lost1",
             "httpRequest",
-            "Updates the deal as lost in Supabase."
+            "Updates deal as Lost in Supabase."
           ],
           [
             "Edit Fields",
             "set",
-            "Prepares and sets necessary fields before API updates."
+            "Enriches and formats the data before synchronization."
           ],
           [
             "SQL before",
             "if",
-            "Checks if the deal previously entered SQL."
+            "Checks if the deal was previously in SQL stage."
           ],
           [
             "If Lost",
             "if",
-            "Conditionally processes lost deals."
+            "Determines path if the deal is marked Lost."
           ],
           [
             "If Won",
             "if",
-            "Conditionally processes won deals."
+            "Determines path if the deal is marked Won."
           ],
           [
             "HTTP Request1",
             "httpRequest",
-            "Makes generic API call for deal update."
+            "Performs additional HTTP calls for external integrations."
           ],
           [
             "Entered SQL?1",
             "if",
-            "Checks for entry into SQL stage."
+            "Checks if the deal has entered SQL stage."
           ],
           [
             "SB: Mark SQL1",
             "httpRequest",
-            "Marks SQL stage in Supabase."
+            "Marks the deal as SQL in Supabase."
           ],
           [
             "Supabase: Get Existing Record",
@@ -470,15 +716,25 @@
           [
             "Has Supabase Record?",
             "if",
-            "Checks if Supabase record exists."
+            "Determines if the deal exists in Supabase for upsert decision."
           ],
           [
             "Supabase: Update Deal",
             "httpRequest",
-            "Updates or creates the deal in Supabase with new data."
+            "Updates or inserts deal data in Supabase."
+          ],
+          [
+            "Pipedrive Trigger: Deleted",
+            "pipedriveTrigger",
+            "Triggers workflow if a deal is deleted in Pipedrive."
+          ],
+          [
+            "Supabase: Delete Deal",
+            "httpRequest",
+            "Deletes the matching deal record in Supabase if removed from Pipedrive."
           ]
         ],
-        "notes": "Ensure field mappings and stage definitions remain consistent between Pipedrive and Supabase, and monitor API quotas for both platforms to prevent sync failures.",
+        "notes": "Ensure API rate limits for both Pipedrive and Supabase are monitored, and update field mappings promptly if pipeline stages or custom fields change.",
         "_name": "Sync CRM with Supabase + Add Time per Stage"
       }
     },
@@ -1020,392 +1276,452 @@
       }
     },
     "h6Ny08MA0hpoSXJI": {
-      "hash": "trrkrlvxl9",
+      "hash": "cahj6xm81o",
       "doc": {
         "slug": "ringostat-phone-call-analysis-supabase",
-        "trigger": "Triggered by an incoming webhook on phone call reception.",
-        "overview": "This workflow processes and analyzes incoming phone calls by transcribing audio, extracting insights with AI, and scoring various call components. The results are mapped and upserted into Supabase for further reporting and tracking. It exists to automate phone call evaluation, enabling richer analytics and rep performance monitoring.",
+        "trigger": "Triggered by receiving a phone call event from Ringostat via webhook.",
+        "overview": "This workflow processes incoming phone call data, downloads and transcribes audio, and uses AI to extract insights such as pain points, objections, and rapport scores. All extracted and computed information is then mapped and upserted into Supabase for tracking and reporting. It exists to automate and centralize phone call analytics for streamlined sales and coaching insights.",
         "phases": [
           [
-            "Input Capture & Routing",
-            "Receives incoming call data and determines the processing path based on call type."
+            "Call Reception and Input Processing",
+            "Receives call webhook, cleans input data, and prepares initial activity records."
           ],
           [
-            "Audio Processing & Transcription",
-            "Downloads call audio files and converts them to text using external services."
+            "Audio Handling and Transcription",
+            "Downloads call audio, transcribes content, and builds transcript records for further processing."
           ],
           [
-            "AI-Based Analysis",
-            "Uses AI nodes to extract pain points, call intelligence, rapport, and score key sections of the call."
+            "AI Analysis and Scoring",
+            "Uses OpenAI to extract pain, intelligence signals, and computes scores for key conversation segments."
           ],
           [
-            "Result Aggregation & Storage",
-            "Merges and formats analytical output, then upserts all results into Supabase tables."
+            "Data Mapping and Storage",
+            "Maps all analytics and results, then upserts records and transcripts into Supabase tables."
           ]
         ],
         "nodes": [
           [
             "Receive Phone Call",
             "webhook",
-            "Ingests call event data through a webhook trigger."
+            "Triggers the workflow by capturing incoming phone call event data from Ringostat."
           ],
           [
             "Clean Input + Rep Map",
             "code",
-            "Sanitizes incoming data and associates it with the correct sales rep."
+            "Sanitizes received data and resolves related sales rep assignments."
           ],
           [
             "Build Activity Record",
             "code",
-            "Prepares a detailed activity log to be written to the database."
+            "Constructs a structured activity record for the call event."
           ],
           [
             "Route: Call Type",
             "switch",
-            "Routes logic based on the type of call (e.g., full-length or short)."
+            "Branches logic depending on the type of call (e.g., full vs short)."
           ],
           [
             "Download Audio",
             "httpRequest",
-            "Requests the audio file from an external telephony system."
+            "Downloads the audio recording of the received phone call."
           ],
           [
             "Transcribe Audio",
             "httpRequest",
-            "Sends the audio file to a transcription service to generate call transcripts."
+            "Sends audio for transcription to obtain the full call transcript."
           ],
           [
             "Build Transcript Record",
             "code",
-            "Builds a transcript record from the formatted text."
+            "Prepares structured transcript data from transcription results."
           ],
           [
             "Pain Extraction",
             "openAi",
-            "Extracts customer pain points from the call transcript using AI."
+            "Analyzes the transcript using AI to extract customer pain points."
           ],
           [
             "Parse Pain",
             "code",
-            "Cleans and structures the AI-extracted pain point data."
+            "Parses and formats the pain points returned by the AI analysis."
           ],
           [
             "Call Intelligence",
             "openAi",
-            "Performs comprehensive call intelligence analysis on the conversation."
+            "Extracts sales intelligence insights from the call transcript using AI."
           ],
           [
             "Parse Intelligence",
             "code",
-            "Formats and prepares intelligence insights for storage."
+            "Parses and refines intelligence signals output by the AI."
           ],
           [
             "Merge Analysis",
             "merge",
-            "Combines multiple AI analysis outputs into a single data object."
+            "Combines pain and intelligence analysis results for unified processing."
           ],
           [
             "Build Record",
             "code",
-            "Compiles information into a unified record for database insertion."
+            "Assembles a comprehensive analysis record for the call."
           ],
           [
             "Score: Opening",
             "openAi",
-            "Rates the call opening segment via AI scoring."
+            "Evaluates the effectiveness of the opening segment using AI scoring."
           ],
           [
             "Parse Opening Score",
             "code",
-            "Extracts and formats the opening score for later use."
+            "Extracts and formats the opening score from AI results."
           ],
           [
             "Score: Pain",
             "openAi",
-            "Scores the pain discussion portion with AI."
+            "Scores the handling of pain points in the call with AI."
           ],
           [
             "Parse Pain Score",
             "code",
-            "Formats the pain scoring output for aggregation."
+            "Parses the pain score analysis from AI."
           ],
           [
             "Score: Objection",
             "openAi",
-            "Assesses the objection handling segment of the call using AI."
+            "Assesses the handling of objections using AI analysis."
           ],
           [
             "Parse Objection Score",
             "code",
-            "Parses the AI output for objection scoring."
+            "Parses and formats objection score results from AI."
           ],
           [
             "Merge Scores",
             "merge",
-            "Consolidates all scored results into a unified data set."
+            "Aggregates scores for opening, pain, and objections."
           ],
           [
             "Calculate Score",
             "code",
-            "Computes a final or composite score based on all evaluation factors."
+            "Computes final composite scores across evaluated sections."
           ],
           [
             "Download Audio (Short)",
             "httpRequest",
-            "Downloads short-form call audio, if applicable."
+            "Downloads audio for short-duration calls."
           ],
           [
             "Transcribe Audio (Short)",
             "httpRequest",
-            "Transcribes short-form call audio for analysis."
+            "Sends short call audio for transcription."
           ],
           [
             "Build Short Transcript",
             "code",
-            "Creates a transcript record for short calls."
+            "Prepares transcript for short calls."
           ],
           [
             "Rapport Analysis",
             "openAi",
-            "Analyzes rapport-building effectiveness in the call using AI."
+            "Uses AI to evaluate rapport-building effectiveness."
           ],
           [
             "Parse Rapport",
             "code",
-            "Processes the AI output related to rapport analysis."
+            "Extracts rapport score from AI analysis."
           ],
           [
             "Supabase: Get Reps",
             "httpRequest",
-            "Fetches active sales rep data from Supabase."
+            "Fetches sales rep data from Supabase for mapping."
           ],
           [
             "Map Activity",
             "code",
-            "Maps analytical results to Supabase activity schema."
+            "Links activity records to the appropriate sales rep."
           ],
           [
             "Supabase: Upsert Activity",
             "httpRequest",
-            "Upserts the activity analysis into Supabase."
+            "Upserts call activity data into Supabase."
           ],
           [
             "Map Analysis",
             "code",
-            "Prepares linked analysis data for Supabase storage."
+            "Prepares AI analysis data for storage."
           ],
           [
             "Supabase: Upsert Analysis",
             "httpRequest",
-            "Upserts extracted analysis information into Supabase."
+            "Inserts or updates call analysis data in Supabase."
           ],
           [
             "Map Short Call",
             "code",
-            "Maps short call results to the database schema."
+            "Prepares short call analytics for storage."
           ],
           [
             "Supabase: Upsert Short Call",
             "httpRequest",
-            "Writes short call analytical results to Supabase."
+            "Upserts short call analysis records into Supabase."
+          ],
+          [
+            "Save Transcript (Full)",
+            "code",
+            "Formats the full call transcript for Supabase."
+          ],
+          [
+            "Supabase: Save Transcript (Full)",
+            "httpRequest",
+            "Stores the full call transcript in Supabase."
+          ],
+          [
+            "Save Transcript (Short)",
+            "code",
+            "Formats the short call transcript for Supabase storage."
+          ],
+          [
+            "Supabase: Save Transcript (Short)",
+            "httpRequest",
+            "Upserts short call transcript into Supabase."
+          ],
+          [
+            "Prep Phone Lookup",
+            "code",
+            "Prepares phone number data for lookup."
+          ],
+          [
+            "Lookup Deal",
+            "httpRequest",
+            "Queries external data for associated deal based on phone number."
           ]
         ],
-        "notes": "Monitor external API limits for transcription and AI nodes, and review Supabase schema alignment regularly when making upstream field changes.",
+        "notes": "Monitor API rate limits for OpenAI and Supabase nodes; audio file errors or lengthy calls may impact transcription node reliability.",
         "_name": "(RINGOSTAT) Phone Call Analysis (Supabase)"
       }
     },
     "m8v1bYhSGhu1cJNh": {
-      "hash": "7ozgnzpji7",
+      "hash": "81sdssv23d",
       "doc": {
         "slug": "api4com-phone-call-analysis-supabase",
-        "trigger": "Triggered by an incoming webhook to process call analysis requests.",
-        "overview": "This workflow automatically analyzes recorded phone calls to extract key insights such as pain points, opening effectiveness, objections, and rapport using OpenAI. It stores both raw and analyzed data in Supabase for later reporting and review, helping sales and management track call quality and rep performance.",
+        "trigger": "Workflow is triggered by a webhook receiving data such as a call recording URL and metadata.",
+        "overview": "This workflow automates the analysis of phone call recordings by transcribing audio, extracting conversational intelligence, scoring various competencies, and syncing results to Supabase. It supports both full-length and short call workflows, ensuring all call data and insights are archived for future reference and analytics. The process enhances call review efficiency by leveraging AI for sentiment and score extraction while maintaining strong data consistency with Supabase.",
         "phases": [
           [
-            "Input & Activity Preparation",
-            "Ingests webhook data, cleans inputs, and prepares call activity records."
+            "Input & Preparation",
+            "Receives the webhook event, cleans and maps input data, and prepares the activity record."
           ],
           [
             "Audio Processing & Transcription",
-            "Downloads and transcribes audio files to create text transcripts."
+            "Downloads call audio and transcribes both full-length and short calls as needed."
           ],
           [
-            "AI-Powered Analysis",
-            "Extracts insights such as pain points, intelligence, and conversation scores using OpenAI."
+            "AI Analysis & Scoring",
+            "Extracts pain points, call intelligence, rapport, and scores multiple call aspects using OpenAI."
           ],
           [
-            "Results Storage",
-            "Maps and upserts relevant activity and analysis records into Supabase."
+            "Data Mapping & Storage",
+            "Maps analysis results and upserts activity, analysis, and transcript records to Supabase."
           ]
         ],
         "nodes": [
           [
             "Webhook",
             "webhook",
-            "Receives incoming call analysis requests with metadata."
+            "Triggers the workflow when new call data is received."
           ],
           [
             "Clean Input + Rep Map",
             "code",
-            "Sanitizes inputs and maps the representative involved in the call."
+            "Normalizes incoming data and maps the representative details."
           ],
           [
             "Build Activity Record",
             "code",
-            "Structures data to prepare an activity record for storage."
+            "Assembles structured data for the call activity entry."
           ],
           [
             "Download Audio",
             "httpRequest",
-            "Fetches the main audio recording file from a provided URL."
+            "Fetches the call recording from the specified URL."
           ],
           [
             "Transcribe Audio",
             "httpRequest",
-            "Sends audio for transcription and retrieves the call transcript."
+            "Converts audio to text transcript for full-length calls."
           ],
           [
             "Build Transcript Record",
             "code",
-            "Formats the transcript into a structured record."
+            "Formats the transcript data for storage."
           ],
           [
             "Pain Extraction",
             "openAi",
-            "Uses OpenAI to extract pain points from the transcript."
+            "Detects pain points and challenges mentioned in the call using AI."
           ],
           [
             "Parse Pain",
             "code",
-            "Processes the AI extraction result into a useful format."
+            "Extracts structured pain point data from the AI response."
           ],
           [
             "Call Intelligence",
             "openAi",
-            "Applies OpenAI to extract intelligence and key insights from the transcript."
+            "Derives advanced insights from the conversation using AI models."
           ],
           [
             "Parse Intelligence",
             "code",
-            "Refines AI-generated key insights data."
+            "Processes and structures the intelligence results."
           ],
           [
             "Merge Analysis",
             "merge",
-            "Combines different streams of analysis into one dataset."
+            "Combines multiple streams of analysis data."
           ],
           [
             "Build Record",
             "code",
-            "Creates a unified analysis record from merged data."
+            "Prepares unified records for further scoring and export."
           ],
           [
             "Score: Opening",
             "openAi",
-            "Scores the opening quality of the call using AI."
+            "Scores the effectiveness of the call opening using OpenAI."
           ],
           [
             "Parse Opening Score",
             "code",
-            "Extracts and formats opening score from AI output."
+            "Extracts call opening score from AI output."
           ],
           [
             "Score: Pain",
             "openAi",
-            "Scores how well pain points were handled in the call."
+            "Scores pain discussion quality."
           ],
           [
             "Parse Pain Score",
             "code",
-            "Extracts and formats pain handling score from AI output."
+            "Extracts pain score from AI output."
           ],
           [
             "Score: Objection",
             "openAi",
-            "Scores objection handling using OpenAI analysis."
+            "Evaluates objection handling during the call."
           ],
           [
             "Parse Objection Score",
             "code",
-            "Extracts and formats objection score from AI output."
+            "Extracts objection handling score from AI output."
           ],
           [
             "Merge Scores",
             "merge",
-            "Combines individual call scores into a single object."
+            "Aggregates all individual scores for processing."
           ],
           [
             "Calculate Score",
             "code",
-            "Calculates aggregate and weighted scores for the call."
+            "Calculates overall call score and combines key fields."
           ],
           [
             "Route: Call Type",
             "switch",
-            "Routes logic depending on type or length of the call."
+            "Conditional logic routes workflow based on call length or type."
           ],
           [
             "Download Audio (Short)",
             "httpRequest",
-            "Downloads audio for calls identified as short."
+            "Fetches audio for short calls if different handling is needed."
           ],
           [
             "Transcribe Audio (Short)",
             "httpRequest",
-            "Transcribes short call audio files."
+            "Processes transcription for short calls."
           ],
           [
             "Build Short Transcript",
             "code",
-            "Constructs a transcript record for short calls."
+            "Formats short call transcripts."
           ],
           [
             "Rapport Analysis",
             "openAi",
-            "Uses AI to analyze rapport-building in short calls."
+            "Assesses rapport-building skills within the conversation."
           ],
           [
             "Parse Rapport",
             "code",
-            "Extracts and formats rapport analysis results."
+            "Extracts rapport analysis results from AI output."
           ],
           [
             "Supabase: Get Reps",
             "httpRequest",
-            "Retrieves rep information from the Supabase database."
+            "Looks up representative metadata in Supabase."
           ],
           [
             "Map Activity",
             "code",
-            "Prepares activity data for upserting to Supabase."
+            "Prepares activity data for Supabase upsert."
           ],
           [
             "Supabase: Upsert Activity",
             "httpRequest",
-            "Inserts or updates activity record in Supabase."
+            "Creates or updates the activity record in Supabase."
           ],
           [
             "Map Analysis",
             "code",
-            "Prepares call analysis data for database upsert."
+            "Formats AI analysis results for integration."
           ],
           [
             "Supabase: Upsert Analysis",
             "httpRequest",
-            "Inserts or updates analysis record in Supabase."
+            "Creates or updates AI analysis entries in Supabase."
           ],
           [
             "Map Short Call",
             "code",
-            "Prepares short call data for database upsert."
+            "Prepares short call data for storage."
           ],
           [
             "Supabase: Upsert Short Call",
             "httpRequest",
-            "Inserts or updates short call summary in Supabase."
+            "Upserts short call analysis in Supabase."
+          ],
+          [
+            "Save Transcript (Full)",
+            "code",
+            "Prepares full transcript for final archival."
+          ],
+          [
+            "Supabase: Save Transcript (Full)",
+            "httpRequest",
+            "Stores full transcript in Supabase."
+          ],
+          [
+            "Save Transcript (Short)",
+            "code",
+            "Formats short transcript for storage."
+          ],
+          [
+            "Supabase: Save Transcript (Short)",
+            "httpRequest",
+            "Stores short transcript in Supabase."
+          ],
+          [
+            "Prep Phone Lookup",
+            "code",
+            "Prepares data for deal lookup based on phone information."
+          ],
+          [
+            "Lookup Deal",
+            "httpRequest",
+            "Fetches related deal info from a CRM or deal database."
           ]
         ],
-        "notes": "Ensure that Supabase API keys and OpenAI credentials remain valid; periodic monitoring is recommended as AI models or Supabase schema may change.",
+        "notes": "Regularly monitor OpenAI API output formats for changes, and review Supabase integration for schema compatibility after updates.",
         "_name": "(API4COM) Phone Call Analysis (Supabase)"
       }
     },
@@ -1439,124 +1755,6 @@
         ],
         "notes": "Ensure the webhook endpoint is securely managed and the data mapping aligns with Pipedrive field requirements.",
         "_name": "(ENRICH) Update deal after Clay enrichment"
-      }
-    },
-    "JGZdwcjhxcwkwFsA": {
-      "hash": "18j58g4vrla",
-      "doc": {
-        "slug": "transcript-embedding-generator-daily",
-        "trigger": "Runs on a schedule trigger every 2 hours.",
-        "overview": "This workflow generates vector embeddings for call transcripts stored in Supabase that do not yet have embeddings. It queries for unembedded records, batches them, sends them to OpenAI text-embedding-3-small for vectorization, and updates each record with its embedding. This powers semantic search across call transcripts in the Sales Intelligence dashboard.",
-        "phases": [
-          [
-            "Fetch Unembedded Records",
-            "Queries Supabase for call_transcripts rows where the embedding column is null, up to 50 records per run."
-          ],
-          [
-            "Batch & Embed",
-            "Prepares transcript text into a batch payload and sends it to OpenAI Embeddings API (text-embedding-3-small, 1536 dimensions)."
-          ],
-          [
-            "Update Records",
-            "Maps each embedding back to its source record and updates the Supabase call_transcripts table with the generated vector."
-          ]
-        ],
-        "nodes": [
-          [
-            "Schedule Trigger",
-            "scheduleTrigger",
-            "Fires every 2 hours to process new unembedded transcripts."
-          ],
-          [
-            "Supabase: Get Unembedded",
-            "httpRequest",
-            "Queries Supabase REST API for call_transcripts where embedding is null (limit 50)."
-          ],
-          [
-            "Prepare Batch",
-            "code",
-            "Validates results and formats transcript records into a batch array for the embeddings API."
-          ],
-          [
-            "OpenAI: Generate Embeddings",
-            "httpRequest",
-            "Sends transcript texts to OpenAI text-embedding-3-small and receives vector embeddings."
-          ],
-          [
-            "Map Updates",
-            "code",
-            "Pairs each generated embedding with its source record ID for the update step."
-          ],
-          [
-            "Supabase: Update Embedding",
-            "httpRequest",
-            "PATCHes each call_transcripts row in Supabase with its newly generated embedding vector."
-          ]
-        ]
-      }
-    },
-    "YYQMPCRpAfRjsExQ": {
-      "hash": "27zvm4zgvx2",
-      "doc": {
-        "slug": "auto-link-calendar-meetings-to-deals",
-        "trigger": "Triggered by a Pipedrive activity creation event.",
-        "overview": "This workflow automatically links calendar meeting activities in Pipedrive to the most relevant open deal in the SALES 2026 pipeline (pipeline 33). When a meeting is created without a deal association, it extracts the prospect person ID from attendees, looks up their open deals, picks the best match (preferring same-rep ownership and most recently updated), and links the activity to that deal.",
-        "phases": [
-          [
-            "Filter & Extract",
-            "Filters for meeting-type activities without a deal, then extracts the prospect person ID from the attendee list (excluding the organizer/user)."
-          ],
-          [
-            "Deal Lookup",
-            "Queries the Pipedrive API for all deals associated with the prospect person, then selects the best open deal in pipeline 33 based on rep ownership and recency."
-          ],
-          [
-            "Link Activity",
-            "Updates the Pipedrive activity to associate it with the matched deal via the Pipedrive API."
-          ]
-        ],
-        "nodes": [
-          [
-            "Activity Created",
-            "pipedriveTrigger",
-            "Listens for new activity creation events from Pipedrive."
-          ],
-          [
-            "Is Meeting + No Deal?",
-            "filter",
-            "Checks that the activity is a meeting type and has no deal already linked."
-          ],
-          [
-            "Extract Prospect Person ID",
-            "code",
-            "Parses attendees to find the prospect (non-organizer with a person_id)."
-          ],
-          [
-            "Has Person ID?",
-            "filter",
-            "Ensures a valid prospect person_id was found before proceeding."
-          ],
-          [
-            "Get Person Deals",
-            "httpRequest",
-            "Fetches all deals for the prospect person from the Pipedrive API."
-          ],
-          [
-            "Pick Best Deal",
-            "code",
-            "Selects the best open deal in pipeline 33, preferring same-rep ownership and most recent update."
-          ],
-          [
-            "Found Deal?",
-            "filter",
-            "Checks that a matching deal was found."
-          ],
-          [
-            "Link Activity to Deal",
-            "httpRequest",
-            "Updates the Pipedrive activity to link it to the selected deal."
-          ]
-        ]
       }
     }
   }
