@@ -2,43 +2,87 @@
 <html lang="en" data-theme="light"><head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>Snov.io Sales Playbook</title>
-<style>:root{--purple:#6B5CE7;--purple-dim:rgba(107,92,231,0.08);--sidebar-w:232px}
-[data-theme=light]{--bg:#f5f5f7;--surface:#fff;--surface2:#f5f5f7;--border:rgba(0,0,0,0.09);--text:#1d1d1f;--text2:#6e6e73;--text3:#999;--header-bg:#fff;--nav-active-bg:rgba(107,92,231,0.07)}
-[data-theme=dark]{--bg:#0d0d0d;--surface:#1a1a1a;--surface2:#111;--border:rgba(255,255,255,0.08);--text:rgba(255,255,255,0.92);--text2:rgba(255,255,255,0.5);--text3:rgba(255,255,255,0.28);--header-bg:#111;--nav-active-bg:rgba(107,92,231,0.14)}
+<style>
+:root{--purple:#6B5CE7;--purple-dim:rgba(107,92,231,0.08);--sidebar-w:232px;--sidebar-collapsed:48px;--cat-lead:#3B82F6;--cat-deal:#10B981;--cat-call:#8B5CF6;--cat-infra:#F59E0B}
+[data-theme=light]{--bg:#f5f5f7;--surface:#fff;--surface2:#f5f5f7;--border:rgba(0,0,0,0.09);--text:#1d1d1f;--text2:#6e6e73;--text3:#999;--header-bg:#fff;--nav-active-bg:rgba(107,92,231,0.07);--card-hover:rgba(107,92,231,0.04)}
+[data-theme=dark]{--bg:#0d0d0d;--surface:#1a1a1a;--surface2:#111;--border:rgba(255,255,255,0.08);--text:rgba(255,255,255,0.92);--text2:rgba(255,255,255,0.5);--text3:rgba(255,255,255,0.28);--header-bg:#111;--nav-active-bg:rgba(107,92,231,0.14);--card-hover:rgba(107,92,231,0.08)}
 *{box-sizing:border-box;margin:0;padding:0}html{scroll-behavior:smooth}
 body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",sans-serif;font-size:13px;background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased;line-height:1.5}
+
+/* Topbar */
 .topbar{position:fixed;top:0;left:0;right:0;height:44px;background:var(--header-bg);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 20px 0 0;z-index:200}
-.topbar-brand{width:var(--sidebar-w);padding:0 16px;display:flex;align-items:center;gap:8px;border-right:1px solid var(--border);height:100%;flex-shrink:0}
-.brand-logo{width:22px;height:22px;border-radius:6px;background:var(--purple);display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:11px}
-.brand-name{font-size:13px;font-weight:600;color:var(--text);letter-spacing:-.01em}.brand-sep{color:var(--text3);margin:0 4px}.brand-sub{font-size:12px;color:var(--text2)}
-.topbar-right{margin-left:auto;display:flex;align-items:center;gap:6px}.topbar-meta{font-size:11px;color:var(--text3)}
+.topbar-brand{width:var(--sidebar-w);padding:0 16px;display:flex;align-items:center;gap:8px;border-right:1px solid var(--border);height:100%;flex-shrink:0;transition:width .25s ease}
+body.sidebar-collapsed .topbar-brand{width:var(--sidebar-collapsed);padding:0 12px;justify-content:center}
+body.sidebar-collapsed .topbar-brand .brand-name,
+body.sidebar-collapsed .topbar-brand .brand-sep,
+body.sidebar-collapsed .topbar-brand .brand-sub{display:none}
+.brand-logo{width:22px;height:22px;border-radius:6px;background:var(--purple);display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:11px;flex-shrink:0}
+.brand-name{font-size:13px;font-weight:600;color:var(--text);letter-spacing:-.01em;white-space:nowrap}.brand-sep{color:var(--text3);margin:0 4px}.brand-sub{font-size:12px;color:var(--text2);white-space:nowrap}
+.topbar-right{margin-left:auto;display:flex;align-items:center;gap:6px}
+.topbar-meta{font-size:11px;color:var(--text3)}
 .theme-toggle{display:flex;align-items:center;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:2px;gap:1px}
 .theme-btn{padding:3px 8px;border-radius:4px;border:none;background:transparent;cursor:pointer;font-size:11px;font-weight:500;color:var(--text3);transition:all .12s}
 .theme-btn.active{background:var(--surface);color:var(--text);box-shadow:0 1px 2px rgba(0,0,0,.1)}
-.sidebar{position:fixed;top:44px;left:0;width:var(--sidebar-w);height:calc(100vh - 44px);background:var(--surface);border-right:1px solid var(--border);overflow-y:auto;z-index:100}
+.btn-icon{padding:4px 8px;border-radius:6px;border:1px solid var(--border);background:var(--surface2);cursor:pointer;font-size:11px;color:var(--text2);transition:all .12s;display:flex;align-items:center;gap:4px}
+.btn-icon:hover{background:var(--purple-dim);color:var(--text)}
+
+/* Sidebar */
+.sidebar{position:fixed;top:44px;left:0;width:var(--sidebar-w);height:calc(100vh - 44px);background:var(--surface);border-right:1px solid var(--border);overflow-y:auto;z-index:100;transition:width .25s ease;display:flex;flex-direction:column}
 .sidebar::-webkit-scrollbar{width:0}
-.nav-folder{padding:12px 12px 4px}
-.nav-folder-header{display:flex;align-items:center;gap:6px;padding:5px 8px;border-radius:6px;cursor:pointer;margin-bottom:2px;transition:background .12s;user-select:none}
-.nav-folder-header:hover{background:var(--purple-dim)}.folder-icon{color:var(--purple);flex-shrink:0}
-.nav-folder-label{font-size:12px;font-weight:600;color:var(--text);flex:1;letter-spacing:-.01em}
-.nav-chevron{color:var(--text3);transition:transform .2s}.nav-folder.open .nav-chevron{transform:rotate(90deg)}
-.nav-children{overflow:hidden;max-height:0;transition:max-height .25s ease}.nav-folder.open .nav-children{max-height:2000px}
-.nav-item{display:block;padding:5px 8px 5px 28px;font-size:12px;color:var(--text2);text-decoration:none;border-radius:6px;transition:all .12s;margin:1px 0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.nav-item:hover{color:var(--text);background:var(--purple-dim)}.nav-item.active{color:var(--purple);background:var(--nav-active-bg);font-weight:500}
-.sidebar-footer{padding:12px 16px;border-top:1px solid var(--border);font-size:11px;color:var(--text3);margin-top:8px}
-.main{margin-left:var(--sidebar-w);padding-top:44px}
+body.sidebar-collapsed .sidebar{width:var(--sidebar-collapsed);overflow:visible}
+
+.nav-section{padding:12px 12px 4px}
+body.sidebar-collapsed .nav-section{padding:8px 6px 4px}
+.nav-section-label{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--text3);padding:4px 8px;margin-bottom:2px}
+body.sidebar-collapsed .nav-section-label{display:none}
+.nav-item{display:flex;align-items:center;gap:8px;padding:5px 8px;font-size:12px;color:var(--text2);text-decoration:none;border-radius:6px;transition:all .12s;margin:1px 0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;position:relative}
+.nav-item:hover{color:var(--text);background:var(--purple-dim)}
+.nav-item .nav-icon{width:20px;height:20px;border-radius:5px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:11px;font-weight:600;color:white}
+.nav-item .nav-label{overflow:hidden;text-overflow:ellipsis}
+body.sidebar-collapsed .nav-item{padding:5px 0;justify-content:center}
+body.sidebar-collapsed .nav-item .nav-label{display:none}
+body.sidebar-collapsed .nav-item .nav-icon{width:28px;height:28px;border-radius:6px;font-size:12px}
+
+/* Tooltip for collapsed sidebar */
+body.sidebar-collapsed .nav-item[data-tooltip]:hover::after{content:attr(data-tooltip);position:absolute;left:calc(var(--sidebar-collapsed) - 4px);top:50%;transform:translateY(-50%);background:var(--text);color:var(--bg);padding:4px 10px;border-radius:6px;font-size:11px;white-space:nowrap;z-index:300;pointer-events:none;box-shadow:0 2px 8px rgba(0,0,0,.15)}
+
+.sidebar-toggle{margin-top:auto;padding:8px 12px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:center}
+.sidebar-toggle button{background:none;border:none;cursor:pointer;color:var(--text3);padding:4px;border-radius:4px;transition:all .12s;display:flex;align-items:center}
+.sidebar-toggle button:hover{color:var(--text);background:var(--purple-dim)}
+
+/* Main */
+.main{margin-left:var(--sidebar-w);padding-top:44px;transition:margin-left .25s ease}
+body.sidebar-collapsed .main{margin-left:var(--sidebar-collapsed)}
+
+/* Hero */
 .hero{padding:28px 32px 24px;background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:flex-start;justify-content:space-between;gap:32px}
 .hero-left{flex:1}.hero-eyebrow{font-size:11px;font-weight:500;color:var(--purple);text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px}
 .hero h1{font-family:-apple-system,"SF Pro Display",sans-serif;font-size:28px;font-weight:700;line-height:1.1;letter-spacing:-.025em;color:var(--text);margin-bottom:8px}
 .hero-desc{font-size:13px;color:var(--text2);max-width:480px;line-height:1.55}
 .hero-stats{display:flex;gap:0;flex-shrink:0}.stat{padding:12px 20px;border-left:1px solid var(--border);text-align:right}
 .stat-num{font-size:24px;font-weight:700;letter-spacing:-.02em;color:var(--text);line-height:1}.stat-label{font-size:11px;color:var(--text3);margin-top:3px}
+
+/* Summary cards */
+.summary{padding:24px 32px}
+.summary-category{margin-bottom:24px}
+.summary-category-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--text3);margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.summary-category-label .cat-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px 16px;cursor:pointer;transition:all .15s;text-decoration:none;display:block}
+.card:hover{background:var(--card-hover);border-color:var(--purple);transform:translateY(-1px);box-shadow:0 2px 8px rgba(107,92,231,0.08)}
+.card-name{font-size:13px;font-weight:600;color:var(--text);margin-bottom:4px;line-height:1.35}
+.card-trigger{font-size:11px;color:var(--text3);line-height:1.45;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.card-id{font-size:10px;font-family:"SF Mono",monospace;color:var(--text3);opacity:.5;margin-top:6px}
+
+/* Workflow detail sections */
 .workflow{border-bottom:1px solid var(--border)}
 .wf-header{padding:20px 32px 16px;background:var(--surface);border-bottom:1px solid var(--border)}
-.wf-meta{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.wf-meta{display:flex;align-items:center;gap:10px;margin-bottom:8px;flex-wrap:wrap}
 .wf-badge{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;background:rgba(52,199,89,.1);color:#1d9c4a;padding:2px 7px;border-radius:4px;border:1px solid rgba(52,199,89,.2)}
 [data-theme=dark] .wf-badge{color:#30d158}
+.wf-cat{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;padding:2px 7px;border-radius:4px}
 .wf-trigger{font-size:11px;color:var(--text3);font-family:"SF Mono",monospace}
+.wf-id{font-size:10px;font-family:"SF Mono",monospace;color:var(--text3);opacity:.6}
 .wf-header h2{font-size:16px;font-weight:600;letter-spacing:-.015em;color:var(--text);margin-bottom:6px}
 .wf-overview{font-size:13px;color:var(--text2);max-width:680px;line-height:1.6}
 .wf-body{padding:20px 32px;background:var(--bg)}
@@ -67,295 +111,304 @@ tr:last-child td{border-bottom:none}tr:hover td{background:var(--purple-dim)}
 .nt-calendlyTrigger{color:#166534;border-color:rgba(22,101,52,.2);background:rgba(52,199,89,.07)}
 .nt-filter{color:#9a3412;border-color:rgba(154,52,18,.2);background:rgba(249,115,22,.07)}
 .nt-scheduleTrigger{color:#0e7490;border-color:rgba(14,116,144,.2);background:rgba(6,182,212,.07)}
-@media(max-width:768px){.sidebar{display:none}.main{margin-left:0}.hero{flex-direction:column}.wf-header,.wf-body,.hero{padding:16px}.wf-cols{grid-template-columns:1fr}}</style></head><body>
+.nt-httpRequest{color:#0e7490;border-color:rgba(14,116,144,.2);background:rgba(6,182,212,.07)}
+.nt-wait{color:#6b21a8;border-color:rgba(107,33,168,.2);background:rgba(168,85,247,.07)}
+.nt-supabase{color:#10B981;border-color:rgba(16,185,129,.2);background:rgba(16,185,129,.07)}
+
+/* Category badge colors */
+.cat-lead{background:rgba(59,130,246,.1);color:#2563EB;border:1px solid rgba(59,130,246,.2)}
+.cat-deal{background:rgba(16,185,129,.1);color:#059669;border:1px solid rgba(16,185,129,.2)}
+.cat-call{background:rgba(139,92,246,.1);color:#7C3AED;border:1px solid rgba(139,92,246,.2)}
+.cat-infra{background:rgba(245,158,11,.1);color:#D97706;border:1px solid rgba(245,158,11,.2)}
+[data-theme=dark] .cat-lead{color:#60A5FA}
+[data-theme=dark] .cat-deal{color:#34D399}
+[data-theme=dark] .cat-call{color:#A78BFA}
+[data-theme=dark] .cat-infra{color:#FBBF24}
+
+/* Back to top */
+.back-to-top{position:fixed;bottom:24px;right:24px;width:36px;height:36px;border-radius:50%;background:var(--purple);color:white;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .2s;z-index:150;box-shadow:0 2px 8px rgba(107,92,231,.3)}
+.back-to-top.visible{opacity:1;pointer-events:auto}
+
+@media(max-width:768px){.sidebar{display:none}.main{margin-left:0 !important}.hero{flex-direction:column}.wf-header,.wf-body,.hero,.summary{padding:16px}.wf-cols{grid-template-columns:1fr}.cards-grid{grid-template-columns:1fr}}
+</style></head><body>
+
 <header class="topbar">
-  <div class="topbar-brand"><div class="brand-logo">S</div><span class="brand-name">Snov.io</span><span class="brand-sep">|</span><span class="brand-sub">Sales Playbook</span></div>
+  <div class="topbar-brand">
+    <div class="brand-logo">S</div>
+    <span class="brand-name">Snov.io</span>
+    <span class="brand-sep">|</span>
+    <span class="brand-sub">Sales Playbook</span>
+  </div>
   <div class="topbar-right">
-    <span class="topbar-meta">12 workflows · Mar 10, 2026</span>
+    <span class="topbar-meta" id="topbar-meta"></span>
+    <button class="btn-icon" onclick="location.reload()" title="Refresh">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 4v6h6"/><path d="M3.51 15a9 9 0 105.2-11.2L1 10"/></svg>
+    </button>
     <div class="theme-toggle">
       <button class="theme-btn active" id="btn-light" onclick="setTheme('light')">Light</button>
       <button class="theme-btn" id="btn-dark" onclick="setTheme('dark')">Dark</button>
     </div>
   </div>
 </header>
-<nav class="sidebar">
-  <div class="nav-folder open" id="n8n-folder">
-    <div class="nav-folder-header" onclick="document.getElementById('n8n-folder').classList.toggle('open')">
-      <svg class="folder-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7a2 2 0 012-2h4l2 2h8a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V7z"/></svg>
-      <span class="nav-folder-label">N8N Automations</span>
-      <svg class="nav-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>
-    </div>
-    <div class="nav-children"><a href="#leads-coming-from-events-courses" class="nav-item">Leads coming from events/courses</a><a href="#live-update-on-github-documentations-for-n8n-workflows" class="nav-item">Live update on Github documentations for N8N workflows</a><a href="#enrich-update-deal-after-clay-enrichment" class="nav-item">(ENRICH) Update deal after Clay enrichment</a><a href="#fireflies-pid-call-analysis-coach-supabase" class="nav-item">(Fireflies) PID Call Analysis + Coach (Supabase)</a><a href="#inbound-leads-qualification-supabase" class="nav-item">Inbound Leads Qualification (Supabase)</a><a href="#sync-crm-with-supabase-add-time-per-stage" class="nav-item">Sync CRM with Supabase + Add Time per Stage</a><a href="#create-update-deal-from-discovery-call-supabase" class="nav-item">Create/Update a deal from Discovery Call (Supabase)</a><a href="#error-monitor-auto-fix-alert" class="nav-item">Error Monitor — Auto-Fix + Alert</a><a href="#ringostat-phone-call-analysis-supabase" class="nav-item">(RINGOSTAT) Phone Call Analysis (Supabase)</a><a href="#api4com-phone-call-analysis-supabase" class="nav-item">(API4COM) Phone Call Analysis (Supabase)</a><a href="#transcript-embedding-generator-daily" class="nav-item">Transcript Embedding Generator (Daily)</a><a href="#auto-link-calendar-meetings-to-deals" class="nav-item">Auto-Link Calendar Meetings to Deals</a></div>
-  </div>
-  <div class="sidebar-footer">Mar 10, 2026</div>
-</nav>
-<main class="main">
-  <div class="hero">
-    <div class="hero-left">
-      <div class="hero-eyebrow">Snov.io · Sales Engineering</div>
-      <h1>Sales Playbook</h1>
-      <p class="hero-desc">Live technical documentation for all active sales automations. Auto-generated from n8n workflow definitions.</p>
-    </div>
-    <div class="hero-stats">
-      <div class="stat"><div class="stat-num">12</div><div class="stat-label">Active workflows</div></div>
-    </div>
-  </div>
-  <section class="workflow" id="leads-coming-from-events-courses">
-<div class="wf-header">
-  <div class="wf-meta"><span class="wf-badge">Active</span><span class="wf-trigger">Triggered by an incoming webhook when a new lead is submitted from an event or course.</span></div>
-  <h2>Leads coming from events/courses</h2>
-  <p class="wf-overview">This workflow captures leads generated from events or courses and automates their entry into the Pipedrive CRM. It processes the incoming lead data, organizes it, and creates associated records for deals, people, and organizations in Pipedrive. This ensures that event/course leads are systematically tracked and managed for sales follow-up.</p>
-</div>
-<div class="wf-body"><div class="wf-cols">
-  <div class="wf-left">
-    <div class="section-label">Execution Flow</div>
-    <div class="phases"><div class="phase"><span class="phase-num">1</span><div><strong>Intake</strong><span class="phase-sep"> — </span>The workflow receives and processes incoming lead data from events or courses.</div></div><div class="phase"><span class="phase-num">2</span><div><strong>CRM Entry</strong><span class="phase-sep"> — </span>Lead information is standardized and used to create or update corresponding records in Pipedrive.</div></div></div>
-    <div class="section-label" style="margin-top:20px">Technical Notes</div>
-    <p class="notes">Ensure Pipedrive API credentials are current and test webhook connectivity after any schema changes.</p>
-  </div>
-  <div class="wf-right">
-    <div class="section-label">Node Reference</div>
-    <div class="table-wrap"><table>
-      <thead><tr><th>Node</th><th>Type</th><th>Description</th></tr></thead>
-      <tbody><tr><td class="node-name">Webhook</td><td><span class="nt nt-webhook">webhook</span></td><td class="node-desc">Accepts incoming lead data from an external source.</td></tr><tr><td class="node-name">Edit Fields</td><td><span class="nt nt-code">code</span></td><td class="node-desc">Processes and formats lead data for CRM compatibility.</td></tr><tr><td class="node-name">Code in JavaScript</td><td><span class="nt nt-code">code</span></td><td class="node-desc">Applies custom logic to manipulate specific lead properties.</td></tr><tr><td class="node-name">Merge5</td><td><span class="nt nt-merge">merge</span></td><td class="node-desc">Combines multiple data streams before CRM creation steps.</td></tr><tr><td class="node-name">Create an organization</td><td><span class="nt nt-pipedrive">pipedrive</span></td><td class="node-desc">Creates a new organization entry in Pipedrive if needed.</td></tr><tr><td class="node-name">Create a person5</td><td><span class="nt nt-pipedrive">pipedrive</span></td><td class="node-desc">Creates or updates a person contact in Pipedrive.</td></tr><tr><td class="node-name">Create a deal2</td><td><span class="nt nt-pipedrive">pipedrive</span></td><td class="node-desc">Creates a new deal in Pipedrive linked to the lead.</td></tr><tr><td class="node-name">Code in JavaScript1</td><td><span class="nt nt-code">code</span></td><td class="node-desc">Performs final processing or cleanup operations on the lead data.</td></tr></tbody>
-    </table></div>
-  </div>
-</div></div></section>
-<section class="workflow" id="live-update-on-github-documentations-for-n8n-workflows">
-<div class="wf-header">
-  <div class="wf-meta"><span class="wf-badge">Active</span><span class="wf-trigger">Runs every 23 hours using a schedule trigger.</span></div>
-  <h2>Live update on Github documentations for N8N workflows</h2>
-  <p class="wf-overview">This workflow automates the generation and update of documentation for all n8n workflows, committing changes directly to a GitHub repository. It detects updates, generates documentation using OpenAI, and ensures documentation stays synchronized with the latest workflow changes.</p>
-</div>
-<div class="wf-body"><div class="wf-cols">
-  <div class="wf-left">
-    <div class="section-label">Execution Flow</div>
-    <div class="phases"><div class="phase"><span class="phase-num">1</span><div><strong>Fetch & Split Workflows</strong><span class="phase-sep"> — </span>Periodically requests all workflows, splits them out, and filters for active ones.</div></div><div class="phase"><span class="phase-num">2</span><div><strong>Summarize & Detect Changes</strong><span class="phase-sep"> — </span>Summarizes workflow details, checks against previously cached data, and identifies new or updated workflows.</div></div><div class="phase"><span class="phase-num">3</span><div><strong>Generate & Merge Docs</strong><span class="phase-sep"> — </span>Creates documentation using OpenAI, aggregates new docs, and merges them into final HTML.</div></div><div class="phase"><span class="phase-num">4</span><div><strong>Commit Updates</strong><span class="phase-sep"> — </span>Builds the HTML file, updates the cache, fetches the target file SHA, and commits the new documentation to GitHub.</div></div></div>
-    <div class="section-label" style="margin-top:20px">Technical Notes</div>
-    <p class="notes">Keep the OpenAI API credentials secured and be mindful of rate limits from both GitHub and n8n endpoints; verify the cache file integrity regularly for consistent change detection.</p>
-  </div>
-  <div class="wf-right">
-    <div class="section-label">Node Reference</div>
-    <div class="table-wrap"><table>
-      <thead><tr><th>Node</th><th>Type</th><th>Description</th></tr></thead>
-      <tbody><tr><td class="node-name">Every 23 Hours</td><td><span class="nt nt-webhook">webhook</span></td><td class="node-desc">Triggers the workflow on a 23-hour schedule.</td></tr><tr><td class="node-name">Get All Workflows</td><td><span class="nt nt-httpRequest">httpRequest</span></td><td class="node-desc">Fetches all available workflows from the n8n instance.</td></tr><tr><td class="node-name">Split Workflows</td><td><span class="nt nt-code">code</span></td><td class="node-desc">Splits the list of workflows for processing individually.</td></tr><tr><td class="node-name">Filter Active</td><td><span class="nt nt-code">code</span></td><td class="node-desc">Filters out inactive workflows from the processing stream.</td></tr><tr><td class="node-name">Get Workflow Detail</td><td><span class="nt nt-httpRequest">httpRequest</span></td><td class="node-desc">Retrieves detailed information for each active workflow.</td></tr><tr><td class="node-name">Prepare Summary + Hash</td><td><span class="nt nt-code">code</span></td><td class="node-desc">Builds workflow summaries and hashes for change detection.</td></tr><tr><td class="node-name">Aggregate Summaries</td><td><span class="nt nt-code">code</span></td><td class="node-desc">Groups all summaries for bulk comparison and aggregation.</td></tr><tr><td class="node-name">Fetch Cache</td><td><span class="nt nt-httpRequest">httpRequest</span></td><td class="node-desc">Retrieves the previous cache to detect changes since last run.</td></tr><tr><td class="node-name">Diff & Process</td><td><span class="nt nt-code">code</span></td><td class="node-desc">Compares new and cached summaries to identify changed workflows.</td></tr><tr><td class="node-name">IF Has Changes</td><td><span class="nt nt-if">if</span></td><td class="node-desc">Branches execution if there are detected changes.</td></tr><tr><td class="node-name">Split Changed</td><td><span class="nt nt-code">code</span></td><td class="node-desc">Splits out only the workflows that have changed.</td></tr><tr><td class="node-name">OpenAI: Generate Doc</td><td><span class="nt nt-openAi">openAi</span></td><td class="node-desc">Uses OpenAI to generate natural language documentation for workflows.</td></tr><tr><td class="node-name">Add Workflow Name</td><td><span class="nt nt-code">code</span></td><td class="node-desc">Appends workflow names to the generated documentation.</td></tr><tr><td class="node-name">Aggregate New Docs</td><td><span class="nt nt-code">code</span></td><td class="node-desc">Collects new documentation snippets for final assembly.</td></tr><tr><td class="node-name">Merge Docs</td><td><span class="nt nt-code">code</span></td><td class="node-desc">Merges all new and existing documentation together.</td></tr><tr><td class="node-name">Build Final HTML</td><td><span class="nt nt-code">code</span></td><td class="node-desc">Constructs the final HTML documentation file.</td></tr><tr><td class="node-name">Prepare Cache Body</td><td><span class="nt nt-code">code</span></td><td class="node-desc">Prepares the latest summaries for cache update.</td></tr><tr><td class="node-name">Save Cache</td><td><span class="nt nt-httpRequest">httpRequest</span></td><td class="node-desc">Saves the updated workflow summaries cache.</td></tr><tr><td class="node-name">Get File SHA</td><td><span class="nt nt-httpRequest">httpRequest</span></td><td class="node-desc">Fetches the GitHub file SHA for the documentation file.</td></tr><tr><td class="node-name">Commit to GitHub</td><td><span class="nt nt-httpRequest">httpRequest</span></td><td class="node-desc">Commits the updated documentation HTML to the GitHub repository.</td></tr></tbody>
-    </table></div>
-  </div>
-</div></div></section>
-<section class="workflow" id="enrich-update-deal-after-clay-enrichment">
-<div class="wf-header">
-  <div class="wf-meta"><span class="wf-badge">Active</span><span class="wf-trigger">Fires when the webhook endpoint receives a request.</span></div>
-  <h2>(ENRICH) Update deal after Clay enrichment</h2>
-  <p class="wf-overview">This workflow receives enriched deal data from Clay via webhook and updates the corresponding deal in Pipedrive. It ensures CRM records are continuously enhanced with the latest external data, streamlining sales operations.</p>
-</div>
-<div class="wf-body"><div class="wf-cols">
-  <div class="wf-left">
-    <div class="section-label">Execution Flow</div>
-    <div class="phases"><div class="phase"><span class="phase-num">1</span><div><strong>Receive Enrichment Data</strong><span class="phase-sep"> — </span>Collects new or updated deal information from Clay through a webhook.</div></div><div class="phase"><span class="phase-num">2</span><div><strong>Update Pipedrive</strong><span class="phase-sep"> — </span>Pushes the enriched information into the relevant Pipedrive deal.</div></div></div>
-    <div class="section-label" style="margin-top:20px">Technical Notes</div>
-    <p class="notes">Ensure the webhook endpoint is securely managed and the data mapping aligns with Pipedrive field requirements.</p>
-  </div>
-  <div class="wf-right">
-    <div class="section-label">Node Reference</div>
-    <div class="table-wrap"><table>
-      <thead><tr><th>Node</th><th>Type</th><th>Description</th></tr></thead>
-      <tbody><tr><td class="node-name">Webhook</td><td><span class="nt nt-webhook">webhook</span></td><td class="node-desc">Receives incoming HTTP requests containing enriched deal data from Clay.</td></tr><tr><td class="node-name">Update a deal</td><td><span class="nt nt-pipedrive">pipedrive</span></td><td class="node-desc">Updates the corresponding Pipedrive deal with the new enrichment data.</td></tr></tbody>
-    </table></div>
-  </div>
-</div></div></section>
-<section class="workflow" id="fireflies-pid-call-analysis-coach-supabase">
-<div class="wf-header">
-  <div class="wf-meta"><span class="wf-badge">Active</span><span class="wf-trigger">Triggered by an incoming webhook when a Fireflies call transcript is available.</span></div>
-  <h2>(Fireflies) PID Call Analysis + Coach (Supabase)</h2>
-  <p class="wf-overview">This workflow analyzes sales call transcripts using Fireflies, extracts Pain, Impact, and Decision (PID) insights via OpenAI, and sends automated coaching emails based on these findings. Key results and scores are logged to Supabase for future tracking and reporting. The workflow is designed to automate call reviews, provide feedback to reps, and systematically store intelligence.</p>
-</div>
-<div class="wf-body"><div class="wf-cols">
-  <div class="wf-left">
-    <div class="section-label">Execution Flow</div>
-    <div class="phases"><div class="phase"><span class="phase-num">1</span><div><strong>Data Ingestion</strong><span class="phase-sep"> — </span>Captures call transcript data from Fireflies and gathers relevant rep metadata.</div></div><div class="phase"><span class="phase-num">2</span><div><strong>PID Analysis</strong><span class="phase-sep"> — </span>Utilizes OpenAI to extract and score Pain, Impact, and Decision insights from calls.</div></div><div class="phase"><span class="phase-num">3</span><div><strong>Reporting & Storage</strong><span class="phase-sep"> — </span>Sends PID analysis and coaching emails, then syncs the results with Supabase for record-keeping.</div></div></div>
-    <div class="section-label" style="margin-top:20px">Technical Notes</div>
-    <p class="notes">Review OpenAI node usage for cost and API limits; validate Supabase endpoints and permission scopes regularly.</p>
-  </div>
-  <div class="wf-right">
-    <div class="section-label">Node Reference</div>
-    <div class="table-wrap"><table>
-      <thead><tr><th>Node</th><th>Type</th><th>Description</th></tr></thead>
-      <tbody><tr><td class="node-name">Webhook</td><td><span class="nt nt-webhook">webhook</span></td><td class="node-desc">Receives incoming trigger containing call details for analysis.</td></tr><tr><td class="node-name">Get Transcript</td><td><span class="nt nt-fireflies">fireflies</span></td><td class="node-desc">Fetches the transcript of the specified call from Fireflies.</td></tr><tr><td class="node-name">Clean Input + Rep Map</td><td><span class="nt nt-code">code</span></td><td class="node-desc">Cleans transcript data and maps it to the corresponding sales rep.</td></tr><tr><td class="node-name">PID Extraction</td><td><span class="nt nt-openAi">openAi</span></td><td class="node-desc">Requests OpenAI to extract PID data from the call transcript.</td></tr><tr><td class="node-name">Parse PID</td><td><span class="nt nt-code">code</span></td><td class="node-desc">Processes and structures the extracted PID data.</td></tr><tr><td class="node-name">Call Intelligence</td><td><span class="nt nt-openAi">openAi</span></td><td class="node-desc">Uses OpenAI to derive additional call intelligence insights.</td></tr><tr><td class="node-name">Parse Intelligence</td><td><span class="nt nt-code">code</span></td><td class="node-desc">Structures output from the call intelligence step.</td></tr><tr><td class="node-name">Merge Analysis</td><td><span class="nt nt-merge">merge</span></td><td class="node-desc">Combines PID and call intelligence results.</td></tr><tr><td class="node-name">Build Record</td><td><span class="nt nt-code">code</span></td><td class="node-desc">Prepares the consolidated record for reporting and storage.</td></tr><tr><td class="node-name">PID Score: Pain</td><td><span class="nt nt-openAi">openAi</span></td><td class="node-desc">Analyzes transcript for Pain score using OpenAI.</td></tr><tr><td class="node-name">Parse Pain Score</td><td><span class="nt nt-code">code</span></td><td class="node-desc">Extracts and formats Pain score output.</td></tr><tr><td class="node-name">PID Score: Impact</td><td><span class="nt nt-openAi">openAi</span></td><td class="node-desc">Analyzes transcript for Impact score using OpenAI.</td></tr><tr><td class="node-name">Parse Impact Score</td><td><span class="nt nt-code">code</span></td><td class="node-desc">Extracts and formats Impact score output.</td></tr><tr><td class="node-name">PID Score: Decision</td><td><span class="nt nt-openAi">openAi</span></td><td class="node-desc">Analyzes transcript for Decision score using OpenAI.</td></tr><tr><td class="node-name">Parse Decision Score</td><td><span class="nt nt-code">code</span></td><td class="node-desc">Extracts and formats Decision score output.</td></tr><tr><td class="node-name">Merge Scores</td><td><span class="nt nt-merge">merge</span></td><td class="node-desc">Combines Pain, Impact, and Decision scores for unified evaluation.</td></tr><tr><td class="node-name">Calculate Scores</td><td><span class="nt nt-code">code</span></td><td class="node-desc">Calculates final aggregated PID metrics.</td></tr><tr><td class="node-name">Email: PID Report</td><td><span class="nt nt-emailSend">emailSend</span></td><td class="node-desc">Sends a summary PID report to stakeholders.</td></tr><tr><td class="node-name">Email: PID Coaching</td><td><span class="nt nt-emailSend">emailSend</span></td><td class="node-desc">Sends automated coaching advice based on call analysis.</td></tr><tr><td class="node-name">Filter: Skip Internal Calls?</td><td><span class="nt nt-if">if</span></td><td class="node-desc">Checks if the call is internal and bypasses PID analysis for those cases.</td></tr><tr><td class="node-name">Supabase: Get Reps</td><td><span class="nt nt-httpRequest">httpRequest</span></td><td class="node-desc">Queries Supabase for sales representative details.</td></tr><tr><td class="node-name">Map Video Call</td><td><span class="nt nt-code">code</span></td><td class="node-desc">Links call data with associated video details if applicable.</td></tr><tr><td class="node-name">Supabase: Upsert Call</td><td><span class="nt nt-httpRequest">httpRequest</span></td><td class="node-desc">Upserts the full call analysis record into Supabase for persistent storage.</td></tr></tbody>
-    </table></div>
-  </div>
-</div></div></section>
-<section class="workflow" id="inbound-leads-qualification-supabase">
-<div class="wf-header">
-  <div class="wf-meta"><span class="wf-badge">Active</span><span class="wf-trigger">Starts when an inbound lead is submitted to the workflow’s webhook endpoint.</span></div>
-  <h2>Inbound Leads Qualification (Supabase)</h2>
-  <p class="wf-overview">This workflow automates the qualification of inbound leads using external data enrichment, validation, and CRM integration. It verifies and scores lead contact information, enriches lead data with third-party tools, and syncs qualified leads to Supabase and Pipedrive. The process ensures leads meet specific criteria before entering the main sales pipeline.</p>
-</div>
-<div class="wf-body"><div class="wf-cols">
-  <div class="wf-left">
-    <div class="section-label">Execution Flow</div>
-    <div class="phases"><div class="phase"><span class="phase-num">1</span><div><strong>Data Collection & Restoration</strong><span class="phase-sep"> — </span>Inbound lead data is captured via webhook and prepared for processing.</div></div><div class="phase"><span class="phase-num">2</span><div><strong>Contact Verification & Enrichment</strong><span class="phase-sep"> — </span>Lead contact details are verified and enriched using tools like Snov, Clay, and OpenAI.</div></div><div class="phase"><span class="phase-num">3</span><div><strong>Qualification & Scoring</strong><span class="phase-sep"> — </span>Leads are evaluated against multiple criteria such as email, phone, job position, and company details to determine qualification.</div></div><div class="phase"><span class="phase-num">4</span><div><strong>CRM & Database Sync</strong><span class="phase-sep"> — </span>Qualified leads are sent to Pipedrive and Supabase, while rejected or duplicate leads are handled appropriately.</div></div></div>
-    <div class="section-label" style="margin-top:20px">Technical Notes</div>
-    <p class="notes">Periodic review and update of external API credentials, validation criteria, and webhook endpoints are essential for uninterrupted workflow operation.</p>
-  </div>
-  <div class="wf-right">
-    <div class="section-label">Node Reference</div>
-    <div class="table-wrap"><table>
-      <thead><tr><th>Node</th><th>Type</th><th>Description</th></tr></thead>
-      <tbody><tr><td class="node-name">Webhook1</td><td><span class="nt nt-webhook">webhook</span></td><td class="node-desc">Receives new inbound lead submissions.</td></tr><tr><td class="node-name">Restore Webhook Data1</td><td><span class="nt nt-code">code</span></td><td class="node-desc">Restores and preprocesses the raw webhook input data.</td></tr><tr><td class="node-name">Snov: Get Token</td><td><span class="nt nt-httpRequest">httpRequest</span></td><td class="node-desc">Requests an authentication token from Snov.io API for email verification.</td></tr><tr><td class="node-name">Snov: Start Verification</td><td><span class="nt nt-httpRequest">httpRequest</span></td><td class="node-desc">Initiates email verification request to Snov.io.</td></tr><tr><td class="node-name">Email: Wait 15s</td><td><span class="nt nt-wait">wait</span></td><td class="node-desc">Pauses to allow sufficient time for external email verification.</td></tr><tr><td class="node-name">Snov: Get Verification Result</td><td><span class="nt nt-httpRequest">httpRequest</span></td><td class="node-desc">Retrieves the result of the email verification process.</td></tr><tr><td class="node-name">Qualify Email</td><td><span class="nt nt-code">code</span></td><td class="node-desc">Assesses email quality and deliverability for further qualification.</td></tr><tr><td class="node-name">Email Qualified?</td><td><span class="nt nt-if">if</span></td><td class="node-desc">Checks if the email address meets qualification criteria.</td></tr><tr><td class="node-name">GPT: Match Domain to Company</td><td><span class="nt nt-openAi">openAi</span></td><td class="node-desc">Uses OpenAI to determine if the lead's email domain matches their company.</td></tr><tr><td class="node-name">API: Verify Phone</td><td><span class="nt nt-httpRequest">httpRequest</span></td><td class="node-desc">Validates the phone number through an external verification API.</td></tr><tr><td class="node-name">Merge: Collect Validations</td><td><span class="nt nt-merge">merge</span></td><td class="node-desc">Aggregates validation results from various enrichment nodes.</td></tr><tr><td class="node-name">Pipedrive: Create Organization</td><td><span class="nt nt-httpRequest">httpRequest</span></td><td class="node-desc">Sends a request to create a new organization in Pipedrive.</td></tr><tr><td class="node-name">Pipedrive: Create Person</td><td><span class="nt nt-pipedrive">pipedrive</span></td><td class="node-desc">Creates a new person/contact in Pipedrive CRM.</td></tr><tr><td class="node-name">Prepare Deal Data</td><td><span class="nt nt-code">code</span></td><td class="node-desc">Prepares the data structure needed for new Pipedrive deals.</td></tr><tr><td class="node-name">Pipedrive: Create Deal</td><td><span class="nt nt-pipedrive">pipedrive</span></td><td class="node-desc">Creates a deal and attaches it to the qualified organization and person in Pipedrive.</td></tr><tr><td class="node-name">Supabase: Create Registration</td><td><span class="nt nt-httpRequest">httpRequest</span></td><td class="node-desc">Saves the new registration record to Supabase.</td></tr><tr><td class="node-name">Supabase: Update Hygiene</td><td><span class="nt nt-httpRequest">httpRequest</span></td><td class="node-desc">Updates Supabase with hygiene check results for the lead.</td></tr><tr><td class="node-name">Supabase: Update Qualification</td><td><span class="nt nt-httpRequest">httpRequest</span></td><td class="node-desc">Saves the qualification score and details to Supabase.</td></tr><tr><td class="node-name">Supabase: Save Deal ID</td><td><span class="nt nt-httpRequest">httpRequest</span></td><td class="node-desc">Links the Pipedrive deal ID to the lead record in Supabase.</td></tr><tr><td class="node-name">Supabase: Mark Rejected</td><td><span class="nt nt-httpRequest">httpRequest</span></td><td class="node-desc">Marks leads that fail qualification as rejected in Supabase.</td></tr></tbody>
-    </table></div>
-  </div>
-</div></div></section>
-<section class="workflow" id="sync-crm-with-supabase-add-time-per-stage">
-<div class="wf-header">
-  <div class="wf-meta"><span class="wf-badge">Active</span><span class="wf-trigger">Triggered by changes in Pipedrive CRM deals.</span></div>
-  <h2>Sync CRM with Supabase + Add Time per Stage</h2>
-  <p class="wf-overview">This workflow synchronizes Pipedrive CRM deal data with Supabase and records the time spent at each stage of the sales pipeline. It exists to ensure all deal progress is accurately tracked for sales analytics and automated stage timing assignments in Supabase.</p>
-</div>
-<div class="wf-body"><div class="wf-cols">
-  <div class="wf-left">
-    <div class="section-label">Execution Flow</div>
-    <div class="phases"><div class="phase"><span class="phase-num">1</span><div><strong>Trigger & Filter</strong><span class="phase-sep"> — </span>Detect relevant CRM changes and filter for target sales pipelines.</div></div><div class="phase"><span class="phase-num">2</span><div><strong>Stage Timing & Processing</strong><span class="phase-sep"> — </span>Determine stage entry/exit, calculate time spent, and update both Pipedrive and Supabase.</div></div><div class="phase"><span class="phase-num">3</span><div><strong>Supabase Sync</strong><span class="phase-sep"> — </span>Create or update corresponding deal records in Supabase reflecting current stage and durations.</div></div></div>
-    <div class="section-label" style="margin-top:20px">Technical Notes</div>
-    <p class="notes">Ensure field mappings and stage definitions remain consistent between Pipedrive and Supabase, and monitor API quotas for both platforms to prevent sync failures.</p>
-  </div>
-  <div class="wf-right">
-    <div class="section-label">Node Reference</div>
-    <div class="table-wrap"><table>
-      <thead><tr><th>Node</th><th>Type</th><th>Description</th></tr></thead>
-      <tbody><tr><td class="node-name">Pipedrive Trigger1</td><td><span class="nt nt-pipedriveTrigger">pipedriveTrigger</span></td><td class="node-desc">Listens for updates to deals in the target Pipedrive pipeline.</td></tr><tr><td class="node-name">SALES 2026 only?1</td><td><span class="nt nt-if">if</span></td><td class="node-desc">Checks if the deal belongs to the 'SALES 2026' pipeline.</td></tr><tr><td class="node-name">Build Deal Data1</td><td><span class="nt nt-code">code</span></td><td class="node-desc">Structures incoming data to prepare for processing.</td></tr><tr><td class="node-name">Map Deal Update</td><td><span class="nt nt-code">code</span></td><td class="node-desc">Transforms or enriches deal data before further logic.</td></tr><tr><td class="node-name">Registration before1</td><td><span class="nt nt-if">if</span></td><td class="node-desc">Checks if the deal has previously entered the Registration stage.</td></tr><tr><td class="node-name">MQL Trying before1</td><td><span class="nt nt-if">if</span></td><td class="node-desc">Checks for prior entry into the MQL Trying stage.</td></tr><tr><td class="node-name">MQL Contact before1</td><td><span class="nt nt-if">if</span></td><td class="node-desc">Determines if the deal previously hit the MQL Contact stage.</td></tr><tr><td class="node-name">SAL Trial before1</td><td><span class="nt nt-if">if</span></td><td class="node-desc">Verifies if the deal was in the SAL Trial stage before.</td></tr><tr><td class="node-name">SAL Commit before1</td><td><span class="nt nt-if">if</span></td><td class="node-desc">Checks if the deal has already entered the SAL Commit stage.</td></tr><tr><td class="node-name">PD: Time in Registration1</td><td><span class="nt nt-pipedrive">pipedrive</span></td><td class="node-desc">Fetches the duration the deal spent in the Registration stage.</td></tr><tr><td class="node-name">PD: Time in MQL Trying1</td><td><span class="nt nt-pipedrive">pipedrive</span></td><td class="node-desc">Fetches the time spent in MQL Trying.</td></tr><tr><td class="node-name">PD: Time in MQL Contact1</td><td><span class="nt nt-pipedrive">pipedrive</span></td><td class="node-desc">Retrieves time in MQL Contact stage.</td></tr><tr><td class="node-name">PD: Time in SQL1</td><td><span class="nt nt-pipedrive">pipedrive</span></td><td class="node-desc">Gets the duration spent in SQL stage.</td></tr><tr><td class="node-name">PD: Time in SAL Trial1</td><td><span class="nt nt-pipedrive">pipedrive</span></td><td class="node-desc">Fetches time spent in SAL Trial.</td></tr><tr><td class="node-name">PD: Time in SAL Commit1</td><td><span class="nt nt-pipedrive">pipedrive</span></td><td class="node-desc">Retrieves duration in SAL Commit stage.</td></tr><tr><td class="node-name">PD: Update Lost1</td><td><span class="nt nt-pipedrive">pipedrive</span></td><td class="node-desc">Marks the deal as lost in Pipedrive if applicable.</td></tr><tr><td class="node-name">PD: Update Won1</td><td><span class="nt nt-pipedrive">pipedrive</span></td><td class="node-desc">Marks the deal as won in Pipedrive if applicable.</td></tr><tr><td class="node-name">Entered MQL?1</td><td><span class="nt nt-if">if</span></td><td class="node-desc">Checks if stage transition to MQL occurred.</td></tr><tr><td class="node-name">Entered SAL?1</td><td><span class="nt nt-if">if</span></td><td class="node-desc">Checks for transition into SAL stage.</td></tr><tr><td class="node-name">First Contact?1</td><td><span class="nt nt-if">if</span></td><td class="node-desc">Tests if first contact was made for the deal.</td></tr><tr><td class="node-name">Won?1</td><td><span class="nt nt-if">if</span></td><td class="node-desc">Determines if the deal status is won.</td></tr><tr><td class="node-name">Lost?1</td><td><span class="nt nt-if">if</span></td><td class="node-desc">Determines if the deal status is lost.</td></tr><tr><td class="node-name">SB: Mark MQL1</td><td><span class="nt nt-httpRequest">httpRequest</span></td><td class="node-desc">Marks the deal as entered MQL in Supabase.</td></tr><tr><td class="node-name">SB: Mark SAL1</td><td><span class="nt nt-httpRequest">httpRequest</span></td><td class="node-desc">Flags SAL stage entry in Supabase.</td></tr><tr><td class="node-name">SB: Mark Contacted1</td><td><span class="nt nt-httpRequest">httpRequest</span></td><td class="node-desc">Marks the deal as contacted in Supabase.</td></tr><tr><td class="node-name">SB: Mark Won1</td><td><span class="nt nt-httpRequest">httpRequest</span></td><td class="node-desc">Updates the deal as won in Supabase.</td></tr><tr><td class="node-name">SB: Mark Lost1</td><td><span class="nt nt-httpRequest">httpRequest</span></td><td class="node-desc">Updates the deal as lost in Supabase.</td></tr><tr><td class="node-name">Edit Fields</td><td><span class="nt nt-set">set</span></td><td class="node-desc">Prepares and sets necessary fields before API updates.</td></tr><tr><td class="node-name">SQL before</td><td><span class="nt nt-if">if</span></td><td class="node-desc">Checks if the deal previously entered SQL.</td></tr><tr><td class="node-name">If Lost</td><td><span class="nt nt-if">if</span></td><td class="node-desc">Conditionally processes lost deals.</td></tr><tr><td class="node-name">If Won</td><td><span class="nt nt-if">if</span></td><td class="node-desc">Conditionally processes won deals.</td></tr><tr><td class="node-name">HTTP Request1</td><td><span class="nt nt-httpRequest">httpRequest</span></td><td class="node-desc">Makes generic API call for deal update.</td></tr><tr><td class="node-name">Entered SQL?1</td><td><span class="nt nt-if">if</span></td><td class="node-desc">Checks for entry into SQL stage.</td></tr><tr><td class="node-name">SB: Mark SQL1</td><td><span class="nt nt-httpRequest">httpRequest</span></td><td class="node-desc">Marks SQL stage in Supabase.</td></tr><tr><td class="node-name">Supabase: Get Existing Record</td><td><span class="nt nt-httpRequest">httpRequest</span></td><td class="node-desc">Fetches existing deal record from Supabase.</td></tr><tr><td class="node-name">Has Supabase Record?</td><td><span class="nt nt-if">if</span></td><td class="node-desc">Checks if Supabase record exists.</td></tr><tr><td class="node-name">Supabase: Update Deal</td><td><span class="nt nt-httpRequest">httpRequest</span></td><td class="node-desc">Updates or creates the deal in Supabase with new data.</td></tr></tbody>
-    </table></div>
-  </div>
-</div></div></section>
-<section class="workflow" id="create-update-deal-from-discovery-call-supabase">
-<div class="wf-header">
-  <div class="wf-meta"><span class="wf-badge">Active</span><span class="wf-trigger">Triggered by a Calendly event when a Discovery Call is booked.</span></div>
-  <h2>Create/Update a deal from Discovery Call (Supabase)</h2>
-  <p class="wf-overview">This workflow automates the creation or updating of Pipedrive deals when a Discovery Call is booked, synchronizing data with Supabase. It ensures persons, organizations, and deals are accurately validated, created, verified, and aligned across sales and external CRMs for streamlined sales process management.</p>
-</div>
-<div class="wf-body"><div class="wf-cols">
-  <div class="wf-left">
-    <div class="section-label">Execution Flow</div>
-    <div class="phases"><div class="phase"><span class="phase-num">1</span><div><strong>Trigger & Data Extraction</strong><span class="phase-sep"> — </span>Triggered by a Calendly event and parses event details.</div></div><div class="phase"><span class="phase-num">2</span><div><strong>Person & Deal Management</strong><span class="phase-sep"> — </span>Verifies existence, validates contact, and creates or updates persons, organizations, and deals in Pipedrive.</div></div><div class="phase"><span class="phase-num">3</span><div><strong>Email & Phone Validation</strong><span class="phase-sep"> — </span>Checks and verifies contact details, performing email verification and domain classification.</div></div><div class="phase"><span class="phase-num">4</span><div><strong>Activity Logging & Linking</strong><span class="phase-sep"> — </span>Adds notes, logs activities, and links relevant activities to deals.</div></div><div class="phase"><span class="phase-num">5</span><div><strong>Data Normalization & Enrichment</strong><span class="phase-sep"> — </span>Normalizes job positions using OpenAI and maps deal data for sync.</div></div><div class="phase"><span class="phase-num">6</span><div><strong>Supabase Synchronization</strong><span class="phase-sep"> — </span>Creates or updates deal records in Supabase for data alignment.</div></div></div>
-    <div class="section-label" style="margin-top:20px">Technical Notes</div>
-    <p class="notes">Review periodic API schema changes in Pipedrive and Supabase to maintain data consistency and validate all conditional logic for edge cases.</p>
-  </div>
-  <div class="wf-right">
-    <div class="section-label">Node Reference</div>
-    <div class="table-wrap"><table>
-      <thead><tr><th>Node</th><th>Type</th><th>Description</th></tr></thead>
-      <tbody><tr><td class="node-name">Discovery Booked</td><td><span class="nt nt-calendlyTrigger">calendlyTrigger</span></td><td class="node-desc">Initiates the workflow upon a booked discovery call in Calendly.</td></tr><tr><td class="node-name">add deal owner ID1</td><td><span class="nt nt-code">code</span></td><td class="node-desc">Assigns a deal owner ID based on input data.</td></tr><tr><td class="node-name">If2</td><td><span class="nt nt-if">if</span></td><td class="node-desc">Branches logic based on conditional checks.</td></tr><tr><td class="node-name">person exists on Pipedrive?1</td><td><span class="nt nt-httpRequest">httpRequest</span></td><td class="node-desc">Queries Pipedrive to check if the person already exists.</td></tr><tr><td class="node-name">If3</td><td><span class="nt nt-if">if</span></td><td class="node-desc">Splits execution depending on previous check result.</td></tr><tr><td class="node-name">does it have an open deal?1</td><td><span class="nt nt-httpRequest">httpRequest</span></td><td class="node-desc">Checks Pipedrive for an open existing deal for the person.</td></tr><tr><td class="node-name">Create a person1</td><td><span class="nt nt-pipedrive">pipedrive</span></td><td class="node-desc">Creates a person record in Pipedrive if none is found.</td></tr><tr><td class="node-name">isValidPhoneNumber1</td><td><span class="nt nt-code">code</span></td><td class="node-desc">Validates the supplied phone number format.</td></tr><tr><td class="node-name">does phone number exist?1</td><td><span class="nt nt-httpRequest">httpRequest</span></td><td class="node-desc">Checks for the existence of a phone number in Pipedrive.</td></tr><tr><td class="node-name">Merge1</td><td><span class="nt nt-merge">merge</span></td><td class="node-desc">Merges data streams from different branches.</td></tr><tr><td class="node-name">generate token1</td><td><span class="nt nt-httpRequest">httpRequest</span></td><td class="node-desc">Requests a token for email verification.</td></tr><tr><td class="node-name">start verification1</td><td><span class="nt nt-httpRequest">httpRequest</span></td><td class="node-desc">Kicks off the email verification process.</td></tr><tr><td class="node-name">Email: Wait 15s1</td><td><span class="nt nt-wait">wait</span></td><td class="node-desc">Pauses workflow for email verification to process.</td></tr><tr><td class="node-name">Snov: Get Verification Result1</td><td><span class="nt nt-httpRequest">httpRequest</span></td><td class="node-desc">Fetches the result of the email verification.</td></tr><tr><td class="node-name">Parse Email Check1</td><td><span class="nt nt-set">set</span></td><td class="node-desc">Processes and stores the outcome of the email check.</td></tr><tr><td class="node-name">Classify Email Domain1</td><td><span class="nt nt-code">code</span></td><td class="node-desc">Categorizes email domains for further processing.</td></tr><tr><td class="node-name">qualify email1</td><td><span class="nt nt-code">code</span></td><td class="node-desc">Determines if the email is qualified for use.</td></tr><tr><td class="node-name">create organization1</td><td><span class="nt nt-httpRequest">httpRequest</span></td><td class="node-desc">Creates an organization in Pipedrive if needed.</td></tr><tr><td class="node-name">Create a deal1</td><td><span class="nt nt-pipedrive">pipedrive</span></td><td class="node-desc">Creates a new deal record in Pipedrive.</td></tr><tr><td class="node-name">Change Owner1</td><td><span class="nt nt-httpRequest">httpRequest</span></td><td class="node-desc">Reassigns deal ownership in Pipedrive.</td></tr><tr><td class="node-name">Get a person1</td><td><span class="nt nt-pipedrive">pipedrive</span></td><td class="node-desc">Retrieves details about a person from Pipedrive.</td></tr><tr><td class="node-name">Parse Calendly Event1</td><td><span class="nt nt-code">code</span></td><td class="node-desc">Extracts relevant Calendly event data for processing.</td></tr><tr><td class="node-name">Email: Check If Done1</td><td><span class="nt nt-code">code</span></td><td class="node-desc">Checks if email verification is complete and ready to proceed.</td></tr><tr><td class="node-name">Email: Verification Ready?1</td><td><span class="nt nt-if">if</span></td><td class="node-desc">Directs flow based on email verification readiness.</td></tr><tr><td class="node-name">Prep Post Deal </td><td><span class="nt nt-code">code</span></td><td class="node-desc">Prepares post-deal actions and note composition.</td></tr><tr><td class="node-name">Add Deal Note </td><td><span class="nt nt-httpRequest">httpRequest</span></td><td class="node-desc">Adds internal notes to the newly created deal.</td></tr><tr><td class="node-name">Wait Activity </td><td><span class="nt nt-wait">wait</span></td><td class="node-desc">Waits for an activity to be logged before proceeding.</td></tr><tr><td class="node-name">Get Activities </td><td><span class="nt nt-httpRequest">httpRequest</span></td><td class="node-desc">Pulls associated activities for the contact or deal.</td></tr><tr><td class="node-name">Find Activity </td><td><span class="nt nt-code">code</span></td><td class="node-desc">Filters and finds specific activities to be linked to deals.</td></tr><tr><td class="node-name">Link Activity to Deal </td><td><span class="nt nt-httpRequest">httpRequest</span></td><td class="node-desc">Links an activity directly to the deal in Pipedrive.</td></tr><tr><td class="node-name">Normalize Person ID1</td><td><span class="nt nt-code">code</span></td><td class="node-desc">Normalizes and formats the person's identifier.</td></tr><tr><td class="node-name">Build Deal Data1</td><td><span class="nt nt-code">code</span></td><td class="node-desc">Constructs structured deal data for downstream use.</td></tr><tr><td class="node-name">Change Owner New Deal1</td><td><span class="nt nt-httpRequest">httpRequest</span></td><td class="node-desc">Transfers ownership of a newly created deal.</td></tr><tr><td class="node-name">Prep Post Deal1</td><td><span class="nt nt-code">code</span></td><td class="node-desc">Prepares post-deal notes and syncing actions for updated deals.</td></tr><tr><td class="node-name">Add Deal Note1</td><td><span class="nt nt-httpRequest">httpRequest</span></td><td class="node-desc">Adds notes for updated deals in Pipedrive.</td></tr><tr><td class="node-name">Wait Activity1</td><td><span class="nt nt-wait">wait</span></td><td class="node-desc">Pauses again for post-update activity entries.</td></tr><tr><td class="node-name">Get Activities1</td><td><span class="nt nt-httpRequest">httpRequest</span></td><td class="node-desc">Gets activities for the updated deal record.</td></tr><tr><td class="node-name">Find Activity1</td><td><span class="nt nt-code">code</span></td><td class="node-desc">Identifies related activities for the updated deal.</td></tr><tr><td class="node-name">Link Activity to Deal1</td><td><span class="nt nt-httpRequest">httpRequest</span></td><td class="node-desc">Links updated activities to the deal.</td></tr><tr><td class="node-name">GPT: Normalize Job Position1</td><td><span class="nt nt-openAi">openAi</span></td><td class="node-desc">Uses OpenAI to normalize job title for better analytics.</td></tr><tr><td class="node-name">Parse Job Position1</td><td><span class="nt nt-code">code</span></td><td class="node-desc">Extracts and parses normalized job position data.</td></tr><tr><td class="node-name">Supabase: Get Reps</td><td><span class="nt nt-httpRequest">httpRequest</span></td><td class="node-desc">Fetches representative data from Supabase for alignment.</td></tr><tr><td class="node-name">Map Deal (New)</td><td><span class="nt nt-code">code</span></td><td class="node-desc">Maps and prepares new deal data for Supabase insertion.</td></tr><tr><td class="node-name">Supabase: Create Deal</td><td><span class="nt nt-httpRequest">httpRequest</span></td><td class="node-desc">Creates a new deal record in Supabase.</td></tr><tr><td class="node-name">Map Deal (Sync)</td><td><span class="nt nt-code">code</span></td><td class="node-desc">Preps and maps deal data for syncing updates.</td></tr><tr><td class="node-name">Supabase: Sync Deal</td><td><span class="nt nt-httpRequest">httpRequest</span></td><td class="node-desc">Updates deal record in Supabase with the latest information.</td></tr></tbody>
-    </table></div>
-  </div>
-</div></div></section>
-<section class="workflow" id="error-monitor-auto-fix-alert">
-<div class="wf-header">
-  <div class="wf-meta"><span class="wf-badge">Active</span><span class="wf-trigger">Workflow starts when any error is detected via an error trigger.</span></div>
-  <h2>Error Monitor — Auto-Fix + Alert</h2>
-  <p class="wf-overview">This workflow monitors for errors in n8n executions, automatically analyzes and attempts auto-fixes for retryable errors, and notifies relevant team members by email. It ensures reliable operations by providing prompt visibility and preventing repeated issues from going unaddressed.</p>
-</div>
-<div class="wf-body"><div class="wf-cols">
-  <div class="wf-left">
-    <div class="section-label">Execution Flow</div>
-    <div class="phases"><div class="phase"><span class="phase-num">1</span><div><strong>Error Detection</strong><span class="phase-sep"> — </span>Initiates when an error occurs and filters out irrelevant workflows.</div></div><div class="phase"><span class="phase-num">2</span><div><strong>Automated Remediation & Alerting</strong><span class="phase-sep"> — </span>Attempts automated fixes for retryable errors and informs stakeholders via tailored email alerts.</div></div></div>
-    <div class="section-label" style="margin-top:20px">Technical Notes</div>
-    <p class="notes">Keep workflow credentials for HTTP and email nodes up to date; ensure rate limiting logic is effective to prevent notification spam.</p>
-  </div>
-  <div class="wf-right">
-    <div class="section-label">Node Reference</div>
-    <div class="table-wrap"><table>
-      <thead><tr><th>Node</th><th>Type</th><th>Description</th></tr></thead>
-      <tbody><tr><td class="node-name">Error Trigger</td><td><span class="nt nt-webhook">webhook</span></td><td class="node-desc">Detects and starts the workflow on n8n execution errors.</td></tr><tr><td class="node-name">Filter Workflows</td><td><span class="nt nt-if">if</span></td><td class="node-desc">Filters errors to process only those from specified workflows.</td></tr><tr><td class="node-name">Rate Limiter</td><td><span class="nt nt-code">code</span></td><td class="node-desc">Implements throttling to avoid excessive processing or duplicate alerts.</td></tr><tr><td class="node-name">Build Context</td><td><span class="nt nt-code">code</span></td><td class="node-desc">Collects metadata necessary for subsequent analysis and decisions.</td></tr><tr><td class="node-name">Analyze Error</td><td><span class="nt nt-httpRequest">httpRequest</span></td><td class="node-desc">Calls an external service or API to analyze the nature of the detected error.</td></tr><tr><td class="node-name">Parse Decision</td><td><span class="nt nt-code">code</span></td><td class="node-desc">Processes the analysis result and determines the recommended action.</td></tr><tr><td class="node-name">Is Retryable?</td><td><span class="nt nt-if">if</span></td><td class="node-desc">Checks if the error can be automatically retried.</td></tr><tr><td class="node-name">Retry Execution</td><td><span class="nt nt-httpRequest">httpRequest</span></td><td class="node-desc">Attempts to re-execute the failed workflow if it is retryable.</td></tr><tr><td class="node-name">Check Retry Result</td><td><span class="nt nt-code">code</span></td><td class="node-desc">Evaluates the outcome of the retry attempt for success or failure.</td></tr><tr><td class="node-name">Email Retry Notification</td><td><span class="nt nt-emailSend">emailSend</span></td><td class="node-desc">Sends a notification email about the outcome of the automated retry.</td></tr><tr><td class="node-name">Email Alert</td><td><span class="nt nt-emailSend">emailSend</span></td><td class="node-desc">Sends an alert email for non-retryable or unrecoverable errors.</td></tr></tbody>
-    </table></div>
-  </div>
-</div></div></section>
-<section class="workflow" id="ringostat-phone-call-analysis-supabase">
-<div class="wf-header">
-  <div class="wf-meta"><span class="wf-badge">Active</span><span class="wf-trigger">Triggered by an incoming webhook on phone call reception.</span></div>
-  <h2>(RINGOSTAT) Phone Call Analysis (Supabase)</h2>
-  <p class="wf-overview">This workflow processes and analyzes incoming phone calls by transcribing audio, extracting insights with AI, and scoring various call components. The results are mapped and upserted into Supabase for further reporting and tracking. It exists to automate phone call evaluation, enabling richer analytics and rep performance monitoring.</p>
-</div>
-<div class="wf-body"><div class="wf-cols">
-  <div class="wf-left">
-    <div class="section-label">Execution Flow</div>
-    <div class="phases"><div class="phase"><span class="phase-num">1</span><div><strong>Input Capture & Routing</strong><span class="phase-sep"> — </span>Receives incoming call data and determines the processing path based on call type.</div></div><div class="phase"><span class="phase-num">2</span><div><strong>Audio Processing & Transcription</strong><span class="phase-sep"> — </span>Downloads call audio files and converts them to text using external services.</div></div><div class="phase"><span class="phase-num">3</span><div><strong>AI-Based Analysis</strong><span class="phase-sep"> — </span>Uses AI nodes to extract pain points, call intelligence, rapport, and score key sections of the call.</div></div><div class="phase"><span class="phase-num">4</span><div><strong>Result Aggregation & Storage</strong><span class="phase-sep"> — </span>Merges and formats analytical output, then upserts all results into Supabase tables.</div></div></div>
-    <div class="section-label" style="margin-top:20px">Technical Notes</div>
-    <p class="notes">Monitor external API limits for transcription and AI nodes, and review Supabase schema alignment regularly when making upstream field changes.</p>
-  </div>
-  <div class="wf-right">
-    <div class="section-label">Node Reference</div>
-    <div class="table-wrap"><table>
-      <thead><tr><th>Node</th><th>Type</th><th>Description</th></tr></thead>
-      <tbody><tr><td class="node-name">Receive Phone Call</td><td><span class="nt nt-webhook">webhook</span></td><td class="node-desc">Ingests call event data through a webhook trigger.</td></tr><tr><td class="node-name">Clean Input + Rep Map</td><td><span class="nt nt-code">code</span></td><td class="node-desc">Sanitizes incoming data and associates it with the correct sales rep.</td></tr><tr><td class="node-name">Build Activity Record</td><td><span class="nt nt-code">code</span></td><td class="node-desc">Prepares a detailed activity log to be written to the database.</td></tr><tr><td class="node-name">Route: Call Type</td><td><span class="nt nt-switch">switch</span></td><td class="node-desc">Routes logic based on the type of call (e.g., full-length or short).</td></tr><tr><td class="node-name">Download Audio</td><td><span class="nt nt-httpRequest">httpRequest</span></td><td class="node-desc">Requests the audio file from an external telephony system.</td></tr><tr><td class="node-name">Transcribe Audio</td><td><span class="nt nt-httpRequest">httpRequest</span></td><td class="node-desc">Sends the audio file to a transcription service to generate call transcripts.</td></tr><tr><td class="node-name">Build Transcript Record</td><td><span class="nt nt-code">code</span></td><td class="node-desc">Builds a transcript record from the formatted text.</td></tr><tr><td class="node-name">Pain Extraction</td><td><span class="nt nt-openAi">openAi</span></td><td class="node-desc">Extracts customer pain points from the call transcript using AI.</td></tr><tr><td class="node-name">Parse Pain</td><td><span class="nt nt-code">code</span></td><td class="node-desc">Cleans and structures the AI-extracted pain point data.</td></tr><tr><td class="node-name">Call Intelligence</td><td><span class="nt nt-openAi">openAi</span></td><td class="node-desc">Performs comprehensive call intelligence analysis on the conversation.</td></tr><tr><td class="node-name">Parse Intelligence</td><td><span class="nt nt-code">code</span></td><td class="node-desc">Formats and prepares intelligence insights for storage.</td></tr><tr><td class="node-name">Merge Analysis</td><td><span class="nt nt-merge">merge</span></td><td class="node-desc">Combines multiple AI analysis outputs into a single data object.</td></tr><tr><td class="node-name">Build Record</td><td><span class="nt nt-code">code</span></td><td class="node-desc">Compiles information into a unified record for database insertion.</td></tr><tr><td class="node-name">Score: Opening</td><td><span class="nt nt-openAi">openAi</span></td><td class="node-desc">Rates the call opening segment via AI scoring.</td></tr><tr><td class="node-name">Parse Opening Score</td><td><span class="nt nt-code">code</span></td><td class="node-desc">Extracts and formats the opening score for later use.</td></tr><tr><td class="node-name">Score: Pain</td><td><span class="nt nt-openAi">openAi</span></td><td class="node-desc">Scores the pain discussion portion with AI.</td></tr><tr><td class="node-name">Parse Pain Score</td><td><span class="nt nt-code">code</span></td><td class="node-desc">Formats the pain scoring output for aggregation.</td></tr><tr><td class="node-name">Score: Objection</td><td><span class="nt nt-openAi">openAi</span></td><td class="node-desc">Assesses the objection handling segment of the call using AI.</td></tr><tr><td class="node-name">Parse Objection Score</td><td><span class="nt nt-code">code</span></td><td class="node-desc">Parses the AI output for objection scoring.</td></tr><tr><td class="node-name">Merge Scores</td><td><span class="nt nt-merge">merge</span></td><td class="node-desc">Consolidates all scored results into a unified data set.</td></tr><tr><td class="node-name">Calculate Score</td><td><span class="nt nt-code">code</span></td><td class="node-desc">Computes a final or composite score based on all evaluation factors.</td></tr><tr><td class="node-name">Download Audio (Short)</td><td><span class="nt nt-httpRequest">httpRequest</span></td><td class="node-desc">Downloads short-form call audio, if applicable.</td></tr><tr><td class="node-name">Transcribe Audio (Short)</td><td><span class="nt nt-httpRequest">httpRequest</span></td><td class="node-desc">Transcribes short-form call audio for analysis.</td></tr><tr><td class="node-name">Build Short Transcript</td><td><span class="nt nt-code">code</span></td><td class="node-desc">Creates a transcript record for short calls.</td></tr><tr><td class="node-name">Rapport Analysis</td><td><span class="nt nt-openAi">openAi</span></td><td class="node-desc">Analyzes rapport-building effectiveness in the call using AI.</td></tr><tr><td class="node-name">Parse Rapport</td><td><span class="nt nt-code">code</span></td><td class="node-desc">Processes the AI output related to rapport analysis.</td></tr><tr><td class="node-name">Supabase: Get Reps</td><td><span class="nt nt-httpRequest">httpRequest</span></td><td class="node-desc">Fetches active sales rep data from Supabase.</td></tr><tr><td class="node-name">Map Activity</td><td><span class="nt nt-code">code</span></td><td class="node-desc">Maps analytical results to Supabase activity schema.</td></tr><tr><td class="node-name">Supabase: Upsert Activity</td><td><span class="nt nt-httpRequest">httpRequest</span></td><td class="node-desc">Upserts the activity analysis into Supabase.</td></tr><tr><td class="node-name">Map Analysis</td><td><span class="nt nt-code">code</span></td><td class="node-desc">Prepares linked analysis data for Supabase storage.</td></tr><tr><td class="node-name">Supabase: Upsert Analysis</td><td><span class="nt nt-httpRequest">httpRequest</span></td><td class="node-desc">Upserts extracted analysis information into Supabase.</td></tr><tr><td class="node-name">Map Short Call</td><td><span class="nt nt-code">code</span></td><td class="node-desc">Maps short call results to the database schema.</td></tr><tr><td class="node-name">Supabase: Upsert Short Call</td><td><span class="nt nt-httpRequest">httpRequest</span></td><td class="node-desc">Writes short call analytical results to Supabase.</td></tr></tbody>
-    </table></div>
-  </div>
-</div></div></section>
-<section class="workflow" id="api4com-phone-call-analysis-supabase">
-<div class="wf-header">
-  <div class="wf-meta"><span class="wf-badge">Active</span><span class="wf-trigger">Triggered by an incoming webhook to process call analysis requests.</span></div>
-  <h2>(API4COM) Phone Call Analysis (Supabase)</h2>
-  <p class="wf-overview">This workflow automatically analyzes recorded phone calls to extract key insights such as pain points, opening effectiveness, objections, and rapport using OpenAI. It stores both raw and analyzed data in Supabase for later reporting and review, helping sales and management track call quality and rep performance.</p>
-</div>
-<div class="wf-body"><div class="wf-cols">
-  <div class="wf-left">
-    <div class="section-label">Execution Flow</div>
-    <div class="phases"><div class="phase"><span class="phase-num">1</span><div><strong>Input & Activity Preparation</strong><span class="phase-sep"> — </span>Ingests webhook data, cleans inputs, and prepares call activity records.</div></div><div class="phase"><span class="phase-num">2</span><div><strong>Audio Processing & Transcription</strong><span class="phase-sep"> — </span>Downloads and transcribes audio files to create text transcripts.</div></div><div class="phase"><span class="phase-num">3</span><div><strong>AI-Powered Analysis</strong><span class="phase-sep"> — </span>Extracts insights such as pain points, intelligence, and conversation scores using OpenAI.</div></div><div class="phase"><span class="phase-num">4</span><div><strong>Results Storage</strong><span class="phase-sep"> — </span>Maps and upserts relevant activity and analysis records into Supabase.</div></div></div>
-    <div class="section-label" style="margin-top:20px">Technical Notes</div>
-    <p class="notes">Ensure that Supabase API keys and OpenAI credentials remain valid; periodic monitoring is recommended as AI models or Supabase schema may change.</p>
-  </div>
-  <div class="wf-right">
-    <div class="section-label">Node Reference</div>
-    <div class="table-wrap"><table>
-      <thead><tr><th>Node</th><th>Type</th><th>Description</th></tr></thead>
-      <tbody><tr><td class="node-name">Webhook</td><td><span class="nt nt-webhook">webhook</span></td><td class="node-desc">Receives incoming call analysis requests with metadata.</td></tr><tr><td class="node-name">Clean Input + Rep Map</td><td><span class="nt nt-code">code</span></td><td class="node-desc">Sanitizes inputs and maps the representative involved in the call.</td></tr><tr><td class="node-name">Build Activity Record</td><td><span class="nt nt-code">code</span></td><td class="node-desc">Structures data to prepare an activity record for storage.</td></tr><tr><td class="node-name">Download Audio</td><td><span class="nt nt-httpRequest">httpRequest</span></td><td class="node-desc">Fetches the main audio recording file from a provided URL.</td></tr><tr><td class="node-name">Transcribe Audio</td><td><span class="nt nt-httpRequest">httpRequest</span></td><td class="node-desc">Sends audio for transcription and retrieves the call transcript.</td></tr><tr><td class="node-name">Build Transcript Record</td><td><span class="nt nt-code">code</span></td><td class="node-desc">Formats the transcript into a structured record.</td></tr><tr><td class="node-name">Pain Extraction</td><td><span class="nt nt-openAi">openAi</span></td><td class="node-desc">Uses OpenAI to extract pain points from the transcript.</td></tr><tr><td class="node-name">Parse Pain</td><td><span class="nt nt-code">code</span></td><td class="node-desc">Processes the AI extraction result into a useful format.</td></tr><tr><td class="node-name">Call Intelligence</td><td><span class="nt nt-openAi">openAi</span></td><td class="node-desc">Applies OpenAI to extract intelligence and key insights from the transcript.</td></tr><tr><td class="node-name">Parse Intelligence</td><td><span class="nt nt-code">code</span></td><td class="node-desc">Refines AI-generated key insights data.</td></tr><tr><td class="node-name">Merge Analysis</td><td><span class="nt nt-merge">merge</span></td><td class="node-desc">Combines different streams of analysis into one dataset.</td></tr><tr><td class="node-name">Build Record</td><td><span class="nt nt-code">code</span></td><td class="node-desc">Creates a unified analysis record from merged data.</td></tr><tr><td class="node-name">Score: Opening</td><td><span class="nt nt-openAi">openAi</span></td><td class="node-desc">Scores the opening quality of the call using AI.</td></tr><tr><td class="node-name">Parse Opening Score</td><td><span class="nt nt-code">code</span></td><td class="node-desc">Extracts and formats opening score from AI output.</td></tr><tr><td class="node-name">Score: Pain</td><td><span class="nt nt-openAi">openAi</span></td><td class="node-desc">Scores how well pain points were handled in the call.</td></tr><tr><td class="node-name">Parse Pain Score</td><td><span class="nt nt-code">code</span></td><td class="node-desc">Extracts and formats pain handling score from AI output.</td></tr><tr><td class="node-name">Score: Objection</td><td><span class="nt nt-openAi">openAi</span></td><td class="node-desc">Scores objection handling using OpenAI analysis.</td></tr><tr><td class="node-name">Parse Objection Score</td><td><span class="nt nt-code">code</span></td><td class="node-desc">Extracts and formats objection score from AI output.</td></tr><tr><td class="node-name">Merge Scores</td><td><span class="nt nt-merge">merge</span></td><td class="node-desc">Combines individual call scores into a single object.</td></tr><tr><td class="node-name">Calculate Score</td><td><span class="nt nt-code">code</span></td><td class="node-desc">Calculates aggregate and weighted scores for the call.</td></tr><tr><td class="node-name">Route: Call Type</td><td><span class="nt nt-switch">switch</span></td><td class="node-desc">Routes logic depending on type or length of the call.</td></tr><tr><td class="node-name">Download Audio (Short)</td><td><span class="nt nt-httpRequest">httpRequest</span></td><td class="node-desc">Downloads audio for calls identified as short.</td></tr><tr><td class="node-name">Transcribe Audio (Short)</td><td><span class="nt nt-httpRequest">httpRequest</span></td><td class="node-desc">Transcribes short call audio files.</td></tr><tr><td class="node-name">Build Short Transcript</td><td><span class="nt nt-code">code</span></td><td class="node-desc">Constructs a transcript record for short calls.</td></tr><tr><td class="node-name">Rapport Analysis</td><td><span class="nt nt-openAi">openAi</span></td><td class="node-desc">Uses AI to analyze rapport-building in short calls.</td></tr><tr><td class="node-name">Parse Rapport</td><td><span class="nt nt-code">code</span></td><td class="node-desc">Extracts and formats rapport analysis results.</td></tr><tr><td class="node-name">Supabase: Get Reps</td><td><span class="nt nt-httpRequest">httpRequest</span></td><td class="node-desc">Retrieves rep information from the Supabase database.</td></tr><tr><td class="node-name">Map Activity</td><td><span class="nt nt-code">code</span></td><td class="node-desc">Prepares activity data for upserting to Supabase.</td></tr><tr><td class="node-name">Supabase: Upsert Activity</td><td><span class="nt nt-httpRequest">httpRequest</span></td><td class="node-desc">Inserts or updates activity record in Supabase.</td></tr><tr><td class="node-name">Map Analysis</td><td><span class="nt nt-code">code</span></td><td class="node-desc">Prepares call analysis data for database upsert.</td></tr><tr><td class="node-name">Supabase: Upsert Analysis</td><td><span class="nt nt-httpRequest">httpRequest</span></td><td class="node-desc">Inserts or updates analysis record in Supabase.</td></tr><tr><td class="node-name">Map Short Call</td><td><span class="nt nt-code">code</span></td><td class="node-desc">Prepares short call data for database upsert.</td></tr><tr><td class="node-name">Supabase: Upsert Short Call</td><td><span class="nt nt-httpRequest">httpRequest</span></td><td class="node-desc">Inserts or updates short call summary in Supabase.</td></tr></tbody>
-    </table></div>
-  </div>
-</div></div></section>
-<section class="workflow" id="transcript-embedding-generator-daily">
-<div class="wf-header">
-  <div class="wf-meta"><span class="wf-badge">Active</span><span class="wf-trigger">Runs on a schedule trigger every 2 hours.</span></div>
-  <h2>Transcript Embedding Generator (Daily)</h2>
-  <p class="wf-overview">This workflow generates vector embeddings for call transcripts stored in Supabase that do not yet have embeddings. It queries for unembedded records, batches them, sends them to OpenAI text-embedding-3-small for vectorization, and updates each record with its embedding. This powers semantic search across call transcripts in the Sales Intelligence dashboard.</p>
-</div>
-<div class="wf-body"><div class="wf-cols">
-  <div class="wf-left">
-    <div class="section-label">Execution Flow</div>
-    <div class="phases"><div class="phase"><span class="phase-num">1</span><div><strong>Fetch Unembedded Records</strong><span class="phase-sep"> — </span>Queries Supabase for call_transcripts rows where the embedding column is null, up to 50 records per run.</div></div><div class="phase"><span class="phase-num">2</span><div><strong>Batch & Embed</strong><span class="phase-sep"> — </span>Prepares transcript text into a batch payload and sends it to OpenAI Embeddings API (text-embedding-3-small, 1536 dimensions).</div></div><div class="phase"><span class="phase-num">3</span><div><strong>Update Records</strong><span class="phase-sep"> — </span>Maps each embedding back to its source record and updates the Supabase call_transcripts table with the generated vector.</div></div></div>
-    <div class="section-label" style="margin-top:20px">Technical Notes</div>
-    <p class="notes">Runs every 2 hours to catch new transcripts. Batch size capped at 50 to stay within OpenAI rate limits. Uses text-embedding-3-small (1536 dimensions) matching the pgvector HNSW index on call_transcripts.</p>
-  </div>
-  <div class="wf-right">
-    <div class="section-label">Node Reference</div>
-    <div class="table-wrap"><table>
-      <thead><tr><th>Node</th><th>Type</th><th>Description</th></tr></thead>
-      <tbody><tr><td class="node-name">Schedule Trigger</td><td><span class="nt nt-scheduleTrigger">scheduleTrigger</span></td><td class="node-desc">Fires every 2 hours to process new unembedded transcripts.</td></tr><tr><td class="node-name">Supabase: Get Unembedded</td><td><span class="nt nt-httpRequest">httpRequest</span></td><td class="node-desc">Queries Supabase REST API for call_transcripts where embedding is null (limit 50).</td></tr><tr><td class="node-name">Prepare Batch</td><td><span class="nt nt-code">code</span></td><td class="node-desc">Validates results and formats transcript records into a batch array for the embeddings API.</td></tr><tr><td class="node-name">OpenAI: Generate Embeddings</td><td><span class="nt nt-httpRequest">httpRequest</span></td><td class="node-desc">Sends transcript texts to OpenAI text-embedding-3-small and receives vector embeddings.</td></tr><tr><td class="node-name">Map Updates</td><td><span class="nt nt-code">code</span></td><td class="node-desc">Pairs each generated embedding with its source record ID for the update step.</td></tr><tr><td class="node-name">Supabase: Update Embedding</td><td><span class="nt nt-httpRequest">httpRequest</span></td><td class="node-desc">PATCHes each call_transcripts row in Supabase with its newly generated embedding vector.</td></tr></tbody>
-    </table></div>
-  </div>
-</div></div></section>
-<section class="workflow" id="auto-link-calendar-meetings-to-deals">
-<div class="wf-header">
-  <div class="wf-meta"><span class="wf-badge">Active</span><span class="wf-trigger">Triggered by a Pipedrive activity creation event.</span></div>
-  <h2>Auto-Link Calendar Meetings to Deals</h2>
-  <p class="wf-overview">This workflow automatically links calendar meeting activities in Pipedrive to the most relevant open deal in the SALES 2026 pipeline (pipeline 33). When a meeting is created without a deal association, it extracts the prospect person ID from attendees, looks up their open deals, picks the best match (preferring same-rep ownership and most recently updated), and links the activity to that deal.</p>
-</div>
-<div class="wf-body"><div class="wf-cols">
-  <div class="wf-left">
-    <div class="section-label">Execution Flow</div>
-    <div class="phases"><div class="phase"><span class="phase-num">1</span><div><strong>Filter & Extract</strong><span class="phase-sep"> — </span>Filters for meeting-type activities without a deal, then extracts the prospect person ID from the attendee list (excluding the organizer/user).</div></div><div class="phase"><span class="phase-num">2</span><div><strong>Deal Lookup</strong><span class="phase-sep"> — </span>Queries the Pipedrive API for all deals associated with the prospect person, then selects the best open deal in pipeline 33 based on rep ownership and recency.</div></div><div class="phase"><span class="phase-num">3</span><div><strong>Link Activity</strong><span class="phase-sep"> — </span>Updates the Pipedrive activity to associate it with the matched deal via the Pipedrive API.</div></div></div>
-    <div class="section-label" style="margin-top:20px">Technical Notes</div>
-    <p class="notes">Only processes meetings without existing deal associations. Filters strictly to pipeline 33 (SALES 2026). Prefers deals owned by the same rep as the activity creator, falling back to most recently updated deal.</p>
-  </div>
-  <div class="wf-right">
-    <div class="section-label">Node Reference</div>
-    <div class="table-wrap"><table>
-      <thead><tr><th>Node</th><th>Type</th><th>Description</th></tr></thead>
-      <tbody><tr><td class="node-name">Activity Created</td><td><span class="nt nt-pipedriveTrigger">pipedriveTrigger</span></td><td class="node-desc">Listens for new activity creation events from Pipedrive.</td></tr><tr><td class="node-name">Is Meeting + No Deal?</td><td><span class="nt nt-filter">filter</span></td><td class="node-desc">Checks that the activity is a meeting type and has no deal already linked.</td></tr><tr><td class="node-name">Extract Prospect Person ID</td><td><span class="nt nt-code">code</span></td><td class="node-desc">Parses attendees to find the prospect (non-organizer with a person_id).</td></tr><tr><td class="node-name">Has Person ID?</td><td><span class="nt nt-filter">filter</span></td><td class="node-desc">Ensures a valid prospect person_id was found before proceeding.</td></tr><tr><td class="node-name">Get Person Deals</td><td><span class="nt nt-httpRequest">httpRequest</span></td><td class="node-desc">Fetches all deals for the prospect person from the Pipedrive API.</td></tr><tr><td class="node-name">Pick Best Deal</td><td><span class="nt nt-code">code</span></td><td class="node-desc">Selects the best open deal in pipeline 33, preferring same-rep ownership and most recent update.</td></tr><tr><td class="node-name">Found Deal?</td><td><span class="nt nt-filter">filter</span></td><td class="node-desc">Checks that a matching deal was found.</td></tr><tr><td class="node-name">Link Activity to Deal</td><td><span class="nt nt-httpRequest">httpRequest</span></td><td class="node-desc">Updates the Pipedrive activity to link it to the selected deal.</td></tr></tbody>
-    </table></div>
-  </div>
-</div></div></section>
-</main>
+
+<nav class="sidebar" id="sidebar"></nav>
+
+<main class="main" id="main-content"></main>
+
+<button class="back-to-top" id="btt" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Back to top">
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 15l-6-6-6 6"/></svg>
+</button>
+
 <script>
-function setTheme(t){document.documentElement.setAttribute('data-theme',t);document.getElementById('btn-light').classList.toggle('active',t==='light');document.getElementById('btn-dark').classList.toggle('active',t==='dark');localStorage.setItem('theme',t)}
-const saved=localStorage.getItem('theme');if(saved)setTheme(saved);
-const sections=document.querySelectorAll('.workflow'),navLinks=document.querySelectorAll('.nav-item');
-sections.forEach(s=>new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){navLinks.forEach(n=>n.classList.remove('active'));const a=document.querySelector('.nav-item[href="#'+e.target.id+'"]');if(a)a.classList.add('active')}})},{threshold:0.2}).observe(s));
-</script></body></html>
+/* ============================================================
+   WORKFLOW ORDER — Edit this array when adding/removing workflows.
+   The n8n documentation generator can update this constant.
+   ============================================================ */
+const WORKFLOW_ORDER = [
+  // Lead Creation
+  { id: 'BQUB8mnTqGB9eL5w', category: 'Lead Creation',    catClass: 'cat-lead', catDot: '#3B82F6', icon: 'L' },
+  { id: 'JkcTyGn87jjDlVuQ', category: 'Lead Creation',    catClass: 'cat-lead', catDot: '#3B82F6', icon: 'L' },
+  { id: 'V7j1ZgaI9kHPUtwJ', category: 'Lead Creation',    catClass: 'cat-lead', catDot: '#3B82F6', icon: 'L' },
+  // Deal Enrichment & Sync
+  { id: 'qfPOqBWgOqnWdIvG', category: 'Deal Enrichment & Sync', catClass: 'cat-deal', catDot: '#10B981', icon: 'D' },
+  { id: 'BYPDAdpkbLxCWiew', category: 'Deal Enrichment & Sync', catClass: 'cat-deal', catDot: '#10B981', icon: 'D' },
+  { id: 'YYQMPCRpAfRjsExQ', category: 'Deal Enrichment & Sync', catClass: 'cat-deal', catDot: '#10B981', icon: 'D' },
+  // Call Analysis
+  { id: 'AfyRBWkgEONyqNtl', category: 'Call Analysis',    catClass: 'cat-call', catDot: '#8B5CF6', icon: 'C' },
+  { id: 'h6Ny08MA0hpoSXJI', category: 'Call Analysis',    catClass: 'cat-call', catDot: '#8B5CF6', icon: 'C' },
+  { id: 'm8v1bYhSGhu1cJNh', category: 'Call Analysis',    catClass: 'cat-call', catDot: '#8B5CF6', icon: 'C' },
+  // Infrastructure
+  { id: 'XEDRiz0EW8fwHi8d', category: 'Infrastructure',   catClass: 'cat-infra', catDot: '#F59E0B', icon: 'I' },
+  { id: 'JGZdwcjhxcwkwFsA', category: 'Infrastructure',   catClass: 'cat-infra', catDot: '#F59E0B', icon: 'I' },
+  { id: 'ecufqr7ZfxSIEggr', category: 'Infrastructure',   catClass: 'cat-infra', catDot: '#F59E0B', icon: 'I' },
+];
+
+/* Display names override (for workflows where cache _name has "(Supabase)" suffix or is missing) */
+const DISPLAY_NAMES = {
+  'BQUB8mnTqGB9eL5w': 'Inbound Leads Qualification',
+  'JkcTyGn87jjDlVuQ': 'Leads coming from events/courses',
+  'V7j1ZgaI9kHPUtwJ': 'Create/Update a deal from Discovery Call',
+  'qfPOqBWgOqnWdIvG': '(ENRICH) Update deal after Clay enrichment',
+  'BYPDAdpkbLxCWiew': 'Sync CRM with Supabase + Add Time per Stage',
+  'YYQMPCRpAfRjsExQ': 'Auto-Link Calendar Meetings to Deals',
+  'AfyRBWkgEONyqNtl': '(Fireflies) PID Call Analysis + Coach',
+  'h6Ny08MA0hpoSXJI': '(RINGOSTAT) Phone Call Analysis',
+  'm8v1bYhSGhu1cJNh': '(API4COM) Phone Call Analysis',
+  'XEDRiz0EW8fwHi8d': 'Error Monitor — Auto-Fix + Alert',
+  'JGZdwcjhxcwkwFsA': 'Transcript Embedding Generator (Daily)',
+  'ecufqr7ZfxSIEggr': 'Live update on Github documentations',
+};
+
+let DATA = {};
+
+/* Theme */
+function setTheme(t) {
+  document.documentElement.setAttribute('data-theme', t);
+  localStorage.setItem('theme', t);
+  document.getElementById('btn-light').classList.toggle('active', t === 'light');
+  document.getElementById('btn-dark').classList.toggle('active', t === 'dark');
+}
+(function() {
+  const saved = localStorage.getItem('theme');
+  if (saved) setTheme(saved);
+})();
+
+/* Sidebar collapse */
+function toggleSidebar() {
+  document.body.classList.toggle('sidebar-collapsed');
+  localStorage.setItem('sidebar-collapsed', document.body.classList.contains('sidebar-collapsed'));
+}
+(function() {
+  if (localStorage.getItem('sidebar-collapsed') === 'true') {
+    document.body.classList.add('sidebar-collapsed');
+  }
+})();
+
+/* Back to top */
+window.addEventListener('scroll', function() {
+  document.getElementById('btt').classList.toggle('visible', window.scrollY > 400);
+});
+
+/* Helper: shorten trigger text for card */
+function shortTrigger(t) {
+  if (!t) return '';
+  const s = t.replace(/^(Triggered by |Starts when |Fires when |Runs )/i, '');
+  return s.charAt(0).toUpperCase() + s.slice(1);
+}
+
+/* Helper: get node type CSS class */
+function ntClass(type) {
+  return 'nt nt-' + type.replace(/\s+/g, '');
+}
+
+/* Load and render */
+fetch('cache.json?_=' + Date.now())
+  .then(r => r.json())
+  .then(data => {
+    DATA = data.workflows || {};
+    render();
+  })
+  .catch(e => {
+    document.getElementById('main-content').innerHTML = '<div style="padding:40px;color:red">Error loading cache.json: ' + e.message + '</div>';
+  });
+
+function getName(id) {
+  return DISPLAY_NAMES[id] || (DATA[id] && DATA[id].doc && DATA[id].doc._name) || id;
+}
+
+function getDoc(id) {
+  return DATA[id] && DATA[id].doc ? DATA[id].doc : null;
+}
+
+function render() {
+  /* Compute date from cache file modification or fallback */
+  let dateStr = '';
+  const allDocs = WORKFLOW_ORDER.map(w => getDoc(w.id)).filter(Boolean);
+  /* Use current date as display date */
+  const now = new Date();
+  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  dateStr = months[now.getMonth()] + ' ' + now.getDate() + ', ' + now.getFullYear();
+
+  const wfCount = WORKFLOW_ORDER.length;
+
+  /* Topbar meta */
+  document.getElementById('topbar-meta').textContent = wfCount + ' workflows \u00B7 ' + dateStr;
+
+  /* Build sidebar */
+  let sidebarHTML = '<div class="nav-section">';
+  let lastCat = '';
+  WORKFLOW_ORDER.forEach(w => {
+    const doc = getDoc(w.id);
+    if (!doc) return;
+    if (w.category !== lastCat) {
+      if (lastCat) sidebarHTML += '</div><div class="nav-section">';
+      sidebarHTML += '<div class="nav-section-label">' + esc(w.category) + '</div>';
+      lastCat = w.category;
+    }
+    const name = getName(w.id);
+    sidebarHTML += '<a href="#wf-' + w.id + '" class="nav-item" data-tooltip="' + esc(name) + '">' +
+      '<span class="nav-icon" style="background:' + w.catDot + '">' + w.icon + '</span>' +
+      '<span class="nav-label">' + esc(name) + '</span></a>';
+  });
+  sidebarHTML += '</div>';
+  sidebarHTML += '<div class="sidebar-toggle"><button onclick="toggleSidebar()" title="Toggle sidebar">' +
+    '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 3H3v18h18V3z"/><path d="M9 3v18"/></svg>' +
+    '</button></div>';
+  document.getElementById('sidebar').innerHTML = sidebarHTML;
+
+  /* Build main content */
+  let html = '';
+
+  /* Hero */
+  html += '<div class="hero"><div class="hero-left">' +
+    '<div class="hero-eyebrow">Snov.io \u00B7 Sales Engineering</div>' +
+    '<h1>N8N Technical Documentation</h1>' +
+    '<p class="hero-desc">Live technical documentation for all active sales automations. Auto-generated from n8n workflow definitions.</p>' +
+    '</div><div class="hero-stats">' +
+    '<div class="stat"><div class="stat-num">' + wfCount + '</div><div class="stat-label">Active workflows</div></div>' +
+    '</div></div>';
+
+  /* Summary cards by category */
+  html += '<div class="summary">';
+  const categories = [];
+  const catMap = {};
+  WORKFLOW_ORDER.forEach(w => {
+    if (!catMap[w.category]) {
+      catMap[w.category] = [];
+      categories.push({ name: w.category, cls: w.catClass, dot: w.catDot });
+    }
+    catMap[w.category].push(w);
+  });
+
+  categories.forEach(cat => {
+    html += '<div class="summary-category">';
+    html += '<div class="summary-category-label"><span class="cat-dot" style="background:' + cat.dot + '"></span>' + esc(cat.name) + '</div>';
+    html += '<div class="cards-grid">';
+    catMap[cat.name].forEach(w => {
+      const doc = getDoc(w.id);
+      if (!doc) return;
+      const name = getName(w.id);
+      html += '<a href="#wf-' + w.id + '" class="card" onclick="smoothNav(event,\'' + w.id + '\')">' +
+        '<div class="card-name">' + esc(name) + '</div>' +
+        '<div class="card-trigger">' + esc(shortTrigger(doc.trigger)) + '</div>' +
+        '</a>';
+    });
+    html += '</div></div>';
+  });
+  html += '</div>';
+
+  /* Workflow detail sections */
+  WORKFLOW_ORDER.forEach((w, idx) => {
+    const doc = getDoc(w.id);
+    if (!doc) return;
+    const name = getName(w.id);
+
+    html += '<section class="workflow" id="wf-' + w.id + '">';
+
+    /* Header */
+    html += '<div class="wf-header">';
+    html += '<div class="wf-meta">';
+    html += '<span class="wf-badge">Active</span>';
+    html += '<span class="wf-cat ' + w.catClass + '">' + esc(w.category) + '</span>';
+    html += '<span class="wf-id">' + w.id + '</span>';
+    html += '</div>';
+    html += '<h2>' + esc(name) + '</h2>';
+    html += '<div class="wf-trigger">' + esc(doc.trigger) + '</div>';
+    html += '<p class="wf-overview" style="margin-top:8px">' + esc(doc.overview) + '</p>';
+    html += '</div>';
+
+    /* Body */
+    html += '<div class="wf-body"><div class="wf-cols">';
+
+    /* Left: phases + notes */
+    html += '<div class="wf-left">';
+    html += '<div class="section-label">Execution Flow</div>';
+    html += '<div class="phases">';
+    if (doc.phases) {
+      doc.phases.forEach((p, i) => {
+        html += '<div class="phase"><span class="phase-num">' + (i + 1) + '</span><div><strong>' + esc(p[0]) + '</strong><span class="phase-sep"> \u2014 </span>' + esc(p[1]) + '</div></div>';
+      });
+    }
+    html += '</div>';
+    if (doc.notes) {
+      html += '<div class="section-label" style="margin-top:20px">Technical Notes</div>';
+      html += '<p class="notes">' + esc(doc.notes) + '</p>';
+    }
+    html += '</div>';
+
+    /* Right: node table */
+    html += '<div class="wf-right">';
+    html += '<div class="section-label">Node Reference</div>';
+    html += '<div class="table-wrap"><table><thead><tr><th>Node</th><th>Type</th><th>Description</th></tr></thead><tbody>';
+    if (doc.nodes) {
+      doc.nodes.forEach(n => {
+        html += '<tr><td class="node-name">' + esc(n[0]) + '</td><td><span class="' + ntClass(n[1]) + '">' + esc(n[1]) + '</span></td><td class="node-desc">' + esc(n[2]) + '</td></tr>';
+      });
+    }
+    html += '</tbody></table></div>';
+    html += '</div>';
+
+    html += '</div></div>';
+    html += '</section>';
+  });
+
+  document.getElementById('main-content').innerHTML = html;
+}
+
+function smoothNav(e, id) {
+  e.preventDefault();
+  const el = document.getElementById('wf-' + id);
+  if (el) {
+    el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    history.pushState(null, '', '#wf-' + id);
+  }
+}
+
+function esc(s) {
+  if (!s) return '';
+  const d = document.createElement('div');
+  d.textContent = s;
+  return d.innerHTML;
+}
+</script>
+</body></html>
