@@ -857,6 +857,29 @@
         "_name": "Leads coming from events/courses"
       }
     },
+    "SF9TrgB67UjKccY7": {
+      "hash": "28muq2hbroa",
+      "doc": {
+        "slug": "payment-client-entered-on-a-paid-plan",
+        "trigger": "Triggered when a client is entered into a paid plan via webhook.",
+        "overview": "This workflow starts when a new client subscribes to a paid plan. It is designed to receive and process incoming payment-related events for new paid clients.",
+        "phases": [
+          [
+            "Capture Payment Event",
+            "Receives webhook data when a client begins a paid plan."
+          ]
+        ],
+        "nodes": [
+          [
+            "Webhook",
+            "webhook",
+            "Listens for and captures incoming webhook requests signaling a new paid client."
+          ]
+        ],
+        "notes": "Ensure the webhook URL is correctly configured in the payment system for consistent triggering.",
+        "_name": "(PAYMENT) Client entered on a paid plan"
+      }
+    },
     "V7j1ZgaI9kHPUtwJ": {
       "hash": "s8dtd76zyu",
       "doc": {
@@ -1315,376 +1338,154 @@
       }
     },
     "h6Ny08MA0hpoSXJI": {
-      "hash": "1epwy9orh9v",
+      "hash": "1gxd5q6p793",
       "doc": {
         "slug": "ringostat-phone-call-analysis-supabase",
-        "trigger": "Triggered by receiving a phone call via webhook.",
-        "overview": "This workflow processes incoming Ringostat phone call data, transcribes call audio, analyzes key conversational elements using OpenAI, and synchronizes results with Supabase. It enables sales teams to automatically evaluate and score call quality, extract actionable insights, and store transcripts for further use. The workflow automates call intelligence, boosting sales operations efficiency.",
+        "trigger": "Workflow is triggered by a webhook when a new phone call is received.",
+        "overview": "This workflow automates the analysis of phone calls using audio transcription, AI-driven sentiment and intelligence scoring, and stores results in Supabase. It helps sales teams monitor call quality and surface actionable insights for coaching or reporting. It includes dynamic logic for short and full calls, detailed audio processing, and integration with external CRM and databases.",
         "phases": [
           [
-            "Call Reception and Preprocessing",
-            "The workflow receives incoming call data and prepares it for analysis."
+            "Call Reception & Preprocessing",
+            "Handles incoming phone call events, cleans input data, and maps reps to calls."
           ],
           [
-            "Audio Processing and Analysis",
-            "Downloads and transcribes call audio, then analyzes transcript for pain points, intelligence, and sales quality scores using AI."
+            "Audio Processing & Transcription",
+            "Downloads phone call audio, processes both short and full versions, and transcribes using HTTP requests."
           ],
           [
-            "Data Mapping and Storage",
-            "Maps analysis results and upserts them, along with transcripts, to Supabase and synchronizes related deal tags."
+            "AI Analysis & Scoring",
+            "Leverages OpenAI nodes to extract pain points, analyze intelligence, rapport, and score various call attributes."
+          ],
+          [
+            "Record Mapping & Storage",
+            "Maps and merges all analytical results and upserts activity, analysis, and transcripts to Supabase and synchronizes with external CRM tags."
           ]
         ],
         "nodes": [
           [
             "Receive Phone Call",
             "webhook",
-            "Receives incoming phone call data from Ringostat via a webhook trigger."
+            "Initiates the workflow when a new phone call event is received."
           ],
           [
             "Clean Input + Rep Map",
             "code",
-            "Processes and cleans raw input, mapping it to the appropriate sales rep."
+            "Sanitizes incoming data and associates the call with the correct rep."
           ],
           [
             "Build Activity Record",
             "code",
-            "Constructs an activity record based on the cleaned input."
+            "Prepares activity data for downstream processing."
           ],
           [
             "Route: Call Type",
             "switch",
-            "Routes the workflow depending on the type of call received."
+            "Directs workflow branches based on call type (e.g., short vs. full)."
           ],
           [
             "Download Audio",
             "httpRequest",
-            "Downloads the full phone call audio file for further processing."
+            "Fetches the call audio file from Ringostat or storage."
           ],
           [
             "Transcribe Audio",
             "httpRequest",
-            "Transcribes the downloaded audio file using a third-party service."
+            "Sends audio to a transcription service and receives the transcript."
           ],
           [
             "Build Transcript Record",
             "code",
-            "Builds a structured transcript record from the transcription output."
+            "Structures transcript data for analysis and storage."
           ],
           [
             "Pain Extraction",
             "openAi",
-            "Uses OpenAI to extract pain points from the call transcript."
+            "Uses OpenAI to extract pain points from the transcript."
           ],
           [
             "Parse Pain",
             "code",
-            "Parses pain-related data from the AI analysis."
+            "Processes and normalizes pain point data."
           ],
           [
             "Call Intelligence",
             "openAi",
-            "Performs an analysis to determine customer intent and intelligence using OpenAI."
+            "Evaluates the call for sales intelligence insights with OpenAI."
           ],
           [
             "Parse Intelligence",
             "code",
-            "Parses intelligence results produced by OpenAI."
+            "Refines and formats intelligence analysis."
           ],
           [
             "Merge Analysis",
             "merge",
-            "Aggregates pain and intelligence analysis results."
+            "Combines pain and intelligence results for unified analysis."
           ],
           [
             "Build Record",
             "code",
-            "Creates a unified analysis record for downstream processing."
+            "Creates an aggregated record of analytical data."
           ],
           [
             "Score: Opening",
             "openAi",
-            "Uses OpenAI to score the quality of the call opening."
+            "Assesses the quality of the call opening using AI."
           ],
           [
             "Parse Opening Score",
             "code",
-            "Parses the call opening score result."
+            "Extracts and structures the opening score."
           ],
           [
             "Score: Pain",
             "openAi",
-            "Uses OpenAI to score salesperson's handling of pain points."
+            "Scores the effectiveness of pain conversation by the rep."
           ],
           [
             "Parse Pain Score",
             "code",
-            "Parses the pain score from the OpenAI response."
+            "Processes pain score from AI."
           ],
           [
             "Score: Objection",
             "openAi",
-            "Uses OpenAI to score objection handling during the call."
+            "Evaluates objection handling in the call via AI."
           ],
           [
             "Parse Objection Score",
             "code",
-            "Parses the objection handling score."
+            "Processes objection score from AI."
           ],
           [
             "Merge Scores",
             "merge",
-            "Combines various scoring results for further calculation."
+            "Consolidates all scoring data."
           ],
           [
             "Calculate Score",
             "code",
-            "Calculates a final aggregated call score."
+            "Calculates composite scores from individual metrics."
           ],
           [
             "Download Audio (Short)",
             "httpRequest",
-            "Downloads a shorter version of the call audio if available."
+            "Retrieves audio for short calls."
           ],
           [
             "Transcribe Audio (Short)",
             "httpRequest",
-            "Transcribes the short call audio file."
+            "Transcribes the short call audio."
           ],
           [
             "Build Short Transcript",
             "code",
-            "Constructs a transcript record from the short audio."
+            "Prepares structured data for short call transcripts."
           ],
           [
             "Rapport Analysis",
             "openAi",
-            "Uses OpenAI to analyze rapport aspects of the call."
-          ],
-          [
-            "Parse Rapport",
-            "code",
-            "Parses rapport analysis results from OpenAI."
-          ],
-          [
-            "Supabase: Get Reps",
-            "httpRequest",
-            "Fetches sales rep data from the Supabase database."
-          ],
-          [
-            "Map Activity",
-            "code",
-            "Maps activity data for database upsertion."
-          ],
-          [
-            "Supabase: Upsert Activity",
-            "httpRequest",
-            "Upserts activity information into Supabase."
-          ],
-          [
-            "Map Analysis",
-            "code",
-            "Maps analysis results for insertion."
-          ],
-          [
-            "Supabase: Upsert Analysis",
-            "httpRequest",
-            "Upserts analysis data into Supabase."
-          ],
-          [
-            "Map Short Call",
-            "code",
-            "Maps short call analysis for database storage."
-          ],
-          [
-            "Supabase: Upsert Short Call",
-            "httpRequest",
-            "Upserts short call insights to Supabase."
-          ],
-          [
-            "Save Transcript (Full)",
-            "code",
-            "Prepares the full call transcript for saving."
-          ],
-          [
-            "Supabase: Save Transcript (Full)",
-            "httpRequest",
-            "Stores the full call transcript in Supabase."
-          ],
-          [
-            "Save Transcript (Short)",
-            "code",
-            "Prepares the short call transcript for saving."
-          ],
-          [
-            "Supabase: Save Transcript (Short)",
-            "httpRequest",
-            "Stores the short call transcript in Supabase."
-          ],
-          [
-            "Prep Phone Lookup",
-            "code",
-            "Prepares phone number data for deal lookup."
-          ],
-          [
-            "Lookup Deal",
-            "httpRequest",
-            "Looks up deal information related to the call."
-          ],
-          [
-            "Sync Deal Tags (Analysis)",
-            "httpRequest",
-            "Synchronizes deal tags based on the full analysis outcome."
-          ],
-          [
-            "Sync Deal Tags (Short)",
-            "httpRequest",
-            "Synchronizes deal tags based on the short call analysis."
-          ]
-        ],
-        "notes": "Review all external API keys and Supabase table structures regularly, as schema changes or expired credentials can break upsertion or analysis.",
-        "_name": "(RINGOSTAT) Phone Call Analysis (Supabase)"
-      }
-    },
-    "m8v1bYhSGhu1cJNh": {
-      "hash": "12dmu9ctf11",
-      "doc": {
-        "slug": "api4com-phone-call-analysis-supabase",
-        "trigger": "Triggered by an incoming HTTP webhook containing phone call data.",
-        "overview": "This workflow analyzes phone call recordings by transcribing, extracting key information, evaluating performance, and syncing results to Supabase. It streamlines call intelligence processes for sales teams, automating pain point extraction and score calculations to improve deal handling and rep performance. The workflow ensures structured storage and integration for further analytics and reporting.",
-        "phases": [
-          [
-            "Input & Preprocessing",
-            "Receives call input, cleans up data, and downloads necessary audio files."
-          ],
-          [
-            "Transcription & Analysis",
-            "Transcribes the audio, runs OpenAI models to extract insights and scores, then merges and organizes results."
-          ],
-          [
-            "Database Sync & Deal Management",
-            "Maps, prepares, and upserts activities, analyses, transcripts, and deal tags in Supabase."
-          ]
-        ],
-        "nodes": [
-          [
-            "Webhook",
-            "webhook",
-            "Receives HTTP requests to trigger the workflow with call data."
-          ],
-          [
-            "Clean Input + Rep Map",
-            "code",
-            "Cleans input data and maps sales rep information."
-          ],
-          [
-            "Download Audio",
-            "httpRequest",
-            "Downloads the call audio file from a provided URL."
-          ],
-          [
-            "Transcribe Audio",
-            "httpRequest",
-            "Sends the audio for transcription via an external service."
-          ],
-          [
-            "Build Transcript Record",
-            "code",
-            "Formats the transcribed text for internal processing."
-          ],
-          [
-            "Pain Extraction",
-            "openAi",
-            "Uses OpenAI to extract pain points from the call transcript."
-          ],
-          [
-            "Parse Pain",
-            "code",
-            "Parses and formats the pain extraction results."
-          ],
-          [
-            "Call Intelligence",
-            "openAi",
-            "Extracts conversation intelligence using OpenAI."
-          ],
-          [
-            "Parse Intelligence",
-            "code",
-            "Processes intelligence results for downstream nodes."
-          ],
-          [
-            "Merge Analysis",
-            "merge",
-            "Combines disparate analysis outputs."
-          ],
-          [
-            "Build Record",
-            "code",
-            "Creates a structured record from the merged analysis."
-          ],
-          [
-            "Score: Opening",
-            "openAi",
-            "Evaluates the call opening using OpenAI."
-          ],
-          [
-            "Parse Opening Score",
-            "code",
-            "Parses and formats the opening score."
-          ],
-          [
-            "Score: Pain",
-            "openAi",
-            "Scores the pain point segments using OpenAI."
-          ],
-          [
-            "Parse Pain Score",
-            "code",
-            "Processes the pain point score."
-          ],
-          [
-            "Score: Objection",
-            "openAi",
-            "Scores the handling of objections using OpenAI."
-          ],
-          [
-            "Parse Objection Score",
-            "code",
-            "Parses objection score for aggregation."
-          ],
-          [
-            "Merge Scores",
-            "merge",
-            "Combines different segment scores."
-          ],
-          [
-            "Calculate Score",
-            "code",
-            "Calculates overall performance from individual scores."
-          ],
-          [
-            "Route: Call Type",
-            "switch",
-            "Determines processing path based on the type of call (e.g., short vs. full)."
-          ],
-          [
-            "Download Audio (Short)",
-            "httpRequest",
-            "Downloads short call audio variant."
-          ],
-          [
-            "Transcribe Audio (Short)",
-            "httpRequest",
-            "Transcribes short call audio."
-          ],
-          [
-            "Build Short Transcript",
-            "code",
-            "Prepares the transcript for short calls."
-          ],
-          [
-            "Rapport Analysis",
-            "openAi",
-            "Analyzes rapport aspects in the transcript using OpenAI."
+            "Uses AI to assess rapport-building elements."
           ],
           [
             "Parse Rapport",
@@ -1694,80 +1495,345 @@
           [
             "Supabase: Get Reps",
             "httpRequest",
-            "Fetches sales rep records from Supabase."
+            "Fetches rep data from Supabase for downstream mapping."
           ],
           [
             "Map Activity",
             "code",
-            "Maps activity data for database storage."
+            "Links call activity with reps and prepares data for storage."
           ],
           [
             "Supabase: Upsert Activity",
             "httpRequest",
-            "Upserts call activity into Supabase."
+            "Inserts or updates activity records in Supabase."
           ],
           [
             "Map Analysis",
             "code",
-            "Prepares analysis data for storage."
+            "Prepares analytical results for storage."
           ],
           [
             "Supabase: Upsert Analysis",
             "httpRequest",
-            "Upserts AI analysis results into Supabase."
+            "Upserts detailed call analysis into Supabase."
           ],
           [
             "Map Short Call",
             "code",
-            "Formats short call data for Supabase."
+            "Prepares data for short call integration."
           ],
           [
             "Supabase: Upsert Short Call",
             "httpRequest",
-            "Upserts summary for short calls into Supabase."
+            "Updates short call records in Supabase."
           ],
           [
             "Save Transcript (Full)",
             "code",
-            "Prepares full call transcript for saving."
+            "Structures and prepares the full transcript for storage."
           ],
           [
             "Supabase: Save Transcript (Full)",
             "httpRequest",
-            "Saves the full transcript in Supabase."
+            "Persists full transcripts in Supabase."
           ],
           [
             "Save Transcript (Short)",
             "code",
-            "Prepares the transcript for short calls."
+            "Prepares short call transcripts for saving."
           ],
           [
             "Supabase: Save Transcript (Short)",
             "httpRequest",
-            "Saves short call transcript to Supabase."
+            "Stores short call transcripts in Supabase."
           ],
           [
             "Prep Phone Lookup",
             "code",
-            "Prepares data for deal lookup by phone."
+            "Formats phone number for deal lookup."
           ],
           [
             "Lookup Deal",
             "httpRequest",
-            "Searches for related deals by phone number."
+            "Queries CRM or DB to find related deals."
           ],
           [
             "Sync Deal Tags (Analysis)",
             "httpRequest",
-            "Updates deal tags with analysis results."
+            "Syncs deal tags for analytical records with CRM."
           ],
           [
             "Sync Deal Tags (Short)",
             "httpRequest",
-            "Updates deal tags based on short call analysis."
+            "Syncs deal tags for short call records."
+          ],
+          [
+            "Prep Phone Lookup (Analysis)",
+            "code",
+            "Prepares lookup for analysis branch."
+          ],
+          [
+            "Lookup Deal (Analysis)",
+            "httpRequest",
+            "Finds related deals for analysis results."
+          ],
+          [
+            "Prep Phone Lookup (Short)",
+            "code",
+            "Prepares lookup for short branch."
+          ],
+          [
+            "Lookup Deal (Short)",
+            "httpRequest",
+            "Retrieves deals associated with short calls."
           ]
         ],
-        "notes": "Ensure Supabase API endpoints and credentials are kept up to date; regularly test OpenAI node performance for prompt accuracy.",
+        "notes": "Maintain API keys for Ringostat and OpenAI, monitor API rate limits due to multiple HTTP requests, and routinely validate Supabase schema alignment to avoid upsert errors.",
+        "_name": "(RINGOSTAT) Phone Call Analysis (Supabase)"
+      }
+    },
+    "m8v1bYhSGhu1cJNh": {
+      "hash": "gjowbke5p8",
+      "doc": {
+        "slug": "api4com-phone-call-analysis-supabase",
+        "trigger": "Triggered via a webhook when a new phone call audio is available.",
+        "overview": "This workflow analyzes phone call recordings by transcribing audio, extracting sales insights, and scoring key call components. It uses OpenAI for natural language analysis and stores detailed results in Supabase for further reporting, sales performance tracking, and deal enrichment. The process supports both standard and short call types, enabling automated, scalable post-call analysis for sales teams.",
+        "phases": [
+          [
+            "Audio Collection & Transcription",
+            "Receives the audio file, downloads it, and produces a transcript."
+          ],
+          [
+            "AI Analysis & Scoring",
+            "Extracts pain points, assesses sales techniques, and computes scores using OpenAI."
+          ],
+          [
+            "Data Mapping & Storage",
+            "Builds structured records and upserts all analysis and transcripts into Supabase."
+          ],
+          [
+            "Deal Enrichment",
+            "Syncs deal tags and links call insights to relevant deals using phone lookups."
+          ]
+        ],
+        "nodes": [
+          [
+            "Webhook",
+            "webhook",
+            "Receives external trigger and payload when a phone call audio is available."
+          ],
+          [
+            "Clean Input + Rep Map",
+            "code",
+            "Sanitizes incoming data and maps call to appropriate sales rep."
+          ],
+          [
+            "Build Activity Record",
+            "code",
+            "Structures base activity details for tracking."
+          ],
+          [
+            "Download Audio",
+            "httpRequest",
+            "Fetches audio file from external source."
+          ],
+          [
+            "Transcribe Audio",
+            "httpRequest",
+            "Sends audio for transcription and receives raw transcript."
+          ],
+          [
+            "Build Transcript Record",
+            "code",
+            "Formats and structures the full transcript output."
+          ],
+          [
+            "Pain Extraction",
+            "openAi",
+            "Identifies and extracts customer pain points using NLP."
+          ],
+          [
+            "Parse Pain",
+            "code",
+            "Processes AI output for pain points and formats for storage."
+          ],
+          [
+            "Call Intelligence",
+            "openAi",
+            "Conducts broader call analysis for coaching insights and call summary."
+          ],
+          [
+            "Parse Intelligence",
+            "code",
+            "Formats call intelligence data for easy storage and usage."
+          ],
+          [
+            "Merge Analysis",
+            "merge",
+            "Combines various analytical results for unified output."
+          ],
+          [
+            "Build Record",
+            "code",
+            "Assembles comprehensive call record from multiple analyses."
+          ],
+          [
+            "Score: Opening",
+            "openAi",
+            "Scores how effectively the call was opened."
+          ],
+          [
+            "Parse Opening Score",
+            "code",
+            "Processes and formats opening score for storage."
+          ],
+          [
+            "Score: Pain",
+            "openAi",
+            "Scores identification and discussion of customer pain points."
+          ],
+          [
+            "Parse Pain Score",
+            "code",
+            "Parses and formats pain score for downstream use."
+          ],
+          [
+            "Score: Objection",
+            "openAi",
+            "Scores the handling of customer objections."
+          ],
+          [
+            "Parse Objection Score",
+            "code",
+            "Formats objection handling score output data."
+          ],
+          [
+            "Merge Scores",
+            "merge",
+            "Aggregates multiple score values for further calculation."
+          ],
+          [
+            "Calculate Score",
+            "code",
+            "Computes composite scores and performance metrics."
+          ],
+          [
+            "Route: Call Type",
+            "switch",
+            "Routes workflow logic based on short or full call type."
+          ],
+          [
+            "Download Audio (Short)",
+            "httpRequest",
+            "Downloads short call audio when applicable."
+          ],
+          [
+            "Transcribe Audio (Short)",
+            "httpRequest",
+            "Transcribes short call audio files."
+          ],
+          [
+            "Build Short Transcript",
+            "code",
+            "Structures transcript for short call format."
+          ],
+          [
+            "Rapport Analysis",
+            "openAi",
+            "Assesses rapport-building efforts in the call via NLP."
+          ],
+          [
+            "Parse Rapport",
+            "code",
+            "Formats rapport score and findings for storage."
+          ],
+          [
+            "Supabase: Get Reps",
+            "httpRequest",
+            "Fetches sales rep details from Supabase database."
+          ],
+          [
+            "Map Activity",
+            "code",
+            "Prepares activity data for Supabase upsert."
+          ],
+          [
+            "Supabase: Upsert Activity",
+            "httpRequest",
+            "Upserts activity record to Supabase."
+          ],
+          [
+            "Map Analysis",
+            "code",
+            "Prepares call analysis data for Supabase upsert."
+          ],
+          [
+            "Supabase: Upsert Analysis",
+            "httpRequest",
+            "Stores or updates analytical results to Supabase."
+          ],
+          [
+            "Map Short Call",
+            "code",
+            "Prepares short call data structure for upsert."
+          ],
+          [
+            "Supabase: Upsert Short Call",
+            "httpRequest",
+            "Upserts short call analysis records."
+          ],
+          [
+            "Save Transcript (Full)",
+            "code",
+            "Prepares full transcript data for storage."
+          ],
+          [
+            "Supabase: Save Transcript (Full)",
+            "httpRequest",
+            "Stores full transcript record in Supabase."
+          ],
+          [
+            "Save Transcript (Short)",
+            "code",
+            "Prepares short transcript for storage."
+          ],
+          [
+            "Supabase: Save Transcript (Short)",
+            "httpRequest",
+            "Stores short transcript record in Supabase."
+          ],
+          [
+            "Sync Deal Tags (Analysis)",
+            "httpRequest",
+            "Updates deal tags based on analysis results."
+          ],
+          [
+            "Sync Deal Tags (Short)",
+            "httpRequest",
+            "Updates deal tags for short call analyses."
+          ],
+          [
+            "Prep Phone Lookup (Analysis)",
+            "code",
+            "Prepares phone-based lookup data for matching deals."
+          ],
+          [
+            "Lookup Deal (Analysis)",
+            "httpRequest",
+            "Finds corresponding deal via phone in Supabase for full analysis."
+          ],
+          [
+            "Prep Phone Lookup (Short)",
+            "code",
+            "Prepares phone lookup for short call context."
+          ],
+          [
+            "Lookup Deal (Short)",
+            "httpRequest",
+            "Finds matching deal for short call analysis in Supabase."
+          ]
+        ],
+        "notes": "Maintain API credentials for Supabase and OpenAI; review input schema when external call provider integrations are updated.",
         "_name": "(API4COM) Phone Call Analysis (Supabase)"
       }
     },
