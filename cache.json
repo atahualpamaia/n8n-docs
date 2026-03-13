@@ -743,6 +743,93 @@
         "_name": "Sync CRM with Supabase + Add Time per Stage"
       }
     },
+    "IYMuPUMLBjsHxSGX": {
+      "hash": "2fx80j1shyg",
+      "doc": {
+        "slug": "guardrail-deal-sync-safety-net",
+        "trigger": "Triggered when a new deal is created in Pipedrive.",
+        "overview": "This workflow acts as a safety net to ensure new deals created in Pipedrive's specific pipeline are reliably synced to a Supabase database. It checks for missing deal and registration entries after a short delay and recreates them as needed to prevent data loss or sync mismatches.",
+        "phases": [
+          [
+            "Deal Trigger & Filter",
+            "Detects new deals in Pipedrive and filters for only those in the target pipeline."
+          ],
+          [
+            "Sync Verification & Recovery",
+            "Validates existence of deal and registration records in Supabase, and recovers any missing data."
+          ]
+        ],
+        "nodes": [
+          [
+            "Pipedrive: Deal Created",
+            "pipedriveTrigger",
+            "Initiates the workflow when a deal is added in Pipedrive."
+          ],
+          [
+            "Pipeline 33 only?",
+            "if",
+            "Checks if the deal belongs to pipeline 33."
+          ],
+          [
+            "Wait 5 min",
+            "code",
+            "Ensures a 5-minute delay before proceeding with verification."
+          ],
+          [
+            "Supabase: Check Deal Exists",
+            "httpRequest",
+            "Queries Supabase to verify if the deal record exists."
+          ],
+          [
+            "Deal Missing?",
+            "if",
+            "Determines if the deal is absent from Supabase."
+          ],
+          [
+            "Pipedrive: Get Full Deal",
+            "httpRequest",
+            "Retrieves complete deal data from Pipedrive if missing."
+          ],
+          [
+            "Build Registration + Deal Data",
+            "code",
+            "Constructs the payload for registration and deal operations."
+          ],
+          [
+            "Supabase: Check Registration",
+            "httpRequest",
+            "Checks Supabase for an existing registration record."
+          ],
+          [
+            "Registration Missing?",
+            "if",
+            "Checks if the registration record needs to be created."
+          ],
+          [
+            "Supabase: Create Registration",
+            "httpRequest",
+            "Creates a new registration record in Supabase if missing."
+          ],
+          [
+            "Build Deal Row (New Reg)",
+            "code",
+            "Builds deal data structure for a new registration."
+          ],
+          [
+            "Build Deal Row (Existing Reg)",
+            "code",
+            "Builds deal data structure for an existing registration."
+          ],
+          [
+            "Supabase: Create Deal",
+            "httpRequest",
+            "Adds the deal record to Supabase if it did not exist."
+          ]
+        ],
+        "notes": "Periodically review Supabase schema changes and ensure field mappings stay synchronized with Pipedrive updates to maintain reliability.",
+        "_name": "(GUARDRAIL) Deal Sync Safety Net"
+      }
+    },
     "JGZdwcjhxcwkwFsA": {
       "hash": "18j58g4vrla",
       "doc": {
@@ -1205,6 +1292,63 @@
         ],
         "notes": "Keep workflow credentials for HTTP and email nodes up to date; ensure rate limiting logic is effective to prevent notification spam.",
         "_name": "Error Monitor — Auto-Fix + Alert"
+      }
+    },
+    "YYQMPCRpAfRjsExQ": {
+      "hash": "22hnqejnwjt",
+      "doc": {
+        "slug": "auto-link-calendar-meetings-to-deals",
+        "trigger": "Triggered when a new activity is created in Pipedrive.",
+        "overview": "This workflow monitors newly created Pipedrive activities to determine if they are meetings without an associated deal. It then finds the relevant deal based on the prospect's email and links the meeting to that deal automatically, streamlining CRM data accuracy.",
+        "phases": [
+          [
+            "Activity Identification",
+            "Detects new calendar meetings and filters those without a linked deal."
+          ],
+          [
+            "Deal Linking",
+            "Extracts email, searches for an existing deal, and links the meeting to the found deal."
+          ]
+        ],
+        "nodes": [
+          [
+            "Activity Created",
+            "pipedriveTrigger",
+            "Triggers when a new Pipedrive activity is created."
+          ],
+          [
+            "Is Meeting + No Deal?",
+            "if",
+            "Checks if the activity is a meeting and not already linked to a deal."
+          ],
+          [
+            "Extract Prospect Email",
+            "code",
+            "Parses activity data to extract the prospect's email address."
+          ],
+          [
+            "Has Email?",
+            "if",
+            "Verifies if an email address was successfully extracted."
+          ],
+          [
+            "Lookup Deal by Email",
+            "httpRequest",
+            "Queries Pipedrive for deals associated with the extracted email."
+          ],
+          [
+            "Found Deal?",
+            "if",
+            "Checks if a matching deal was found from the lookup."
+          ],
+          [
+            "Link Activity to Deal",
+            "httpRequest",
+            "Links the original meeting activity to the discovered deal in Pipedrive."
+          ]
+        ],
+        "notes": "Ensure email extraction logic matches the activity data format and confirm proper Pipedrive API credentials for deal lookup and linking.",
+        "_name": "Auto-Link Calendar Meetings to Deals"
       }
     },
     "ecufqr7ZfxSIEggr": {
