@@ -69,7 +69,7 @@ tr:last-child td{border-bottom:none}tr:hover td{background:var(--purple-dim)}
 <header class="topbar">
   <div class="topbar-brand"><div class="brand-logo">S</div><span class="brand-name">Snov.io</span><span class="brand-sep">|</span><span class="brand-sub">Sales Playbook</span></div>
   <div class="topbar-right">
-    <span class="topbar-meta">12 workflows · Mar 12, 2026, 06:00 PM</span>
+    <span class="topbar-meta">14 workflows · Mar 13, 2026, 06:00 PM</span>
     <div class="theme-toggle">
       <button class="theme-btn active" id="btn-light" onclick="setTheme('light')">Light</button>
       <button class="theme-btn" id="btn-dark" onclick="setTheme('dark')">Dark</button>
@@ -83,9 +83,9 @@ tr:last-child td{border-bottom:none}tr:hover td{background:var(--purple-dim)}
       <span class="nav-folder-label">N8N Automations</span>
       <svg class="nav-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>
     </div>
-    <div class="nav-children"><a href="#fireflies-pid-call-analysis-coach-supabase" class="nav-item">(Fireflies) PID Call Analysis + Coach (Supabase)</a><a href="#inbound-leads-qualification-supabase" class="nav-item">Inbound Leads Qualification (Supabase)</a><a href="#sync-crm-with-supabase-add-time-per-stage" class="nav-item">Sync CRM with Supabase + Add Time per Stage</a><a href="#transcript-embedding-generator-daily" class="nav-item">Transcript Embedding Generator (Daily)</a><a href="#leads-coming-from-events-courses" class="nav-item">Leads coming from events/courses</a><a href="#create-update-deal-from-discovery-call-supabase" class="nav-item">Create/Update a deal from Discovery Call (Supabase)</a><a href="#error-monitor-auto-fix-alert" class="nav-item">Error Monitor — Auto-Fix + Alert</a><a href="#live-update-on-github-documentations-for-n8n-workflows" class="nav-item">Live update on Github documentations for N8N workflows</a><a href="#enrich-update-deal-after-clay-enrichment" class="nav-item">(ENRICH) Update deal after Clay enrichment</a><a href="#payment-client-entered-on-a-paid-plan" class="nav-item">(PAYMENT) Client entered on a paid plan</a><a href="#ringostat-phone-call-analysis-supabase" class="nav-item">(RINGOSTAT) Phone Call Analysis (Supabase)</a><a href="#api4com-phone-call-analysis-supabase" class="nav-item">(API4COM) Phone Call Analysis (Supabase)</a></div>
+    <div class="nav-children"><a href="#fireflies-pid-call-analysis-coach-supabase" class="nav-item">(Fireflies) PID Call Analysis + Coach (Supabase)</a><a href="#inbound-leads-qualification-supabase" class="nav-item">Inbound Leads Qualification (Supabase)</a><a href="#sync-crm-with-supabase-add-time-per-stage" class="nav-item">Sync CRM with Supabase + Add Time per Stage</a><a href="#transcript-embedding-generator-daily" class="nav-item">Transcript Embedding Generator (Daily)</a><a href="#leads-coming-from-events-courses" class="nav-item">Leads coming from events/courses</a><a href="#payment-client-entered-on-a-paid-plan" class="nav-item">(PAYMENT) Client entered on a paid plan</a><a href="#create-update-deal-from-discovery-call-supabase" class="nav-item">Create/Update a deal from Discovery Call (Supabase)</a><a href="#error-monitor-auto-fix-alert" class="nav-item">Error Monitor — Auto-Fix + Alert</a><a href="#live-update-on-github-documentations-for-n8n-workflows" class="nav-item">Live update on Github documentations for N8N workflows</a><a href="#ringostat-phone-call-analysis-supabase" class="nav-item">(RINGOSTAT) Phone Call Analysis (Supabase)</a><a href="#api4com-phone-call-analysis-supabase" class="nav-item">(API4COM) Phone Call Analysis (Supabase)</a><a href="#enrich-update-deal-after-clay-enrichment" class="nav-item">(ENRICH) Update deal after Clay enrichment</a><a href="#guardrail-deal-sync-safety-net" class="nav-item">(GUARDRAIL) Deal Sync Safety Net</a><a href="#auto-link-calendar-meetings-to-deals" class="nav-item">Auto-Link Calendar Meetings to Deals</a></div>
   </div>
-  <div class="sidebar-footer">Mar 12, 2026, 06:00 PM</div>
+  <div class="sidebar-footer">Mar 13, 2026, 06:00 PM</div>
 </nav>
 <main class="main">
   <div class="hero">
@@ -95,7 +95,7 @@ tr:last-child td{border-bottom:none}tr:hover td{background:var(--purple-dim)}
       <p class="hero-desc">Live technical documentation for all active sales automations. Auto-generated from n8n workflow definitions.</p>
     </div>
     <div class="hero-stats">
-      <div class="stat"><div class="stat-num">12</div><div class="stat-label">Active workflows</div></div>
+      <div class="stat"><div class="stat-num">14</div><div class="stat-label">Active workflows</div></div>
     </div>
   </div>
   <section class="workflow" id="fireflies-pid-call-analysis-coach-supabase">
@@ -203,6 +203,27 @@ tr:last-child td{border-bottom:none}tr:hover td{background:var(--purple-dim)}
     </table></div>
   </div>
 </div></div></section>
+<section class="workflow" id="payment-client-entered-on-a-paid-plan">
+<div class="wf-header">
+  <div class="wf-meta"><span class="wf-badge">Active</span><span class="wf-trigger">Triggered when a client is entered into a paid plan via webhook.</span></div>
+  <h2>(PAYMENT) Client entered on a paid plan</h2>
+  <p class="wf-overview">This workflow starts when a new client subscribes to a paid plan. It is designed to receive and process incoming payment-related events for new paid clients.</p>
+</div>
+<div class="wf-body"><div class="wf-cols">
+  <div class="wf-left">
+    <div class="section-label">Execution Flow</div>
+    <div class="phases"><div class="phase"><span class="phase-num">1</span><div><strong>Capture Payment Event</strong><span class="phase-sep"> — </span>Receives webhook data when a client begins a paid plan.</div></div></div>
+    <div class="section-label" style="margin-top:20px">Technical Notes</div>
+    <p class="notes">Ensure the webhook URL is correctly configured in the payment system for consistent triggering.</p>
+  </div>
+  <div class="wf-right">
+    <div class="section-label">Node Reference</div>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Node</th><th>Type</th><th>Description</th></tr></thead>
+      <tbody><tr><td class="node-name">Webhook</td><td><span class="nt nt-webhook">webhook</span></td><td class="node-desc">Listens for and captures incoming webhook requests signaling a new paid client.</td></tr></tbody>
+    </table></div>
+  </div>
+</div></div></section>
 <section class="workflow" id="create-update-deal-from-discovery-call-supabase">
 <div class="wf-header">
   <div class="wf-meta"><span class="wf-badge">Active</span><span class="wf-trigger">Triggered by a booked Discovery call event from Calendly.</span></div>
@@ -266,48 +287,6 @@ tr:last-child td{border-bottom:none}tr:hover td{background:var(--purple-dim)}
     </table></div>
   </div>
 </div></div></section>
-<section class="workflow" id="enrich-update-deal-after-clay-enrichment">
-<div class="wf-header">
-  <div class="wf-meta"><span class="wf-badge">Active</span><span class="wf-trigger">Fires when the webhook endpoint receives a request.</span></div>
-  <h2>(ENRICH) Update deal after Clay enrichment</h2>
-  <p class="wf-overview">This workflow receives enriched deal data from Clay via webhook and updates the corresponding deal in Pipedrive. It ensures CRM records are continuously enhanced with the latest external data, streamlining sales operations.</p>
-</div>
-<div class="wf-body"><div class="wf-cols">
-  <div class="wf-left">
-    <div class="section-label">Execution Flow</div>
-    <div class="phases"><div class="phase"><span class="phase-num">1</span><div><strong>Receive Enrichment Data</strong><span class="phase-sep"> — </span>Collects new or updated deal information from Clay through a webhook.</div></div><div class="phase"><span class="phase-num">2</span><div><strong>Update Pipedrive</strong><span class="phase-sep"> — </span>Pushes the enriched information into the relevant Pipedrive deal.</div></div></div>
-    <div class="section-label" style="margin-top:20px">Technical Notes</div>
-    <p class="notes">Ensure the webhook endpoint is securely managed and the data mapping aligns with Pipedrive field requirements.</p>
-  </div>
-  <div class="wf-right">
-    <div class="section-label">Node Reference</div>
-    <div class="table-wrap"><table>
-      <thead><tr><th>Node</th><th>Type</th><th>Description</th></tr></thead>
-      <tbody><tr><td class="node-name">Webhook</td><td><span class="nt nt-webhook">webhook</span></td><td class="node-desc">Receives incoming HTTP requests containing enriched deal data from Clay.</td></tr><tr><td class="node-name">Update a deal</td><td><span class="nt nt-pipedrive">pipedrive</span></td><td class="node-desc">Updates the corresponding Pipedrive deal with the new enrichment data.</td></tr></tbody>
-    </table></div>
-  </div>
-</div></div></section>
-<section class="workflow" id="payment-client-entered-on-a-paid-plan">
-<div class="wf-header">
-  <div class="wf-meta"><span class="wf-badge">Active</span><span class="wf-trigger">Triggered when a client is entered into a paid plan via webhook.</span></div>
-  <h2>(PAYMENT) Client entered on a paid plan</h2>
-  <p class="wf-overview">This workflow starts when a new client subscribes to a paid plan. It is designed to receive and process incoming payment-related events for new paid clients.</p>
-</div>
-<div class="wf-body"><div class="wf-cols">
-  <div class="wf-left">
-    <div class="section-label">Execution Flow</div>
-    <div class="phases"><div class="phase"><span class="phase-num">1</span><div><strong>Capture Payment Event</strong><span class="phase-sep"> — </span>Receives webhook data when a client begins a paid plan.</div></div></div>
-    <div class="section-label" style="margin-top:20px">Technical Notes</div>
-    <p class="notes">Ensure the webhook URL is correctly configured in the payment system for consistent triggering.</p>
-  </div>
-  <div class="wf-right">
-    <div class="section-label">Node Reference</div>
-    <div class="table-wrap"><table>
-      <thead><tr><th>Node</th><th>Type</th><th>Description</th></tr></thead>
-      <tbody><tr><td class="node-name">Webhook</td><td><span class="nt nt-webhook">webhook</span></td><td class="node-desc">Listens for and captures incoming webhook requests signaling a new paid client.</td></tr></tbody>
-    </table></div>
-  </div>
-</div></div></section>
 <section class="workflow" id="ringostat-phone-call-analysis-supabase">
 <div class="wf-header">
   <div class="wf-meta"><span class="wf-badge">Active</span><span class="wf-trigger">Workflow is triggered by a webhook when a new phone call is received.</span></div>
@@ -347,6 +326,69 @@ tr:last-child td{border-bottom:none}tr:hover td{background:var(--purple-dim)}
     <div class="table-wrap"><table>
       <thead><tr><th>Node</th><th>Type</th><th>Description</th></tr></thead>
       <tbody><tr><td class="node-name">Webhook</td><td><span class="nt nt-webhook">webhook</span></td><td class="node-desc">Receives external trigger and payload when a phone call audio is available.</td></tr><tr><td class="node-name">Clean Input + Rep Map</td><td><span class="nt nt-code">code</span></td><td class="node-desc">Sanitizes incoming data and maps call to appropriate sales rep.</td></tr><tr><td class="node-name">Build Activity Record</td><td><span class="nt nt-code">code</span></td><td class="node-desc">Structures base activity details for tracking.</td></tr><tr><td class="node-name">Download Audio</td><td><span class="nt nt-httpRequest">httpRequest</span></td><td class="node-desc">Fetches audio file from external source.</td></tr><tr><td class="node-name">Transcribe Audio</td><td><span class="nt nt-httpRequest">httpRequest</span></td><td class="node-desc">Sends audio for transcription and receives raw transcript.</td></tr><tr><td class="node-name">Build Transcript Record</td><td><span class="nt nt-code">code</span></td><td class="node-desc">Formats and structures the full transcript output.</td></tr><tr><td class="node-name">Pain Extraction</td><td><span class="nt nt-openAi">openAi</span></td><td class="node-desc">Identifies and extracts customer pain points using NLP.</td></tr><tr><td class="node-name">Parse Pain</td><td><span class="nt nt-code">code</span></td><td class="node-desc">Processes AI output for pain points and formats for storage.</td></tr><tr><td class="node-name">Call Intelligence</td><td><span class="nt nt-openAi">openAi</span></td><td class="node-desc">Conducts broader call analysis for coaching insights and call summary.</td></tr><tr><td class="node-name">Parse Intelligence</td><td><span class="nt nt-code">code</span></td><td class="node-desc">Formats call intelligence data for easy storage and usage.</td></tr><tr><td class="node-name">Merge Analysis</td><td><span class="nt nt-merge">merge</span></td><td class="node-desc">Combines various analytical results for unified output.</td></tr><tr><td class="node-name">Build Record</td><td><span class="nt nt-code">code</span></td><td class="node-desc">Assembles comprehensive call record from multiple analyses.</td></tr><tr><td class="node-name">Score: Opening</td><td><span class="nt nt-openAi">openAi</span></td><td class="node-desc">Scores how effectively the call was opened.</td></tr><tr><td class="node-name">Parse Opening Score</td><td><span class="nt nt-code">code</span></td><td class="node-desc">Processes and formats opening score for storage.</td></tr><tr><td class="node-name">Score: Pain</td><td><span class="nt nt-openAi">openAi</span></td><td class="node-desc">Scores identification and discussion of customer pain points.</td></tr><tr><td class="node-name">Parse Pain Score</td><td><span class="nt nt-code">code</span></td><td class="node-desc">Parses and formats pain score for downstream use.</td></tr><tr><td class="node-name">Score: Objection</td><td><span class="nt nt-openAi">openAi</span></td><td class="node-desc">Scores the handling of customer objections.</td></tr><tr><td class="node-name">Parse Objection Score</td><td><span class="nt nt-code">code</span></td><td class="node-desc">Formats objection handling score output data.</td></tr><tr><td class="node-name">Merge Scores</td><td><span class="nt nt-merge">merge</span></td><td class="node-desc">Aggregates multiple score values for further calculation.</td></tr><tr><td class="node-name">Calculate Score</td><td><span class="nt nt-code">code</span></td><td class="node-desc">Computes composite scores and performance metrics.</td></tr><tr><td class="node-name">Route: Call Type</td><td><span class="nt nt-switch">switch</span></td><td class="node-desc">Routes workflow logic based on short or full call type.</td></tr><tr><td class="node-name">Download Audio (Short)</td><td><span class="nt nt-httpRequest">httpRequest</span></td><td class="node-desc">Downloads short call audio when applicable.</td></tr><tr><td class="node-name">Transcribe Audio (Short)</td><td><span class="nt nt-httpRequest">httpRequest</span></td><td class="node-desc">Transcribes short call audio files.</td></tr><tr><td class="node-name">Build Short Transcript</td><td><span class="nt nt-code">code</span></td><td class="node-desc">Structures transcript for short call format.</td></tr><tr><td class="node-name">Rapport Analysis</td><td><span class="nt nt-openAi">openAi</span></td><td class="node-desc">Assesses rapport-building efforts in the call via NLP.</td></tr><tr><td class="node-name">Parse Rapport</td><td><span class="nt nt-code">code</span></td><td class="node-desc">Formats rapport score and findings for storage.</td></tr><tr><td class="node-name">Supabase: Get Reps</td><td><span class="nt nt-httpRequest">httpRequest</span></td><td class="node-desc">Fetches sales rep details from Supabase database.</td></tr><tr><td class="node-name">Map Activity</td><td><span class="nt nt-code">code</span></td><td class="node-desc">Prepares activity data for Supabase upsert.</td></tr><tr><td class="node-name">Supabase: Upsert Activity</td><td><span class="nt nt-httpRequest">httpRequest</span></td><td class="node-desc">Upserts activity record to Supabase.</td></tr><tr><td class="node-name">Map Analysis</td><td><span class="nt nt-code">code</span></td><td class="node-desc">Prepares call analysis data for Supabase upsert.</td></tr><tr><td class="node-name">Supabase: Upsert Analysis</td><td><span class="nt nt-httpRequest">httpRequest</span></td><td class="node-desc">Stores or updates analytical results to Supabase.</td></tr><tr><td class="node-name">Map Short Call</td><td><span class="nt nt-code">code</span></td><td class="node-desc">Prepares short call data structure for upsert.</td></tr><tr><td class="node-name">Supabase: Upsert Short Call</td><td><span class="nt nt-httpRequest">httpRequest</span></td><td class="node-desc">Upserts short call analysis records.</td></tr><tr><td class="node-name">Save Transcript (Full)</td><td><span class="nt nt-code">code</span></td><td class="node-desc">Prepares full transcript data for storage.</td></tr><tr><td class="node-name">Supabase: Save Transcript (Full)</td><td><span class="nt nt-httpRequest">httpRequest</span></td><td class="node-desc">Stores full transcript record in Supabase.</td></tr><tr><td class="node-name">Save Transcript (Short)</td><td><span class="nt nt-code">code</span></td><td class="node-desc">Prepares short transcript for storage.</td></tr><tr><td class="node-name">Supabase: Save Transcript (Short)</td><td><span class="nt nt-httpRequest">httpRequest</span></td><td class="node-desc">Stores short transcript record in Supabase.</td></tr><tr><td class="node-name">Sync Deal Tags (Analysis)</td><td><span class="nt nt-httpRequest">httpRequest</span></td><td class="node-desc">Updates deal tags based on analysis results.</td></tr><tr><td class="node-name">Sync Deal Tags (Short)</td><td><span class="nt nt-httpRequest">httpRequest</span></td><td class="node-desc">Updates deal tags for short call analyses.</td></tr><tr><td class="node-name">Prep Phone Lookup (Analysis)</td><td><span class="nt nt-code">code</span></td><td class="node-desc">Prepares phone-based lookup data for matching deals.</td></tr><tr><td class="node-name">Lookup Deal (Analysis)</td><td><span class="nt nt-httpRequest">httpRequest</span></td><td class="node-desc">Finds corresponding deal via phone in Supabase for full analysis.</td></tr><tr><td class="node-name">Prep Phone Lookup (Short)</td><td><span class="nt nt-code">code</span></td><td class="node-desc">Prepares phone lookup for short call context.</td></tr><tr><td class="node-name">Lookup Deal (Short)</td><td><span class="nt nt-httpRequest">httpRequest</span></td><td class="node-desc">Finds matching deal for short call analysis in Supabase.</td></tr></tbody>
+    </table></div>
+  </div>
+</div></div></section>
+<section class="workflow" id="enrich-update-deal-after-clay-enrichment">
+<div class="wf-header">
+  <div class="wf-meta"><span class="wf-badge">Active</span><span class="wf-trigger">Fires when the webhook endpoint receives a request.</span></div>
+  <h2>(ENRICH) Update deal after Clay enrichment</h2>
+  <p class="wf-overview">This workflow receives enriched deal data from Clay via webhook and updates the corresponding deal in Pipedrive. It ensures CRM records are continuously enhanced with the latest external data, streamlining sales operations.</p>
+</div>
+<div class="wf-body"><div class="wf-cols">
+  <div class="wf-left">
+    <div class="section-label">Execution Flow</div>
+    <div class="phases"><div class="phase"><span class="phase-num">1</span><div><strong>Receive Enrichment Data</strong><span class="phase-sep"> — </span>Collects new or updated deal information from Clay through a webhook.</div></div><div class="phase"><span class="phase-num">2</span><div><strong>Update Pipedrive</strong><span class="phase-sep"> — </span>Pushes the enriched information into the relevant Pipedrive deal.</div></div></div>
+    <div class="section-label" style="margin-top:20px">Technical Notes</div>
+    <p class="notes">Ensure the webhook endpoint is securely managed and the data mapping aligns with Pipedrive field requirements.</p>
+  </div>
+  <div class="wf-right">
+    <div class="section-label">Node Reference</div>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Node</th><th>Type</th><th>Description</th></tr></thead>
+      <tbody><tr><td class="node-name">Webhook</td><td><span class="nt nt-webhook">webhook</span></td><td class="node-desc">Receives incoming HTTP requests containing enriched deal data from Clay.</td></tr><tr><td class="node-name">Update a deal</td><td><span class="nt nt-pipedrive">pipedrive</span></td><td class="node-desc">Updates the corresponding Pipedrive deal with the new enrichment data.</td></tr></tbody>
+    </table></div>
+  </div>
+</div></div></section>
+<section class="workflow" id="guardrail-deal-sync-safety-net">
+<div class="wf-header">
+  <div class="wf-meta"><span class="wf-badge">Active</span><span class="wf-trigger">Triggered when a new deal is created in Pipedrive.</span></div>
+  <h2>(GUARDRAIL) Deal Sync Safety Net</h2>
+  <p class="wf-overview">This workflow acts as a safety net to ensure new deals created in Pipedrive's specific pipeline are reliably synced to a Supabase database. It checks for missing deal and registration entries after a short delay and recreates them as needed to prevent data loss or sync mismatches.</p>
+</div>
+<div class="wf-body"><div class="wf-cols">
+  <div class="wf-left">
+    <div class="section-label">Execution Flow</div>
+    <div class="phases"><div class="phase"><span class="phase-num">1</span><div><strong>Deal Trigger & Filter</strong><span class="phase-sep"> — </span>Detects new deals in Pipedrive and filters for only those in the target pipeline.</div></div><div class="phase"><span class="phase-num">2</span><div><strong>Sync Verification & Recovery</strong><span class="phase-sep"> — </span>Validates existence of deal and registration records in Supabase, and recovers any missing data.</div></div></div>
+    <div class="section-label" style="margin-top:20px">Technical Notes</div>
+    <p class="notes">Periodically review Supabase schema changes and ensure field mappings stay synchronized with Pipedrive updates to maintain reliability.</p>
+  </div>
+  <div class="wf-right">
+    <div class="section-label">Node Reference</div>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Node</th><th>Type</th><th>Description</th></tr></thead>
+      <tbody><tr><td class="node-name">Pipedrive: Deal Created</td><td><span class="nt nt-pipedriveTrigger">pipedriveTrigger</span></td><td class="node-desc">Initiates the workflow when a deal is added in Pipedrive.</td></tr><tr><td class="node-name">Pipeline 33 only?</td><td><span class="nt nt-if">if</span></td><td class="node-desc">Checks if the deal belongs to pipeline 33.</td></tr><tr><td class="node-name">Wait 5 min</td><td><span class="nt nt-code">code</span></td><td class="node-desc">Ensures a 5-minute delay before proceeding with verification.</td></tr><tr><td class="node-name">Supabase: Check Deal Exists</td><td><span class="nt nt-httpRequest">httpRequest</span></td><td class="node-desc">Queries Supabase to verify if the deal record exists.</td></tr><tr><td class="node-name">Deal Missing?</td><td><span class="nt nt-if">if</span></td><td class="node-desc">Determines if the deal is absent from Supabase.</td></tr><tr><td class="node-name">Pipedrive: Get Full Deal</td><td><span class="nt nt-httpRequest">httpRequest</span></td><td class="node-desc">Retrieves complete deal data from Pipedrive if missing.</td></tr><tr><td class="node-name">Build Registration + Deal Data</td><td><span class="nt nt-code">code</span></td><td class="node-desc">Constructs the payload for registration and deal operations.</td></tr><tr><td class="node-name">Supabase: Check Registration</td><td><span class="nt nt-httpRequest">httpRequest</span></td><td class="node-desc">Checks Supabase for an existing registration record.</td></tr><tr><td class="node-name">Registration Missing?</td><td><span class="nt nt-if">if</span></td><td class="node-desc">Checks if the registration record needs to be created.</td></tr><tr><td class="node-name">Supabase: Create Registration</td><td><span class="nt nt-httpRequest">httpRequest</span></td><td class="node-desc">Creates a new registration record in Supabase if missing.</td></tr><tr><td class="node-name">Build Deal Row (New Reg)</td><td><span class="nt nt-code">code</span></td><td class="node-desc">Builds deal data structure for a new registration.</td></tr><tr><td class="node-name">Build Deal Row (Existing Reg)</td><td><span class="nt nt-code">code</span></td><td class="node-desc">Builds deal data structure for an existing registration.</td></tr><tr><td class="node-name">Supabase: Create Deal</td><td><span class="nt nt-httpRequest">httpRequest</span></td><td class="node-desc">Adds the deal record to Supabase if it did not exist.</td></tr></tbody>
+    </table></div>
+  </div>
+</div></div></section>
+<section class="workflow" id="auto-link-calendar-meetings-to-deals">
+<div class="wf-header">
+  <div class="wf-meta"><span class="wf-badge">Active</span><span class="wf-trigger">Triggered when a new activity is created in Pipedrive.</span></div>
+  <h2>Auto-Link Calendar Meetings to Deals</h2>
+  <p class="wf-overview">This workflow monitors newly created Pipedrive activities to determine if they are meetings without an associated deal. It then finds the relevant deal based on the prospect's email and links the meeting to that deal automatically, streamlining CRM data accuracy.</p>
+</div>
+<div class="wf-body"><div class="wf-cols">
+  <div class="wf-left">
+    <div class="section-label">Execution Flow</div>
+    <div class="phases"><div class="phase"><span class="phase-num">1</span><div><strong>Activity Identification</strong><span class="phase-sep"> — </span>Detects new calendar meetings and filters those without a linked deal.</div></div><div class="phase"><span class="phase-num">2</span><div><strong>Deal Linking</strong><span class="phase-sep"> — </span>Extracts email, searches for an existing deal, and links the meeting to the found deal.</div></div></div>
+    <div class="section-label" style="margin-top:20px">Technical Notes</div>
+    <p class="notes">Ensure email extraction logic matches the activity data format and confirm proper Pipedrive API credentials for deal lookup and linking.</p>
+  </div>
+  <div class="wf-right">
+    <div class="section-label">Node Reference</div>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Node</th><th>Type</th><th>Description</th></tr></thead>
+      <tbody><tr><td class="node-name">Activity Created</td><td><span class="nt nt-pipedriveTrigger">pipedriveTrigger</span></td><td class="node-desc">Triggers when a new Pipedrive activity is created.</td></tr><tr><td class="node-name">Is Meeting + No Deal?</td><td><span class="nt nt-if">if</span></td><td class="node-desc">Checks if the activity is a meeting and not already linked to a deal.</td></tr><tr><td class="node-name">Extract Prospect Email</td><td><span class="nt nt-code">code</span></td><td class="node-desc">Parses activity data to extract the prospect's email address.</td></tr><tr><td class="node-name">Has Email?</td><td><span class="nt nt-if">if</span></td><td class="node-desc">Verifies if an email address was successfully extracted.</td></tr><tr><td class="node-name">Lookup Deal by Email</td><td><span class="nt nt-httpRequest">httpRequest</span></td><td class="node-desc">Queries Pipedrive for deals associated with the extracted email.</td></tr><tr><td class="node-name">Found Deal?</td><td><span class="nt nt-if">if</span></td><td class="node-desc">Checks if a matching deal was found from the lookup.</td></tr><tr><td class="node-name">Link Activity to Deal</td><td><span class="nt nt-httpRequest">httpRequest</span></td><td class="node-desc">Links the original meeting activity to the discovered deal in Pipedrive.</td></tr></tbody>
     </table></div>
   </div>
 </div></div></section>
